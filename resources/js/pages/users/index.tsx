@@ -1,0 +1,39 @@
+import { DataTable } from '@/components/ui/data-table';
+import AppLayout from '@/layouts/app-layout';
+import { type BreadcrumbItem } from '@/types';
+import { Head } from '@inertiajs/react';
+import { columns } from "@/pages/users/columns";
+import { User } from '@/types/index.d';
+import { Link } from '@inertiajs/react'
+import { Plus } from 'lucide-react'
+
+const breadcrumbs: BreadcrumbItem[] = [
+    {
+        title: 'Users',
+        href: '/users',
+    },
+];
+
+interface Props {
+  users: User[]
+}
+
+export default function Index({ users }: Props) {
+
+  return (
+    <AppLayout breadcrumbs={breadcrumbs}>
+      <Head title="Users" />
+      <div className="p-6 space-y-6">
+        <h1 className="text-2xl font-bold">Users</h1>
+        <Link
+            href={route('users.create')}
+            className="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2 text-white hover:bg-primary/90 dark:bg-gray-200 text-black dark:text-black dark:hover:bg-gray-300"
+            >
+            <Plus className="h-4 w-4" />
+            Add new user
+        </Link>
+        <DataTable columns={columns} data={users} />
+      </div>
+    </AppLayout>
+  )
+}
