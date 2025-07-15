@@ -26,6 +26,3 @@ A modern web application for managing users and e-books, built with **Laravel 12
 | Sanctum Auth   | Vite              | Tailwind CSS         |
 | MVC Pattern    | shadcn/ui         | Laravel Seeder       |
 | Eloquent ORM   | Axios             | Laravel Form Request |
-
-
-php artisan migrate --seed
