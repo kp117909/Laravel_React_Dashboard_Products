@@ -10,14 +10,6 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Button } from "@/components/ui/button"
 import { ColumnDef, SortingState } from "@tanstack/react-table"
 
-type User = {
-  id: number
-  name: string
-  email: string
-  role: string
-  created_at: string
-}
-
 
 interface DataTableProps<T> {
   columns: ColumnDef<T, any>[]

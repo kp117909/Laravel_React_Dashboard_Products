@@ -12,8 +12,12 @@ interface ShowUserProps {
 
 const breadcrumbs: BreadcrumbItem[] = [
   {
-    title: 'Users Edit',
+    title: 'Users View',
     href: '/users',
+  },
+  {
+    title: 'View',
+    href: '/users/show',
   },
 ]
 

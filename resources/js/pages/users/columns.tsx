@@ -3,6 +3,8 @@ import { User } from "@/types/index.d"
 import { Link } from '@inertiajs/react'
 import { Button } from "@/components/ui/button"
 import { DeleteUserDialog } from "@/components/delete-user-dialog"
+import { Badge } from "@/components/ui/badge"
+import { ShieldPlus } from 'lucide-react';
 
 export const columns: ColumnDef<User, any>[] = [
   {
@@ -14,8 +16,20 @@ export const columns: ColumnDef<User, any>[] = [
     header: "Email",
   },
   {
-    accessorKey: "role",
+    accessorKey: "roles",
     header: "Role",
+    cell: ({ row }) => {
+        const roles = row.original.roles as { name: string }[]
+        return (
+        <div className="flex flex-wrap gap-1">
+            {roles.map(role => (
+            <Badge key={role.name} variant="secondary" className="bg-gray-900 text-white dark:bg-blue-100 dark:text-black">
+                <ShieldPlus /> {role.name}
+            </Badge>
+            ))}
+        </div>
+        )
+    },
   },
   {
     accessorKey: "created_at",

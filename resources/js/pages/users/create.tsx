@@ -1,14 +1,19 @@
 import AppLayout from '@/layouts/app-layout'
-import { type BreadcrumbItem } from '@/types'
+import { Role, type BreadcrumbItem } from '@/types'
 import { Head, useForm } from '@inertiajs/react'
 import { Link } from '@inertiajs/react'
 import { ArrowBigLeft } from 'lucide-react'
 import { Button } from '@/components/ui/button';
 import RoleSelect from '@/components/role-select';
+
 const breadcrumbs: BreadcrumbItem[] = [
   {
     title: 'Users Create',
     href: '/users',
+  },
+  {
+    title: 'Create',
+    href: '/users/create',
   },
 ]
 
@@ -17,10 +22,14 @@ type FormData = {
   email: string
   password: string
   password_confirmation: string
-  role: string
+  role: string;
 }
 
-export default function Create() {
+interface Props {
+    roles: Role[];
+}
+
+export default function Create({roles}: Props) {
   const { data, setData, post, processing, errors } = useForm<FormData>({
     name: '',
     email: '',
@@ -31,6 +40,7 @@ export default function Create() {
 
   const submit = (e: React.FormEvent) => {
     e.preventDefault()
+    console.log(data.role)
     post(route('users.store'))
   }
 
@@ -113,10 +123,12 @@ export default function Create() {
             <label htmlFor="password_confirmation" className="block font-medium">
              Choose Role
             </label>
-           <RoleSelect
-            value={data.role}
-            onChange={(value) => setData('role', value)}
-            error={errors.role}
+
+            <RoleSelect
+                roles={roles}
+                value={data.role}
+                onChange={(value) => setData('role', value)}
+                error={errors.role}
             />
           </div>
 

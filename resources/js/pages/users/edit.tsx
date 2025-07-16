@@ -5,10 +5,15 @@ import { Link } from '@inertiajs/react'
 import { ArrowBigLeft } from 'lucide-react'
 import { Button } from '@/components/ui/button';
 import RoleSelect from '@/components/role-select';
+import { User } from '@/types/index.d'
 const breadcrumbs: BreadcrumbItem[] = [
   {
     title: 'Users Edit',
     href: '/users',
+  },
+  {
+    title: 'Create',
+    href: '/users/edit',
   },
 ]
 
@@ -20,7 +25,12 @@ type FormData = {
   role: string
 }
 
-export default function Edit({user}) {
+type Props = {
+  user: User[]
+}
+
+
+export default function Edit({user}: Props) {
   const { data, setData, put, processing, errors } = useForm<FormData>({
     name: user.name || '',
     email: user.email || '',

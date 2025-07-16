@@ -16,7 +16,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::resource('users', UserController::class);
 
-    Route::resources('roles', RoleController::class);
+    Route::resource('roles', RoleController::class);
 });
 
 require __DIR__.'/settings.php';

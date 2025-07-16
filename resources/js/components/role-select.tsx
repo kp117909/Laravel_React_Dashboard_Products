@@ -1,31 +1,33 @@
 import {
   Select,
+  SelectContent,
+  SelectItem,
   SelectTrigger,
   SelectValue,
-  SelectContent,
-  SelectGroup,
-  SelectLabel,
-  SelectItem,
-} from '@/components/ui/select'
+} from "@/components/ui/select"
 
-type RoleSelectProps = {
+import { Role } from "@/types"
+
+type Props = {
+  roles: Role[]
   value: string
   onChange: (value: string) => void
   error?: string
 }
 
-export default function RoleSelect({ value, onChange, error }: RoleSelectProps) {
+export default function RoleSelect({ roles, value, onChange, error }: Props) {
   return (
     <div>
       <Select value={value} onValueChange={onChange}>
-        <SelectTrigger aria-label="Role" className="w-full" />
-        <SelectValue placeholder="Choose role" />
+        <SelectTrigger>
+          <SelectValue placeholder="Wybierz rolę" />
+        </SelectTrigger>
         <SelectContent>
-          <SelectGroup>
-            <SelectLabel>Role</SelectLabel>
-            <SelectItem value="user">User</SelectItem>
-            <SelectItem value="admin">Admin</SelectItem>
-          </SelectGroup>
+          {roles.map((role) => (
+            <SelectItem key={role.id} value={String(role.id)}>
+              {role.name}
+            </SelectItem>
+          ))}
         </SelectContent>
       </Select>
       {error && <div className="text-sm text-red-600 mt-1">{error}</div>}

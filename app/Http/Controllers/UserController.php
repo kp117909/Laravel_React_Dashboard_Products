@@ -2,22 +2,28 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use Inertia\Inertia;
 use App\Models\User;
-use Illuminate\Support\Facades\Hash;
+use App\Services\UserService;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
-
+use Spatie\Permission\Models\Role;
 
 class UserController extends Controller
 {
+    protected UserService $userService;
+
+    public function __construct(UserService $userService)
+    {
+        $this->userService = $userService;
+    }
+
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $users = User::all();
+        $users = User::with('roles')->get();
         return Inertia::render('users/index', [
             'users' => $users,
         ]);
@@ -28,7 +34,10 @@ class UserController extends Controller
      */
     public function create()
     {
-        return Inertia::render('users/create');
+        $roles = Role::all(['id', 'name']);
+        return Inertia::render('users/create',[
+            'roles' => $roles
+        ]);
     }
 
     /**
@@ -36,12 +45,7 @@ class UserController extends Controller
      */
     public function store(StoreUserRequest $request)
     {
-        $user = User::create([
-        'name' => $request->name,
-        'email' => $request->email,
-        'password' => Hash::make($request->password),
-        ]);
-
+        $this->userService->create($request->validated());
 
         return to_route('users.index');
     }
@@ -49,7 +53,7 @@ class UserController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(int $id)
     {
         $user = User::find($id);
         return Inertia::render('users/show', [
@@ -60,7 +64,7 @@ class UserController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(int $id)
     {
         $user = User::find($id);
         return Inertia::render('users/edit', [
@@ -71,16 +75,9 @@ class UserController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateUserRequest $request, string $id)
+    public function update(UpdateUserRequest $request, int $id)
     {
-        $user = User::findOrFail($id);
-        $data = $request->only(['name', 'email', 'role']);
-
-        if ($request->filled('password')) {
-            $data['password'] = Hash::make($request->password);
-        }
-
-        $user->update($data);
+        $this->userService->update($request->validated(), $id);
 
         return to_route('users.index');
     }
@@ -88,9 +85,9 @@ class UserController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(int $id)
     {
-        User::destroy($id);
+        $this->userService->delete($id);
 
         return to_route('users.index');
     }
