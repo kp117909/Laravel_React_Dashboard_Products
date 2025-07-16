@@ -10,15 +10,18 @@ import { Role } from "@/types"
 
 type Props = {
   roles: Role[]
-  value: string
-  onChange: (value: string) => void
+  value: number
+  onChange: (value: number) => void
   error?: string
 }
 
 export default function RoleSelect({ roles, value, onChange, error }: Props) {
   return (
     <div>
-      <Select value={value} onValueChange={onChange}>
+      <Select
+        value={String(value)}
+        onValueChange={(val) => onChange(Number(val))}
+      >
         <SelectTrigger>
           <SelectValue placeholder="Wybierz rolę" />
         </SelectTrigger>

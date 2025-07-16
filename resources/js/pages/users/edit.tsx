@@ -5,7 +5,7 @@ import { Link } from '@inertiajs/react'
 import { ArrowBigLeft } from 'lucide-react'
 import { Button } from '@/components/ui/button';
 import RoleSelect from '@/components/role-select';
-import { User } from '@/types/index.d'
+import { User, Role } from '@/types/index.d'
 const breadcrumbs: BreadcrumbItem[] = [
   {
     title: 'Users Edit',
@@ -22,28 +22,27 @@ type FormData = {
   email: string
   password: string
   password_confirmation: string
-  role: string
+  role: number
 }
 
 type Props = {
-  user: User[]
+  user: User[],
+  roles: Role[]
 }
 
 
-export default function Edit({user}: Props) {
+export default function Edit({user, roles}: Props) {
   const { data, setData, put, processing, errors } = useForm<FormData>({
     name: user.name || '',
     email: user.email || '',
     password: '',
     password_confirmation: '',
-    role: '',
+    role: user.roles?.[0]?.id ?? 1,
   })
-
   const submit = (e: React.FormEvent) => {
     e.preventDefault()
     put(route('users.update', user.id))
   }
-
   return (
     <AppLayout breadcrumbs={breadcrumbs}>
       <Head title="Users Edit" />
@@ -123,10 +122,11 @@ export default function Edit({user}: Props) {
             <label htmlFor="password_confirmation" className="block font-medium">
              Choose Role
             </label>
-           <RoleSelect
-            value={data.role}
-            onChange={(value) => setData('role', value)}
-            error={errors.role}
+            <RoleSelect
+                roles={roles}
+                value={data.role}
+                onChange={(value) => setData('role', value)}
+                error={errors.role}
             />
           </div>
 

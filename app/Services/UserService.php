@@ -31,7 +31,13 @@ class UserService
             unset($data['password']);
         }
 
+        $roleId = $data['role'];
+        unset($data['role']);
+
+        $roleName = Role::findOrFail($roleId)->name;
+
         $user->update($data);
+        $user->syncRoles($roleName);
 
         return $user;
     }

@@ -55,7 +55,7 @@ class UserController extends Controller
      */
     public function show(int $id)
     {
-        $user = User::find($id);
+        $user = User::with('roles')->findOrFail($id);
         return Inertia::render('users/show', [
             'user' =>$user,
         ]);
@@ -66,9 +66,11 @@ class UserController extends Controller
      */
     public function edit(int $id)
     {
-        $user = User::find($id);
+        $user = User::with('roles')->findOrFail($id);
+        $roles = Role::all();
         return Inertia::render('users/edit', [
             'user' => $user,
+            'roles' => $roles
         ]);
     }
 
