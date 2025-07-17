@@ -4,12 +4,30 @@ import {
   useReactTable,
   getPaginationRowModel,
   getSortedRowModel,
+  getFilteredRowModel,
 } from "@tanstack/react-table"
 import { useState } from "react"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table"
 import { Button } from "@/components/ui/button"
-import { ColumnDef, SortingState } from "@tanstack/react-table"
+import { Input } from "@/components/ui/input"
+import { ColumnDef, SortingState, ColumnFiltersState, VisibilityState } from "@tanstack/react-table"
 
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuLabel,
+  DropdownMenuCheckboxItem,
+  DropdownMenuSeparator,
+} from "@/components/ui/dropdown-menu"
+import { ArrowUpDown } from "lucide-react"
 
 interface DataTableProps<T> {
   columns: ColumnDef<T, any>[]
@@ -18,59 +36,178 @@ interface DataTableProps<T> {
 
 export function DataTable<T>({ columns, data }: DataTableProps<T>) {
   const [sorting, setSorting] = useState<SortingState>([])
+  const [globalFilter, setGlobalFilter] = useState("")
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
+  const [gotoPage, setGotoPage] = useState("")
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>(() =>
+    columns.reduce((acc, col) => {
+      const colId = col.id ?? col.accessorKey ?? ""
+      acc[colId] = true
+      return acc
+    }, {} as VisibilityState)
+  )
 
   const table = useReactTable({
     data,
     columns,
     state: {
       sorting,
+      globalFilter,
+      columnFilters,
+      columnVisibility,
     },
     onSortingChange: setSorting,
+    onGlobalFilterChange: setGlobalFilter,
+    onColumnFiltersChange: setColumnFilters,
+    onColumnVisibilityChange: setColumnVisibility,
+    globalFilterFn: "includesString",
     getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
     getSortedRowModel: getSortedRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
   })
 
+  const pageCount = table.getPageCount()
+
   return (
-    <div className="rounded-md border">
-      <Table>
-        <TableHeader>
-          {table.getHeaderGroups().map((headerGroup) => (
-            <TableRow key={headerGroup.id}>
-              {headerGroup.headers.map((header) => (
-                <TableHead key={header.id}>
-                  {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
-                </TableHead>
-              ))}
-            </TableRow>
-          ))}
-        </TableHeader>
-        <TableBody>
-          {table.getRowModel().rows?.length ? (
-            table.getRowModel().rows.map((row) => (
-              <TableRow key={row.id}>
-                {row.getVisibleCells().map((cell) => (
-                  <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
+    <div>
+      <div className="mb-4 flex items-center gap-4">
+        <Input
+          placeholder="Search..."
+          value={globalFilter}
+          onChange={e => setGlobalFilter(e.target.value)}
+          className="max-w-sm"
+          type="search"
+        />
+
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="outline" size="sm">
+              Columns
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent className="w-48">
+            <DropdownMenuLabel>Show / Hide Columns</DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            {columns.map(col => {
+              const colId = col.id ?? col.accessorKey ?? ""
+              return (
+                <DropdownMenuCheckboxItem
+                  key={colId}
+                  checked={!!columnVisibility[colId]}
+                  onCheckedChange={checked => {
+                    setColumnVisibility(old => ({
+                      ...old,
+                      [colId]: checked,
+                    }))
+                  }}
+                >
+                  {typeof col.header === "string" ? col.header : colId}
+                </DropdownMenuCheckboxItem>
+              )
+            })}
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
+
+      <div className="rounded-md border">
+        <Table>
+          <TableHeader>
+            {table.getHeaderGroups().map(headerGroup => (
+              <TableRow key={headerGroup.id}>
+                {headerGroup.headers.map(header => (
+                  <TableHead
+                    key={header.id}
+                    className="cursor-pointer select-none"
+                    onClick={header.column.getToggleSortingHandler()}
+                  >
+                    {header.isPlaceholder ? null : (
+                    <span className="flex items-center gap-1">
+                        {flexRender(header.column.columnDef.header, header.getContext())}
+                        {header.column.getCanSort() && (
+                        <ArrowUpDown
+                            className={`h-4 w-4 transition ${
+                            header.column.getIsSorted()
+                                ? "text-primary"
+                                : "text-muted-foreground"
+                            }`}
+                        />
+                        )}
+                    </span>
+                    )}
+                  </TableHead>
                 ))}
               </TableRow>
-            ))
-          ) : (
-            <TableRow>
-              <TableCell colSpan={columns.length} className="h-24 text-center">
-                No data.
-              </TableCell>
-            </TableRow>
-          )}
-        </TableBody>
-      </Table>
+            ))}
+          </TableHeader>
+          <TableBody>
+            {table.getRowModel().rows.length ? (
+              table.getRowModel().rows.map(row => (
+                <TableRow key={row.id}>
+                  {row.getVisibleCells().map(cell => (
+                    <TableCell key={cell.id}>
+                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell colSpan={columns.length} className="h-24 text-center">
+                  No data.
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
 
-      <div className="flex items-center justify-end space-x-2 p-4">
-        <Button variant="outline" size="sm" onClick={() => table.previousPage()} disabled={!table.getCanPreviousPage()}>
-          Previous Page
-        </Button>
-        <Button variant="outline" size="sm" onClick={() => table.nextPage()} disabled={!table.getCanNextPage()}>
-          Next Page
-        </Button>
+        <div className="flex flex-wrap items-center justify-end gap-2 p-4">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => table.previousPage()}
+            disabled={!table.getCanPreviousPage()}
+          >
+            Previous Page
+          </Button>
+
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => table.nextPage()}
+            disabled={!table.getCanNextPage()}
+          >
+            Next Page
+          </Button>
+
+          <div className="flex items-center space-x-2">
+            <span>Go to page:</span>
+            <Input
+              type="number"
+              min={1}
+              max={pageCount}
+              value={gotoPage}
+              onChange={e => setGotoPage(e.target.value)}
+              className="w-16"
+            />
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => {
+                const page = gotoPage ? Number(gotoPage) - 1 : 0
+                if (page >= 0 && page < pageCount) {
+                  table.setPageIndex(page)
+                }
+              }}
+            >
+              Go
+            </Button>
+          </div>
+
+          <div className="ml-4">
+            Page {table.getState().pagination.pageIndex + 1} of {pageCount}
+          </div>
+        </div>
       </div>
     </div>
   )

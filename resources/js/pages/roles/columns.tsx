@@ -4,8 +4,14 @@ import { Link } from '@inertiajs/react'
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { DeleteRoleDialog } from "@/components/delete-role-dialog"
-import { BadgeCheckIcon } from "lucide-react"
+import { BadgeCheckIcon, SquarePen} from "lucide-react"
+import { can } from "@/lib/can"
 
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
 export const columns: ColumnDef<Role, any>[] = [
   {
     accessorKey: "name",
@@ -39,15 +45,24 @@ export const columns: ColumnDef<Role, any>[] = [
   },
   {
     id: 'actions',
-    header: () => <div className="text-right mr-13">Akcje</div>,
+    header: () => <div className="text-right mr-13">Actions</div>,
     cell: ({ row }) => {
       const role = row.original
 
       return (
         <div className="flex justify-end gap-2">
+        {can('roles.edit') &&
           <Link href={route('roles.edit', role.id)}>
-            <Button variant="outline" size="sm">Edit</Button>
+               <Tooltip>
+                <TooltipTrigger>
+                    <Button variant="outline" size="sm"><SquarePen/></Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                    <p>Edit</p>
+                </TooltipContent>
+            </Tooltip>
           </Link>
+        }
           <DeleteRoleDialog roleId={role.id} roleName={role.name} />
         </div>
       )

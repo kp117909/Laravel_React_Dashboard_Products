@@ -36,7 +36,7 @@ export default function EditRole({ permissions, role}:Props) {
 
   const submit = (e: React.FormEvent) => {
     e.preventDefault()
-    put(route('roles.update', role))
+    put(route('roles.update', role.id))
   }
 
   return (

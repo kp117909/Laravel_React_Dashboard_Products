@@ -14,12 +14,12 @@ class UpdateRoleRequest extends FormRequest
 
    public function rules(): array
     {
-
+       $role = $this->route('role');
        return [
         'name' => [
             'required',
             'string',
-            Rule::unique('roles')->ignoreModel($this->role),
+            Rule::unique('roles', 'name')->ignore($role, 'id')
         ],
         'permissions' => 'array',
         'permissions.*' => 'exists:permissions,id',

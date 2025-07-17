@@ -5,7 +5,7 @@ import { Head } from '@inertiajs/react';
 import { User } from "@/types"; // Twój typ User
 import { ArrowBigLeft } from "lucide-react";
 import { Link } from "@inertiajs/react";
-
+import { RoleBadge } from '@/components/role-badge';
 interface ShowUserProps {
   user: User;
 }
@@ -22,6 +22,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 ]
 
 export default function ShowUser({ user }: ShowUserProps) {
+        console.log(user);
   return (
     <AppLayout breadcrumbs={breadcrumbs}>
     <Head title="Users" />
@@ -43,7 +44,7 @@ export default function ShowUser({ user }: ShowUserProps) {
         </div>
         <div>
           <h3 className="font-medium text-muted-foreground">Role</h3>
-          <p>{user.role}</p>
+          <p><RoleBadge name = {user.roles[0]['name']}/></p>
         </div>
         <div>
           <h3 className="font-medium text-muted-foreground">Account created at</h3>

@@ -20,6 +20,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+
         Route::aliasMiddleware('can.redirect', HandlePermissionRedirect::class);
     }
 }

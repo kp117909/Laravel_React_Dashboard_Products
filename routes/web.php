@@ -16,8 +16,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     })->name('dashboard');
 
 
-    CrudRouteHelper::routes('users', UserController::class, 'users');
-    CrudRouteHelper::routes('roles', RoleController::class, 'roles');
+    CrudRouteHelper::routes('users', UserController::class, 'users', 'user');
+    CrudRouteHelper::routes('roles', RoleController::class, 'roles', 'role');
 
 });
 

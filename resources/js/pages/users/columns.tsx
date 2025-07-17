@@ -3,29 +3,37 @@ import { User } from "@/types/index.d"
 import { Link } from '@inertiajs/react'
 import { Button } from "@/components/ui/button"
 import { DeleteUserDialog } from "@/components/delete-user-dialog"
-import { Badge } from "@/components/ui/badge"
-import { ShieldPlus } from 'lucide-react';
+import { SquarePen, Eye  } from 'lucide-react';
+import { can } from "@/lib/can"
+import { RoleBadge } from "@/components/role-badge"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
+
 
 export const columns: ColumnDef<User, any>[] = [
   {
     accessorKey: "name",
     header: "Name",
+    filterFn: "includesString",
   },
   {
     accessorKey: "email",
     header: "Email",
+    filterFn: "includesString",
   },
   {
     accessorKey: "roles",
     header: "Role",
+    filterFn: "includesString",
     cell: ({ row }) => {
         const roles = row.original.roles as { name: string }[]
         return (
         <div className="flex flex-wrap gap-1">
             {roles.map(role => (
-            <Badge key={role.name} variant="secondary" className="bg-gray-900 text-white dark:bg-blue-100 dark:text-black">
-                <ShieldPlus /> {role.name}
-            </Badge>
+            <RoleBadge name = {role.name}/>
             ))}
         </div>
         )
@@ -41,28 +49,40 @@ export const columns: ColumnDef<User, any>[] = [
   },
 
   {
-    id: 'actions',
-    header: () => <div className="text-right mr-20">Akcje</div>,
+    id: 'Actions',
     cell: ({ row }) => {
       const user = row.original
 
       return (
         <div className="flex justify-end gap-2">
           <Link href={route('users.show', user.id)}>
-            <Button variant="default" size="sm">View</Button>
+            <Tooltip>
+                <TooltipTrigger><Button variant="outline" size ="sm"><Eye/></Button></TooltipTrigger>
+                <TooltipContent>
+                    <p>View</p>
+                </TooltipContent>
+            </Tooltip>
           </Link>
+         {can('users.edit') &&
           <Link href={route('users.edit', user.id)}>
-            <Button variant="outline" size="sm">Edit</Button>
+               <Tooltip>
+                <TooltipTrigger>
+                    <Button variant="outline" size="sm"><SquarePen/></Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                    <p>Edit</p>
+                </TooltipContent>
+            </Tooltip>
           </Link>
+         }
+         {can('users.delete') &&
           <DeleteUserDialog userId={user.id} userName={user.name} />
+         }
         </div>
       )
     },
 
     enableSorting: true,
     enableColumnFilter: true,
-    meta: {
-        className: "sticky right-0 bg-background z-10", // <== kluczowe
-    },
   },
 ]
