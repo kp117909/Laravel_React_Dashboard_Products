@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\RoleController;
+use App\Helpers\CrudRouteHelper;
 
 Route::get('/', function () {
     return Inertia::render('welcome');
@@ -14,9 +15,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
         return Inertia::render('dashboard');
     })->name('dashboard');
 
-    Route::resource('users', UserController::class);
 
-    Route::resource('roles', RoleController::class);
+    CrudRouteHelper::routes('users', UserController::class, 'users');
+    CrudRouteHelper::routes('roles', RoleController::class, 'roles');
+
 });
 
 require __DIR__.'/settings.php';
