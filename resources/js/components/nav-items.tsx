@@ -1,4 +1,4 @@
-import { LayoutGrid, Users, ShieldCheck } from 'lucide-react'
+import { LayoutGrid, Users, ShieldCheck, PackageSearch } from 'lucide-react'
 import { NavItem } from '@/types'
 
 export function getMainNavItems(permissions: string[] | undefined): NavItem[] {
@@ -15,6 +15,12 @@ export function getMainNavItems(permissions: string[] | undefined): NavItem[] {
       title: 'Users',
       href: '/users',
       icon: Users,
+    },
+
+     can('products.view') && {
+      title: 'Products',
+      href: '/products',
+      icon: PackageSearch,
     },
 
     can('roles.view') && {

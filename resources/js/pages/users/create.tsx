@@ -40,7 +40,6 @@ export default function Create({roles}: Props) {
 
   const submit = (e: React.FormEvent) => {
     e.preventDefault()
-    console.log(data.role)
     post(route('users.store'))
   }
 

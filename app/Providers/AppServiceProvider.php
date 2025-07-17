@@ -5,6 +5,10 @@ namespace App\Providers;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\HandlePermissionRedirect;
+
+use App\Models\Product;
+use App\Repositories\ProductRepository;
+
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -12,7 +16,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        $this->app->bind(ProductRepository::class, function ($app) {
+            return new ProductRepository(new Product());
+        });
     }
 
     /**

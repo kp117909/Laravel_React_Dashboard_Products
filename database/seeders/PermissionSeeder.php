@@ -18,6 +18,7 @@ class PermissionSeeder extends Seeder
             "users.edit",
             "users.create",
             "users.delete",
+            "products.view",
             "products.edit",
             "products.create",
             "products.delete",

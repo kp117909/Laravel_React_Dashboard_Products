@@ -39,7 +39,7 @@ export interface User {
     email_verified_at: string | null;
     created_at: string;
     updated_at: string;
-    role:  Role | Role[];
+    roles: array;
     [key: string]: unknown; // This allows for additional properties...
 }
 
@@ -48,6 +48,20 @@ export interface Role {
     name: string;
     permissions: [],
     guard_name: string;
+    created_at: string;
+    updated_at: string;
+}
+
+export interface Product {
+    id : number;
+    name: string;
+    description: string;
+    type: string;
+    price: number;
+    avarage_rating?: number;
+    reviews_count?: number;
+    is_available?: boolean;
+    image?: string;
     created_at: string;
     updated_at: string;
 }

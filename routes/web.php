@@ -4,7 +4,9 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\RoleController;
+use App\Http\Controllers\ProductController;
 use App\Helpers\CrudRouteHelper;
+
 
 Route::get('/', function () {
     return Inertia::render('welcome');
@@ -18,6 +20,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     CrudRouteHelper::routes('users', UserController::class, 'users', 'user');
     CrudRouteHelper::routes('roles', RoleController::class, 'roles', 'role');
+    CrudRouteHelper::routes('products', ProductController::class, 'products', 'product');
 
 });
 
