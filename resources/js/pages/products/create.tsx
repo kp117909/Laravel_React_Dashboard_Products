@@ -5,7 +5,9 @@ import { ArrowBigLeft } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import type { BreadcrumbItem } from '@/types'
 import { InputFile } from '@/components/input-file'
-
+import { Category } from '@/types'
+import CategorySelect from '@/components/category-select'
+import { CheckoxAvailableProduct } from '@/components/checkbox-available-product'
 const breadcrumbs: BreadcrumbItem[] = [
   {
     title: 'Products',
@@ -21,30 +23,28 @@ type FormData = {
   name: string
   description: string
   price: string
+  category_id: number | string
+  is_available: boolean
   image: File | null
 }
 
-export default function CreateProduct() {
+type Props = {
+    categories: Category[]
+}
+
+export default function CreateProduct({categories}: Props) {
   const { data, setData, post, processing, errors } = useForm<FormData>({
     name: '',
     description: '',
     price: '',
+    category_id: '',
+    is_available: false,
     image: null,
   })
 
   const submit = (e: React.FormEvent) => {
     e.preventDefault()
-
-    const formData = new FormData()
-    formData.append('name', data.name)
-    formData.append('description', data.description)
-    formData.append('price', data.price)
-    if (data.image) formData.append('image', data.image)
-
-    post(route('products.store'), {
-      data: formData,
-      forceFormData: true,
-    })
+    post(route('products.store'))
   }
 
   return (
@@ -98,8 +98,26 @@ export default function CreateProduct() {
             {errors.price && <div className="text-sm text-red-600 mt-1">{errors.price}</div>}
           </div>
 
+           <div>
+                <label htmlFor="category_select" className="block font-medium">
+                Category Select
+                </label>
+
+                <CategorySelect
+                    categories={categories}
+                    value={data.category_id}
+                    onChange={(value) => setData('category_id', value)}
+                    error={errors.category_id}
+                />
+            </div>
+
+
           <InputFile onFileSelect={(file) => setData('image', file)} />
 
+          <CheckoxAvailableProduct
+            checked={data.is_available}
+            onChange={(val) => setData('is_available', val)}
+           />
           <Button type="submit" disabled={processing}>
             Create Product
           </Button>

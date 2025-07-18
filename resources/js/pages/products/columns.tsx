@@ -3,13 +3,14 @@ import { Product } from "@/types/index.d"
 import { Link } from "@inertiajs/react"
 import { Button } from "@/components/ui/button"
 import { DeleteProductDialog } from "@/components/delete-product-dialog"
-import { SquarePen, Eye } from "lucide-react"
+import { SquarePen, Eye, PackageCheck, PackageMinus, Star} from "lucide-react"
 import { can } from "@/lib/can"
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
+import { Badge } from "@/components/ui/badge"
 
 export const columns: ColumnDef<Product, any>[] = [
   {
@@ -18,32 +19,47 @@ export const columns: ColumnDef<Product, any>[] = [
     filterFn: "includesString",
   },
   {
-    accessorKey: "type",
-    header: "Type",
-    filterFn: "includesString",
+    accessorKey: "category",
+    header: "Category",
+    cell: ({ row }) => {
+        const category = row.original.category;
+        return category ? category.name : "-";
+    },
   },
   {
     accessorKey: "price",
     header: "Price",
     cell: ({ row }) => {
-      const price = row.getValue("price")
-      return `${price.toFixed(2)} zł`
+      const price = Number(row.getValue("price"));
+      return <Badge>${price.toFixed(2)} zł</Badge>
     },
   },
   {
     accessorKey: "is_available",
     header: "Available",
     cell: ({ row }) => {
-      const isAvailable = row.getValue("is_available")
-      return isAvailable ? "✅" : "❌"
+    const isAvailable = row.getValue("is_available")
+    return (
+        <Tooltip>
+            <TooltipTrigger asChild>
+                {isAvailable ? <PackageCheck /> : <PackageMinus />}
+            </TooltipTrigger>
+            <TooltipContent>
+                <p>{isAvailable ? "Available" : "Not available"}</p>
+            </TooltipContent>
+        </Tooltip>
+    )
     },
   },
   {
-    accessorKey: "avarage_rating",
+    accessorKey: "average_rating",
     header: "Rating",
     cell: ({ row }) => {
-      const rating = row.getValue("avarage_rating")
-      return rating ? rating.toFixed(1) : "-"
+      const rating = Number(row.getValue("average_rating"))
+      return <Badge variant="secondary">
+     {rating ? (<>{rating.toFixed(1)}
+     <Star className="inline-block ml-1" /></>) : ("-")}
+  </Badge>
     },
   },
   {
@@ -64,15 +80,13 @@ export const columns: ColumnDef<Product, any>[] = [
   },
   {
     id: "actions",
-    header: "Actions",
     cell: ({ row }) => {
       const product = row.original
-
       return (
         <div className="flex justify-end gap-2">
           <Link href={route("products.show", product.id)}>
             <Tooltip>
-              <TooltipTrigger>
+              <TooltipTrigger asChild>
                 <Button variant="outline" size="sm">
                   <Eye />
                 </Button>
@@ -86,7 +100,7 @@ export const columns: ColumnDef<Product, any>[] = [
           {can("products.edit") && (
             <Link href={route("products.edit", product.id)}>
               <Tooltip>
-                <TooltipTrigger>
+                <TooltipTrigger asChild>
                   <Button variant="outline" size="sm">
                     <SquarePen />
                   </Button>
@@ -107,7 +121,5 @@ export const columns: ColumnDef<Product, any>[] = [
         </div>
       )
     },
-    enableSorting: false,
-    enableColumnFilter: false,
   },
 ]

@@ -14,6 +14,14 @@ class Product extends Model
         return $this->belongsTo(Category::class);
     }
 
+    public function getImageAttribute($value)
+    {
+        if ($value) {
+            return asset('storage/' . $value);
+        }
+        return asset('images/vibeshop_no_photo.png');
+    }
+
     protected $fillable = [
         'name',
         'description',

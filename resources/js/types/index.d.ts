@@ -52,13 +52,29 @@ export interface Role {
     updated_at: string;
 }
 
+
+export interface PaginatedResponse<T> {
+  current_page: number;
+  data: T[];
+  first_page_url: string;
+  from: number;
+  last_page: number;
+  last_page_url: string;
+  next_page_url: string | null;
+  path: string;
+  per_page: number;
+  prev_page_url: string | null;
+  to: number;
+  total: number;
+}
+
 export interface Product {
     id : number;
     name: string;
     description: string;
-    type: string;
+    category: Category[];
     price: number;
-    avarage_rating?: number;
+    average_rating?: number;
     reviews_count?: number;
     is_available?: boolean;
     image?: string;
@@ -69,5 +85,13 @@ export interface Product {
 export interface Permission {
     id: number;
     name: string;
+}
+
+export interface Category {
+    id: number;
+    name: string;
+    description: string;
+    created_at:string;
+    updated_at:string;
 }
 

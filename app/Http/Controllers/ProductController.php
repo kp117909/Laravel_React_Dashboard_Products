@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Repositories\ProductRepository;
 use App\Http\Requests\Product\StoreProductRequest;
 use App\Http\Requests\Product\UpdateProductRequest;
+use App\Models\Category;
 use Inertia\Inertia;
 use App\Services\ProductService;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -22,7 +23,7 @@ class ProductController extends Controller
 
     public function index()
     {
-         $products = $this->products->all();
+         $products = $this->products->allWithCategory();
          return Inertia::render('products/index', [
             'products' => $products
         ]);
@@ -42,7 +43,10 @@ class ProductController extends Controller
 
     public function create()
     {
-        return Inertia::render('products/create');
+        $categories = Category::all();
+        return Inertia::render('products/create', [
+            'categories' => $categories
+        ]);
     }
 
     public function store(StoreProductRequest $request)

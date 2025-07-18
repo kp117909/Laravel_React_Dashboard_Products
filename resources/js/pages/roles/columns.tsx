@@ -54,7 +54,7 @@ export const columns: ColumnDef<Role, any>[] = [
         {can('roles.edit') &&
           <Link href={route('roles.edit', role.id)}>
                <Tooltip>
-                <TooltipTrigger>
+                <TooltipTrigger asChild>
                     <Button variant="outline" size="sm"><SquarePen/></Button>
                 </TooltipTrigger>
                 <TooltipContent>

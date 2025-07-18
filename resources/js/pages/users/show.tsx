@@ -2,7 +2,7 @@ import AppLayout from '@/layouts/app-layout'
 import { type BreadcrumbItem } from '@/types'
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/components/ui/card";
 import { Head } from '@inertiajs/react';
-import { User } from "@/types"; // Twój typ User
+import { User } from "@/types";
 import { ArrowBigLeft } from "lucide-react";
 import { Link } from "@inertiajs/react";
 import { RoleBadge } from '@/components/role-badge';
@@ -22,7 +22,6 @@ const breadcrumbs: BreadcrumbItem[] = [
 ]
 
 export default function ShowUser({ user }: ShowUserProps) {
-        console.log(user);
   return (
     <AppLayout breadcrumbs={breadcrumbs}>
     <Head title="Users" />

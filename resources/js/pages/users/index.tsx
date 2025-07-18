@@ -18,7 +18,6 @@ interface Props {
 }
 
 export default function Index({ users }: Props) {
-
   return (
     <AppLayout breadcrumbs={breadcrumbs}>
       <Head title="Users" />

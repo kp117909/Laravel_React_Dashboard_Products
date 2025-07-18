@@ -1,9 +1,8 @@
 import { DataTable } from '@/components/ui/data-table';
 import AppLayout from '@/layouts/app-layout';
-import { type BreadcrumbItem } from '@/types';
+import { type BreadcrumbItem, PaginatedResponse, Product } from '@/types';
 import { Head, Link } from '@inertiajs/react';
-import { columns } from "@/pages/users/columns";
-import { Product } from '@/types/index.d';
+import { columns } from "@/pages/products/columns";
 import { Plus } from 'lucide-react';
 import { can } from '@/lib/can';
 const breadcrumbs: BreadcrumbItem[] = [
@@ -14,11 +13,10 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 interface Props {
-  products: Product[]
+  products: PaginatedResponse<Product>
 }
 
 export default function Index({ products }: Props) {
-
   return (
     <AppLayout breadcrumbs={breadcrumbs}>
       <Head title="Products" />
@@ -33,7 +31,7 @@ export default function Index({ products }: Props) {
             Add new product
         </Link>
         }
-        <DataTable columns={columns} data={products} />
+        <DataTable columns={columns} data={products.data} />
       </div>
     </AppLayout>
   )

@@ -20,6 +20,12 @@ class ProductRepository
         return $this->model->paginate($perPage);
     }
 
+    // Get Product with categort and pagination
+    public function allWithCategory($perPage = 15)
+    {
+        return $this->model->with('category')->paginate($perPage);
+    }
+
     // Find product by id
     public function find(int $id): ?Product
     {

@@ -22,7 +22,7 @@ type FormData = {
   email: string
   password: string
   password_confirmation: string
-  role: number;
+  role: number | string;
 }
 
 interface Props {
@@ -35,7 +35,7 @@ export default function Create({roles}: Props) {
     email: '',
     password: '',
     password_confirmation: '',
-    role: 0,
+    role: '',
   })
 
   const submit = (e: React.FormEvent) => {

@@ -4,8 +4,8 @@ import { Head, useForm } from '@inertiajs/react'
 import { Link } from '@inertiajs/react'
 import { ArrowBigLeft } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import PermissionCheckboxList from '@/components/permission-checkbox-list'
-
+import PermissionCheckboxList from '@/components/permission-checkbox-list';
+import { Permission } from '@/types'
 const breadcrumbs: BreadcrumbItem[] = [
   {
     title: 'Roles',
@@ -16,12 +16,6 @@ const breadcrumbs: BreadcrumbItem[] = [
     href: '/roles/create',
   },
 ]
-
-
-type Permission = {
-  id: number
-  name: string
-}
 
 type FormData = {
   name: string

@@ -8,10 +8,9 @@ A modern web application for managing users and e-books, built with **Laravel 12
 
 - ✅ User authentication (login, register, logout)
 - ✅ User management (create, edit, delete, assign roles)
-- ✅ Roles (admin / user) with permission system (planned: Spatie)
+- ✅ Roles (admin/user and more if you nwat) with permission system in Spatie
 - ✅ E-book management (add, view, edit, delete — in progress)
 - ✅ UI built with [shadcn/ui](https://ui.shadcn.com) & Tailwind CSS
-- ✅ Sticky actions column in tables
 - ✅ Form validation with Laravel Form Requests
 - ✅ RESTful controllers with SOLID principles
 - ✅ Modern DX: TypeScript, Laravel Starter Kit, Vite
@@ -24,5 +23,5 @@ A modern web application for managing users and e-books, built with **Laravel 12
 |----------------|------------------|----------------------|
 | Laravel 12     | React (TypeScript) | Inertia.js           |
 | Sanctum Auth   | Vite              | Tailwind CSS         |
-| MVC Pattern    | shadcn/ui         | Laravel Seeder       |
-| Eloquent ORM   | Axios             | Laravel Form Request |
+| MVC Pattern    | shadcn/ui         | ----------------     |
+| Eloquent ORM   | -----------       | ----------------  |

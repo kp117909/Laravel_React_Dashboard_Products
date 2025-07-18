@@ -19,12 +19,12 @@ import{
 } from "@/components/ui/tooltip"
 
 
-interface DeleteUserDialogProps {
-  userId: number
-  userName: string
+interface DeleteProductDialogProps {
+  productId: number
+  productName: string
 }
 
-export function DeleteUserDialog({ userId, userName }: DeleteUserDialogProps) {
+export function DeleteProductDialog({ productId, productName }: DeleteProductDialogProps) {
   return (
 <AlertDialog>
   <Tooltip>
@@ -43,13 +43,13 @@ export function DeleteUserDialog({ userId, userName }: DeleteUserDialogProps) {
   <AlertDialogContent>
     <AlertDialogHeader>
       <AlertDialogTitle>
-        Are you sure you want to delete <strong>{userName}</strong>?
+        Are you sure you want to delete <strong>{productName}</strong>?
       </AlertDialogTitle>
     </AlertDialogHeader>
     <AlertDialogFooter>
       <AlertDialogCancel>Cancel</AlertDialogCancel>
       <AlertDialogAction
-        onClick={() => router.delete(route('users.destroy', userId))}
+        onClick={() => router.delete(route('products.destroy', productId))}
       >
         Delete
       </AlertDialogAction>

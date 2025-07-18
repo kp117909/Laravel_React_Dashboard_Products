@@ -29,11 +29,11 @@ export const columns: ColumnDef<User, any>[] = [
     header: "Role",
     filterFn: "includesString",
     cell: ({ row }) => {
-        const roles = row.original.roles as { name: string }[]
+        const roles = row.original.roles as { name: string, id:number; }[]
         return (
         <div className="flex flex-wrap gap-1">
             {roles.map(role => (
-            <RoleBadge name = {role.name}/>
+            <RoleBadge key = {role.id} name = {role.name}/>
             ))}
         </div>
         )
@@ -57,7 +57,9 @@ export const columns: ColumnDef<User, any>[] = [
         <div className="flex justify-end gap-2">
           <Link href={route('users.show', user.id)}>
             <Tooltip>
-                <TooltipTrigger><Button variant="outline" size ="sm"><Eye/></Button></TooltipTrigger>
+                <TooltipTrigger asChild>
+                    <Button variant="outline" size ="sm"><Eye/></Button>
+                </TooltipTrigger>
                 <TooltipContent>
                     <p>View</p>
                 </TooltipContent>
@@ -66,7 +68,7 @@ export const columns: ColumnDef<User, any>[] = [
          {can('users.edit') &&
           <Link href={route('users.edit', user.id)}>
                <Tooltip>
-                <TooltipTrigger>
+                <TooltipTrigger asChild>
                     <Button variant="outline" size="sm"><SquarePen/></Button>
                 </TooltipTrigger>
                 <TooltipContent>

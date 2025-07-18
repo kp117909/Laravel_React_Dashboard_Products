@@ -12,7 +12,6 @@ return new class extends Migration {
             $table->foreignId('category_id')->constrained()->onDelete('cascade');
             $table->string('name');
             $table->text('description')->nullable();
-            $table->string('type');
             $table->decimal('price', 10, 2);
             $table->float('average_rating')->nullable();
             $table->unsignedInteger('reviews_count')->default(0);

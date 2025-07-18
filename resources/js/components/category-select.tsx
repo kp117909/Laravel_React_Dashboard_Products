@@ -6,29 +6,29 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 
-import { Role } from "@/types"
+import { Category } from "@/types"
 
 type Props = {
-  roles: Role[]
+  categories: Category[]
   value: number | string
   onChange: (value: number) => void
   error?: string
 }
 
-export default function RoleSelect({ roles, value, onChange, error }: Props) {
+export default function CategorySelect({ categories, value, onChange, error }: Props) {
   return (
     <div>
       <Select
         value={String(value)}
         onValueChange={(val) => onChange(Number(val))}
       >
-        <SelectTrigger>
-          <SelectValue placeholder="Select role" />
+        <SelectTrigger className={error ? "border border-red-500" : ""}>
+          <SelectValue placeholder="Select Category" />
         </SelectTrigger>
         <SelectContent>
-          {roles.map((role) => (
-            <SelectItem key={role.id} value={String(role.id)}>
-              {role.name}
+          {categories.map((category) => (
+            <SelectItem key={category.id} value={String(category.id)}>
+              {category.name}
             </SelectItem>
           ))}
         </SelectContent>
