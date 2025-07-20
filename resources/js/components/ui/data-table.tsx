@@ -27,7 +27,7 @@ import {
   DropdownMenuCheckboxItem,
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu"
-import { ArrowUpDown } from "lucide-react"
+import { ArrowUpDown, Columns2 } from "lucide-react"
 
 interface DataTableProps<T> {
   columns: ColumnDef<T, any>[]
@@ -83,7 +83,7 @@ export function DataTable<T>({ columns, data }: DataTableProps<T>) {
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" size="sm">
-              Columns
+              Columns <Columns2/>
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent className="w-48">

@@ -66,6 +66,13 @@ export interface PaginatedResponse<T> {
   prev_page_url: string | null;
   to: number;
   total: number;
+  links: Link[];
+}
+
+export interface Link{
+    active: boolean;
+    label: string;
+    url:string
 }
 
 export interface Product {

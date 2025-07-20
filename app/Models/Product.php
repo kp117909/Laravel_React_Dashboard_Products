@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 
 class Product extends Model
 {
@@ -16,7 +17,7 @@ class Product extends Model
 
     public function getImageAttribute($value)
     {
-        if ($value) {
+        if ($value && Storage::disk('public')->exists($value)) {
             return asset('storage/' . $value);
         }
         return asset('images/vibeshop_no_photo.png');

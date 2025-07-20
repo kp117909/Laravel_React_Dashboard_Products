@@ -30,7 +30,6 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 export default function ShowProduct({ product }: ShowProductProps) {
-    console.log(product.image)
   return (
     <AppLayout breadcrumbs={breadcrumbs}>
       <Head title={`Product: ${product.name}`} />

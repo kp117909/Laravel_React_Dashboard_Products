@@ -20,7 +20,7 @@ class ProductFactory extends Factory
             'average_rating' => $this->faker->optional()->randomFloat(1, 1, 5),
             'reviews_count' => $this->faker->numberBetween(0, 100),
             'is_available' => $this->faker->boolean(),
-            'image' => 'products/' . $this->faker->word() . '.png',
+            'image' => null,
             'category_id' => Category::inRandomOrder()->first()?->id ?? Category::factory(),
         ];
     }

@@ -1,10 +1,16 @@
-import { LayoutGrid, Users, ShieldCheck, PackageSearch } from 'lucide-react'
+import { LayoutGrid, Users, ShieldCheck, PackageSearch, Store  } from 'lucide-react'
 import { NavItem } from '@/types'
 
 export function getMainNavItems(permissions: string[] | undefined): NavItem[] {
   const can = (perm: string) => permissions?.includes(perm)
 
   return [
+    {
+      title: 'Shop Page',
+      href: route('home'),
+      icon: Store ,
+    },
+
     {
       title: 'Dashboard',
       href: '/dashboard',

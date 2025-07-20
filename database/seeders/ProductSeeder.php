@@ -10,6 +10,7 @@ class ProductSeeder extends Seeder
 {
     public function run()
     {
+
         // Pobierz istniejące kategorie
         $categories = Category::all();
 
@@ -61,7 +62,7 @@ class ProductSeeder extends Seeder
                 'average_rating' => $data['average_rating'],
                 'reviews_count' => $data['reviews_count'],
                 'is_available' => $data['is_available'],
-                'image' => $data['image'],
+                'image' => null,
                 'category_id' => $category->id,
             ]);
         }

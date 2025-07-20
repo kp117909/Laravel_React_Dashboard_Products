@@ -20,10 +20,13 @@ class ProductRepository
         return $this->model->paginate($perPage);
     }
 
-    // Get Product with categort and pagination
+    // Get Product with category and pagination, sorted by newest
     public function allWithCategory($perPage = 15)
     {
-        return $this->model->with('category')->paginate($perPage);
+        return $this->model
+            ->with('category')
+            ->orderBy('created_at', 'desc')
+            ->paginate($perPage);
     }
 
     // Find product by id
