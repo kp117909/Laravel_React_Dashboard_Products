@@ -2,21 +2,16 @@ import { Head, Link } from '@inertiajs/react';
 import ProductCard from '@/components/product-card';
 import {type PaginatedResponse, Product } from '@/types';
 import ProductFilters from '@/components/product-filter';
-import ShopNav from '@/components/shop-nav';
-
+import AppShopLayout from '@/layouts/app/app-navigation-layout';
+import { navItems } from '@/constants/shop-nav-items';
 interface Props {
   products: PaginatedResponse<Product>
 }
 
 export default function Welcome({ products }: Props) {
     return (
-        <>
-            <Head title="Produkty">
-                <link rel="preconnect" href="https://fonts.bunny.net" />
-                <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600" rel="stylesheet" />
-            </Head>
-            <ShopNav />
-            <div className="flex min-h-screen w-full bg-[#FDFDFC] p-6 pt-20 text-[#1b1b18] lg:justify-center lg:p-8 dark:bg-[#0a0a0a]">
+        <AppShopLayout navItem ={navItems}>
+             <div className="flex w-full gap-6 text-[#1b1b18] dark:text-[#EDEDEC]">
                 <ProductFilters />
                 <main className="flex w-full max-w-4xl flex-col items-center">
                     <h1 className="mb-6 text-2xl font-semibold">See products</h1>
@@ -41,6 +36,6 @@ export default function Welcome({ products }: Props) {
                     </div>
                 </main>
             </div>
-        </>
+        </AppShopLayout>
     );
 }

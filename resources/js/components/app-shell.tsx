@@ -4,7 +4,7 @@ import { usePage } from '@inertiajs/react';
 
 interface AppShellProps {
     children: React.ReactNode;
-    variant?: 'header' | 'sidebar';
+    variant?: 'header' | 'sidebar' | 'navigation';
 }
 
 export function AppShell({ children, variant = 'header' }: AppShellProps) {
@@ -12,6 +12,10 @@ export function AppShell({ children, variant = 'header' }: AppShellProps) {
 
     if (variant === 'header') {
         return <div className="flex min-h-screen w-full flex-col">{children}</div>;
+    }
+
+    if (variant === 'navigation') {
+        return <>{children}</>;
     }
 
     return <SidebarProvider defaultOpen={isOpen}>{children}</SidebarProvider>;

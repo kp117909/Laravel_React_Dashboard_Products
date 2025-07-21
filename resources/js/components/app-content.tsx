@@ -2,12 +2,20 @@ import { SidebarInset } from '@/components/ui/sidebar';
 import * as React from 'react';
 
 interface AppContentProps extends React.ComponentProps<'main'> {
-    variant?: 'header' | 'sidebar';
+    variant?: 'header' | 'sidebar' | 'navigation';
 }
 
 export function AppContent({ variant = 'header', children, ...props }: AppContentProps) {
     if (variant === 'sidebar') {
         return <SidebarInset {...props}>{children}</SidebarInset>;
+    }
+
+    if (variant === 'navigation') {
+        return (
+        <main className="pt-32 px-4 w-full max-w-screen-xl mx-auto" {...props}>
+            {children}
+        </main>
+        );
     }
 
     return (

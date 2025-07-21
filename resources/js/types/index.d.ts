@@ -22,6 +22,12 @@ export interface NavItem {
     isActive?: boolean;
 }
 
+export interface NavItemWithAuth extends NavItem {
+    auth?: 'auth' | 'guest';
+    method?: 'get' | 'post' | 'put' | 'delete';
+    variant?: 'primary' | 'secondary';
+}
+
 export interface SharedData {
     name: string;
     quote: { message: string; author: string };
