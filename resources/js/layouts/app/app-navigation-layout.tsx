@@ -1,13 +1,13 @@
 import { type PropsWithChildren } from 'react';
-import ShopNav from '@/components/shop-nav';
-import { NavItemWithAuth } from '@/types';
+import NavigationSheet from '@/components/shop-nav';
 import { AppShell } from '@/components/app-shell';
 import { AppContent } from '@/components/app-content';
+import { navItems } from '@/constants/shop-nav-items';
 
-export default function AppShopLayout({children, navItem = []}: PropsWithChildren<{ navItem?: NavItemWithAuth[] }>) {
+export default function AppShopLayout({children}: PropsWithChildren) {
     return (
         <AppShell variant="navigation">
-            <ShopNav navItem = {navItem} />
+            <NavigationSheet navItems = {navItems} />
             <AppContent variant="navigation">
                 {children}
             </AppContent>

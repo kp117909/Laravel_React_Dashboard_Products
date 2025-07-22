@@ -1,16 +1,15 @@
-import { Head, Link } from '@inertiajs/react';
+import { Link } from '@inertiajs/react';
 import ProductCard from '@/components/product-card';
 import {type PaginatedResponse, Product } from '@/types';
 import ProductFilters from '@/components/product-filter';
 import AppShopLayout from '@/layouts/app/app-navigation-layout';
-import { navItems } from '@/constants/shop-nav-items';
 interface Props {
   products: PaginatedResponse<Product>
 }
 
 export default function Welcome({ products }: Props) {
     return (
-        <AppShopLayout navItem ={navItems}>
+        <AppShopLayout>
              <div className="flex w-full gap-6 text-[#1b1b18] dark:text-[#EDEDEC]">
                 <ProductFilters />
                 <main className="flex w-full max-w-4xl flex-col items-center">

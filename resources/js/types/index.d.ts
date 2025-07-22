@@ -26,6 +26,7 @@ export interface NavItemWithAuth extends NavItem {
     auth?: 'auth' | 'guest';
     method?: 'get' | 'post' | 'put' | 'delete';
     variant?: 'primary' | 'secondary';
+    align?: "left" | "right";
 }
 
 export interface SharedData {
