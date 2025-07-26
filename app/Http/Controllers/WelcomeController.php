@@ -16,7 +16,7 @@ class WelcomeController extends Controller
 
     public function index()
     {
-        $products = $this->productRepository->allWithCategory(9);
+        $products = $this->productRepository->paginatePublished(['category'], 9);
         return Inertia::render('welcome', [
             'products' => $products,
         ]);

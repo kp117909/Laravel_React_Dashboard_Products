@@ -5,47 +5,57 @@ import {
   getPaginationRowModel,
   getSortedRowModel,
   getFilteredRowModel,
-} from "@tanstack/react-table"
-import { useState } from "react"
+  type ColumnDef,
+  type SortingState,
+  type ColumnFiltersState,
+  type VisibilityState
+} from "@tanstack/react-table";
+import { useState } from "react";
 import {
   Table,
   TableBody,
   TableCell,
   TableHead,
   TableHeader,
-  TableRow,
-} from "@/components/ui/table"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { ColumnDef, SortingState, ColumnFiltersState, VisibilityState } from "@tanstack/react-table"
-
+  TableRow
+} from "@/components/ui/table";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
   DropdownMenuContent,
   DropdownMenuLabel,
   DropdownMenuCheckboxItem,
-  DropdownMenuSeparator,
-} from "@/components/ui/dropdown-menu"
-import { ArrowUpDown, Columns2 } from "lucide-react"
+  DropdownMenuSeparator
+} from "@/components/ui/dropdown-menu";
+import { ArrowUpDown, Columns2 } from "lucide-react";
 
-interface DataTableProps<T> {
-  columns: ColumnDef<T, any>[]
-  data: T[]
+interface DataTableProps<TData extends object> {
+  columns: ColumnDef<TData, any>[];
+  data: TData[];
 }
 
-export function DataTable<T>({ columns, data }: DataTableProps<T>) {
-  const [sorting, setSorting] = useState<SortingState>([])
-  const [globalFilter, setGlobalFilter] = useState("")
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
-  const [gotoPage, setGotoPage] = useState("")
+export function DataTable<TData extends object>({
+  columns,
+  data
+}: DataTableProps<TData>) {
+  function getColumnId(col: ColumnDef<TData, any>): string {
+    const raw = col.id ?? ("accessorKey" in col ? col.accessorKey : "");
+    return typeof raw === "string" || typeof raw === "number" ? String(raw) : "";
+  }
+
+  const [sorting, setSorting] = useState<SortingState>([]);
+  const [globalFilter, setGlobalFilter] = useState("");
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  const [gotoPage, setGotoPage] = useState("");
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>(() =>
     columns.reduce((acc, col) => {
-      const colId = col.id ?? col.accessorKey ?? ""
-      acc[colId] = true
-      return acc
+      const colId = getColumnId(col);
+      if (colId) acc[colId] = true;
+      return acc;
     }, {} as VisibilityState)
-  )
+  );
 
   const table = useReactTable({
     data,
@@ -54,7 +64,7 @@ export function DataTable<T>({ columns, data }: DataTableProps<T>) {
       sorting,
       globalFilter,
       columnFilters,
-      columnVisibility,
+      columnVisibility
     },
     onSortingChange: setSorting,
     onGlobalFilterChange: setGlobalFilter,
@@ -64,10 +74,10 @@ export function DataTable<T>({ columns, data }: DataTableProps<T>) {
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-  })
+    getPaginationRowModel: getPaginationRowModel()
+  });
 
-  const pageCount = table.getPageCount()
+  const pageCount = table.getPageCount();
 
   return (
     <div>
@@ -75,7 +85,7 @@ export function DataTable<T>({ columns, data }: DataTableProps<T>) {
         <Input
           placeholder="Search..."
           value={globalFilter}
-          onChange={e => setGlobalFilter(e.target.value)}
+          onChange={(e) => setGlobalFilter(e.target.value)}
           className="max-w-sm"
           type="search"
         />
@@ -83,28 +93,28 @@ export function DataTable<T>({ columns, data }: DataTableProps<T>) {
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" size="sm">
-              Columns <Columns2/>
+              Columns <Columns2 className="ml-2 h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent className="w-48">
             <DropdownMenuLabel>Show / Hide Columns</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            {columns.map(col => {
-              const colId = col.id ?? col.accessorKey ?? ""
+            {columns.map((col) => {
+              const colId = getColumnId(col);
               return (
                 <DropdownMenuCheckboxItem
                   key={colId}
                   checked={!!columnVisibility[colId]}
-                  onCheckedChange={checked => {
-                    setColumnVisibility(old => ({
+                  onCheckedChange={(checked) => {
+                    setColumnVisibility((old) => ({
                       ...old,
-                      [colId]: checked,
-                    }))
+                      [colId]: checked
+                    }));
                   }}
                 >
                   {typeof col.header === "string" ? col.header : colId}
                 </DropdownMenuCheckboxItem>
-              )
+              );
             })}
           </DropdownMenuContent>
         </DropdownMenu>
@@ -113,27 +123,30 @@ export function DataTable<T>({ columns, data }: DataTableProps<T>) {
       <div className="rounded-md border">
         <Table>
           <TableHeader>
-            {table.getHeaderGroups().map(headerGroup => (
+            {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map(header => (
+                {headerGroup.headers.map((header) => (
                   <TableHead
                     key={header.id}
                     className="cursor-pointer select-none"
                     onClick={header.column.getToggleSortingHandler()}
                   >
                     {header.isPlaceholder ? null : (
-                    <span className="flex items-center gap-1">
-                        {flexRender(header.column.columnDef.header, header.getContext())}
+                      <span className="flex items-center gap-1">
+                        {flexRender(
+                          header.column.columnDef.header,
+                          header.getContext()
+                        )}
                         {header.column.getCanSort() && (
-                        <ArrowUpDown
+                          <ArrowUpDown
                             className={`h-4 w-4 transition ${
-                            header.column.getIsSorted()
+                              header.column.getIsSorted()
                                 ? "text-primary"
                                 : "text-muted-foreground"
                             }`}
-                        />
+                          />
                         )}
-                    </span>
+                      </span>
                     )}
                   </TableHead>
                 ))}
@@ -142,11 +155,14 @@ export function DataTable<T>({ columns, data }: DataTableProps<T>) {
           </TableHeader>
           <TableBody>
             {table.getRowModel().rows.length ? (
-              table.getRowModel().rows.map(row => (
+              table.getRowModel().rows.map((row) => (
                 <TableRow key={row.id}>
-                  {row.getVisibleCells().map(cell => (
+                  {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>
-                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext()
+                      )}
                     </TableCell>
                   ))}
                 </TableRow>
@@ -187,16 +203,16 @@ export function DataTable<T>({ columns, data }: DataTableProps<T>) {
               min={1}
               max={pageCount}
               value={gotoPage}
-              onChange={e => setGotoPage(e.target.value)}
+              onChange={(e) => setGotoPage(e.target.value)}
               className="w-16"
             />
             <Button
               variant="outline"
               size="sm"
               onClick={() => {
-                const page = gotoPage ? Number(gotoPage) - 1 : 0
+                const page = gotoPage ? Number(gotoPage) - 1 : 0;
                 if (page >= 0 && page < pageCount) {
-                  table.setPageIndex(page)
+                  table.setPageIndex(page);
                 }
               }}
             >
@@ -210,5 +226,5 @@ export function DataTable<T>({ columns, data }: DataTableProps<T>) {
         </div>
       </div>
     </div>
-  )
+  );
 }

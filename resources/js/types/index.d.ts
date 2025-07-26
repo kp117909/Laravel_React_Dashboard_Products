@@ -86,7 +86,7 @@ export interface Product {
     id : number;
     name: string;
     description: string;
-    category: Category[];
+    category: Category;
     price: number;
     average_rating?: number;
     reviews_count?: number;

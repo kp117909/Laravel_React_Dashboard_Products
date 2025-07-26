@@ -12,7 +12,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
-export const columns: ColumnDef<Role, any>[] = [
+export const columns: ColumnDef<Role>[] = [
   {
     accessorKey: "name",
     header: "Name",

@@ -1,4 +1,5 @@
-import { Logo, LogoImage, LogoText } from "@/components/logo";
+import { Logo, LogoImage } from "@/components/logo";
+import AppLogo from "./app-logo";
 
 interface MenuItem {
   title: string;
@@ -25,12 +26,6 @@ interface FooterShopProps {
 }
 
 const FooterShop = ({
-  logo = {
-    src:'images/vibeshop_no_photo.png',
-    alt: "Find your vibe",
-    title: "VibeShop.com",
-    url: "https://www.vibeshop.com",
-  },
   tagline = "Find your Vibe.",
   menuItems = [
     {
@@ -85,14 +80,7 @@ const FooterShop = ({
           <div className="grid grid-cols-2 gap-8 lg:grid-cols-6">
             <div className="col-span-2 mb-8 lg:mb-0">
               <div className="flex items-center gap-2 lg:justify-start">
-                <Logo url={logo.url}>
-                  <LogoImage
-                    src={logo.src}
-                    alt={logo.alt}
-                    title={logo.title}
-                    className="h-36 w-36 rounded-full"
-                  />
-                </Logo>
+                <AppLogo size = {36}/>
               </div>
               <p className="mt-4 font-bold">{tagline}</p>
             </div>

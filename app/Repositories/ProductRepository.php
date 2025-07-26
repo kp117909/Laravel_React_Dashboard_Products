@@ -63,4 +63,32 @@ class ProductRepository
         }
         return $product->delete();
     }
+    // Get all published products
+    public function allPublished(): \Illuminate\Database\Eloquent\Collection
+    {
+        return $this->model
+            ->where('is_published', true)
+            ->latest()
+            ->get();
+    }
+    // Get paginated published products with relations
+    public function paginatePublished(array $relations = [], int $perPage = 9): \Illuminate\Pagination\LengthAwarePaginator
+    {
+        return $this->model
+            ->with($relations)
+            ->where('is_published', true)
+            ->latest()
+            ->paginate($perPage);
+    }
+
+    // Find published product by id
+    public function findPublishedById(array $relations = [], int $id): ?Product
+    {
+        return $this->model->where('id', $id)
+            ->with($relations)
+            ->where('is_published', true)
+            ->first();
+    }
+
+
 }

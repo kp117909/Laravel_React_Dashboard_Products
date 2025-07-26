@@ -23,6 +23,11 @@ class Product extends Model
         return asset('images/vibeshop_no_photo.png');
     }
 
+    public function getPriceAttribute($value)
+    {
+        return round((float) $value, 2);
+    }
+
     protected $fillable = [
         'name',
         'description',
@@ -31,6 +36,7 @@ class Product extends Model
         'average_rating',
         'reviews_count',
         'is_available',
+        'is_published',
         'image',
         'category_id',
     ];
@@ -40,5 +46,6 @@ class Product extends Model
         'avarage_rating' => 'float',
         'reviews_count' => 'integer',
         'is_available' => 'boolean',
+        'is_published' => 'boolean',
     ];
 }

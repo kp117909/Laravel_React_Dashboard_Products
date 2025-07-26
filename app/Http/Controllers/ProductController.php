@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Repositories\ProductRepository;
 use App\Http\Requests\Product\StoreProductRequest;
 use App\Http\Requests\Product\UpdateProductRequest;
 use App\Models\Category;
 use Inertia\Inertia;
+use App\Repositories\ProductRepository;
 use App\Services\ProductService;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 

@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/tooltip"
 
 
-export const columns: ColumnDef<User, any>[] = [
+export const columns: ColumnDef<User>[] = [
   {
     accessorKey: "name",
     header: "Name",

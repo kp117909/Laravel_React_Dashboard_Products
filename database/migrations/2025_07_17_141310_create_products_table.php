@@ -16,6 +16,7 @@ return new class extends Migration {
             $table->float('average_rating')->nullable();
             $table->unsignedInteger('reviews_count')->default(0);
             $table->boolean('is_available')->default(true);
+            $table->boolean('is_published')->default(true);
             $table->string('image')->nullable();
             $table->timestamps();
         });

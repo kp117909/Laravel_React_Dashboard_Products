@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/tooltip"
 import { Badge } from "@/components/ui/badge"
 
-export const columns: ColumnDef<Product, any>[] = [
+export const columns: ColumnDef<Product>[] = [
   {
     accessorKey: "name",
     header: "Name",
