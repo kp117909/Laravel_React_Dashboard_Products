@@ -32,7 +32,7 @@ import {
 import { ArrowUpDown, Columns2 } from "lucide-react";
 
 interface DataTableProps<TData extends object> {
-  columns: ColumnDef<TData, any>[];
+  columns: ColumnDef<TData>[];
   data: TData[];
 }
 
@@ -40,7 +40,7 @@ export function DataTable<TData extends object>({
   columns,
   data
 }: DataTableProps<TData>) {
-  function getColumnId(col: ColumnDef<TData, any>): string {
+  function getColumnId(col: ColumnDef<TData>): string {
     const raw = col.id ?? ("accessorKey" in col ? col.accessorKey : "");
     return typeof raw === "string" || typeof raw === "number" ? String(raw) : "";
   }
