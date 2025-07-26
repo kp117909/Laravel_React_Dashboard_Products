@@ -1,61 +1,89 @@
-import React from 'react';
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { useState } from "react";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Label } from "@/components/ui/label";
+import PriceRangeSlider from "./price-range-slider";
+import SearchInput from "./search-input";
+
+const categories = ["Clothing", "Shoes", "Accessories", "Sportswear", "Outerwear", "Formal Wear", "Casual Wear"];
+const brands = ["Nike", "Adidas", "Puma", "Under Armour", "New Balance", "Levi's", "H&M", "Zara"];
+const ratings = ["4", "3", "2", "1"];
 
 export default function ProductFilters() {
-    return (
-        <aside className="w-full lg:w-72 bg-white dark:bg-[#18181b] rounded-lg shadow p-6 mb-8 lg:mb-0 lg:mr-8 mt-16 h-fit">
-            <h1 className="text-lg font-semibold mb-4 dark:text-white">Filtry</h1>
-            <form className="flex flex-col gap-3">
-                <input
-                    type="text"
-                    name="search"
-                    placeholder="Szukaj..."
-                    className="border rounded px-3 py-2 text-sm dark:bg-[#232323] dark:text-white"
-                />
-                <input
-                    type="number"
-                    name="price"
-                    placeholder="Cena max"
-                    className="border rounded px-3 py-2 text-sm dark:bg-[#232323] dark:text-white"
-                />
-                <input
-                    type="text"
-                    name="description"
-                    placeholder="Opis"
-                    className="border rounded px-3 py-2 text-sm dark:bg-[#232323] dark:text-white"
-                />
-                <input
-                    type="date"
-                    name="created_at"
-                    placeholder="Data utworzenia"
-                    className="border rounded px-3 py-2 text-sm dark:bg-[#232323] dark:text-white"
-                />
-                <input
-                    type="number"
-                    name="reviews_count"
-                    placeholder="Min. recenzji"
-                    className="border rounded px-3 py-2 text-sm dark:bg-[#232323] dark:text-white"
-                />
-                <select
-                    name="is_available"
-                    className="border rounded px-3 py-2 text-sm dark:bg-[#232323] dark:text-white"
-                >
-                    <option value="">Dostępność</option>
-                    <option value="1">Dostępny</option>
-                    <option value="0">Niedostępny</option>
-                </select>
-                <input
-                    type="number"
-                    name="category_id"
-                    placeholder="ID kategorii"
-                    className="border rounded px-3 py-2 text-sm dark:bg-[#232323] dark:text-white"
-                />
-                <button
-                    type="submit"
-                    className="bg-[#1b1b18] text-white rounded px-4 py-2 mt-2 hover:bg-[#232323] dark:bg-[#EDEDEC] dark:text-[#18181b] dark:hover:bg-[#cfcfcf]"
-                >
-                    Filtruj
-                </button>
-            </form>
-        </aside>
-    );
+  const [search, setSearch] = useState("");
+  const [price, setPrice] = useState([0, 100]);
+
+  return (
+    <div className="p-4 space-y-6 text-left">
+      <h2 className="text-xl font-bold">Shop Products</h2>
+      <h3 className="text-md font-semibold">Filters</h3>
+
+      <SearchInput value={search} onChange={setSearch} />
+      <PriceRangeSlider value={price} onChange={setPrice} />
+
+
+      <Accordion type="multiple" className="w-full space-y-2">
+
+        {/* Categories */}
+        <AccordionItem value="categories">
+          <AccordionTrigger className="text-sm font-medium">Categories</AccordionTrigger>
+          <AccordionContent className="space-y-2 pt-2">
+            {categories.map((cat) => (
+              <div key={cat} className="flex items-center space-x-2">
+                <Checkbox id={`cat-${cat}`} />
+                <Label htmlFor={`cat-${cat}`} className="text-sm">{cat}</Label>
+              </div>
+            ))}
+          </AccordionContent>
+        </AccordionItem>
+
+        {/* Brands */}
+        <AccordionItem value="brands">
+          <AccordionTrigger className="text-sm font-medium">Brands</AccordionTrigger>
+          <AccordionContent className="space-y-2 pt-2">
+            {brands.map((brand) => (
+              <div key={brand} className="flex items-center space-x-2">
+                <Checkbox id={`brand-${brand}`} />
+                <Label htmlFor={`brand-${brand}`} className="text-sm">{brand}</Label>
+              </div>
+            ))}
+          </AccordionContent>
+        </AccordionItem>
+
+        {/* Colors */}
+        <AccordionItem value="colors">
+          <AccordionTrigger className="text-sm font-medium">Colors</AccordionTrigger>
+          <AccordionContent className="pt-2 text-sm text-muted-foreground">
+            {/* Example placeholder */}
+            <p>Color pickers go here.</p>
+          </AccordionContent>
+        </AccordionItem>
+
+        {/* Sizes */}
+        <AccordionItem value="sizes">
+          <AccordionTrigger className="text-sm font-medium">Sizes</AccordionTrigger>
+          <AccordionContent className="pt-2 text-sm text-muted-foreground">
+            {/* Example placeholder */}
+            <p>Sizes filter here.</p>
+          </AccordionContent>
+        </AccordionItem>
+
+        {/* Rating */}
+        <AccordionItem value="rating">
+          <AccordionTrigger className="text-sm font-medium">Rating</AccordionTrigger>
+          <AccordionContent className="space-y-2 pt-2">
+            {ratings.map((rate) => (
+              <div key={rate} className="flex items-center space-x-2">
+                <Checkbox id={`rate-${rate}`} />
+                <Label htmlFor={`rate-${rate}`} className="text-sm">
+                  {"★".repeat(Number(rate))} & Up
+                </Label>
+              </div>
+            ))}
+          </AccordionContent>
+        </AccordionItem>
+
+      </Accordion>
+    </div>
+  );
 }

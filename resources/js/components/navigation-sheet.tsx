@@ -3,7 +3,6 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import { Menu } from "lucide-react"
 import { MobileNavMenu } from "@/components/mobile-nav-menu"
 import { NavItemWithAuth } from "@/types"
-import AppLogo from "./app-logo"
 
 interface NavigationSheetProps {
   navItems?: NavItemWithAuth[]

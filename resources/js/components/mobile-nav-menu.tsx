@@ -1,6 +1,7 @@
 import { Link } from "@inertiajs/react"
 import { type NavItemWithAuth } from "@/types"
 import { AudioLines } from "lucide-react"
+import AppearanceTabs from "./appearance-tabs"
 
 interface MobileNavMenuProps {
   navItems?: NavItemWithAuth[]
@@ -10,6 +11,7 @@ export const MobileNavMenu = ({ navItems = [] }: MobileNavMenuProps) => {
   return (
     <nav className="flex flex-col gap-4 mt-8">
       <h1 className="flex ml-2 items-center gap-2">VibeShop <AudioLines/> </h1>
+      <AppearanceTabs className = "mr-2 ml-2 flex items-center justify-center"showLabel = {false} />
       {navItems.map((item, idx) => (
         <Link
           key={idx}

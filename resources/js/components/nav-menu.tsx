@@ -7,6 +7,7 @@ import {
 import { Link } from "@inertiajs/react"
 import { type NavItemWithAuth } from "@/types"
 import { NavigationMenuProps } from "@radix-ui/react-navigation-menu"
+import AppearanceTabs from "./appearance-tabs"
 
 interface NavMenuProps extends NavigationMenuProps {
   navItems?: NavItemWithAuth[]
@@ -27,7 +28,7 @@ function getLinkClass(variant?: string) {
   return (
     <NavigationMenu {...props} className="w-full">
         <NavigationMenuList className="flex w-full items-center justify-between">
-
+            <AppearanceTabs  showLabel = {false} />
             <div className="flex items-center gap-4">
             {leftItems.map((item, idx) => (
                 <NavigationMenuItem key={`left-${idx}`}>
