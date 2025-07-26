@@ -3,6 +3,7 @@ import NavigationSheet from '@/components/shop-nav';
 import { AppShell } from '@/components/app-shell';
 import { AppContent } from '@/components/app-content';
 import { navItems } from '@/constants/shop-nav-items';
+import { Footer2 } from '@/components/footer2';
 
 export default function AppShopLayout({children}: PropsWithChildren) {
     return (

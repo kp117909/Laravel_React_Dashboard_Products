@@ -3,6 +3,7 @@ import ProductCard from '@/components/product-card';
 import { type PaginatedResponse, Product } from '@/types';
 import ProductFilters from '@/components/product-filter';
 import AppShopLayout from '@/layouts/app/app-navigation-layout';
+import {FooterShop } from '@/components/footer2';
 
 interface Props {
   products: PaginatedResponse<Product>;
@@ -48,6 +49,7 @@ export default function Welcome({ products }: Props) {
           </div>
         </main>
       </div>
+    <FooterShop/>
     </AppShopLayout>
   );
 }
