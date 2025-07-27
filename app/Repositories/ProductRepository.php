@@ -29,10 +29,12 @@ class ProductRepository
             ->paginate($perPage);
     }
 
-    // Find product by id
-    public function find(int $id): ?Product
+    // Find product by id with optional relations
+    public function find(int $id, array $with = []): ?Product
     {
-        return $this->model->find($id);
+        return $this->model
+            ->with($with)
+            ->find($id);
     }
 
     // Create new product

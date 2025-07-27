@@ -4,7 +4,7 @@ import { type BreadcrumbItem, PaginatedResponse, Product } from '@/types';
 import { Head, Link } from '@inertiajs/react';
 import { columns } from "@/pages/products/columns";
 import { Plus } from 'lucide-react';
-import { can } from '@/lib/can';
+import { useCan } from "@/lib/can";
 const breadcrumbs: BreadcrumbItem[] = [
     {
         title: 'Products',
@@ -22,7 +22,7 @@ export default function Index({ products }: Props) {
       <Head title="Products" />
       <div className="p-6 space-y-6">
         <h1 className="text-2xl font-bold">Products</h1>
-        {can('products.create') &&
+        {useCan('products.create') &&
         <Link
             href={route('products.create')}
             className="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2 text-white hover:bg-primary/90 dark:bg-gray-200 text-black dark:text-black dark:hover:bg-gray-300"

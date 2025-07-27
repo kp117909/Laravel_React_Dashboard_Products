@@ -1,17 +1,10 @@
 import { ColumnDef } from "@tanstack/react-table"
 import { Role } from "@/types/index.d"
-import { Link } from '@inertiajs/react'
-import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { DeleteRoleDialog } from "@/components/delete-role-dialog"
-import { BadgeCheckIcon, SquarePen} from "lucide-react"
-import { can } from "@/lib/can"
+import { BadgeCheckIcon,} from "lucide-react"
 
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip"
+
+import { RoleActionsCell } from "@/components/role-actions-cell"
 export const columns: ColumnDef<Role>[] = [
   {
     accessorKey: "name",
@@ -46,32 +39,12 @@ export const columns: ColumnDef<Role>[] = [
   {
     id: 'actions',
     header: () => <div className="text-right mr-13">Actions</div>,
-    cell: ({ row }) => {
-      const role = row.original
-
-      return (
-        <div className="flex justify-end gap-2">
-        {can('roles.edit') &&
-          <Link href={route('roles.edit', role.id)}>
-               <Tooltip>
-                <TooltipTrigger asChild>
-                    <Button variant="outline" size="sm"><SquarePen/></Button>
-                </TooltipTrigger>
-                <TooltipContent>
-                    <p>Edit</p>
-                </TooltipContent>
-            </Tooltip>
-          </Link>
-        }
-          <DeleteRoleDialog roleId={role.id} roleName={role.name} />
-        </div>
-      )
-    },
+    cell: ({ row }) => <RoleActionsCell role={row.original} />,
     enableSorting: true,
     enableColumnFilter: true,
     meta: {
-      className: "sticky right-0 bg-background z-10", // <== kluczowe
+        className: "sticky right-0 bg-background z-10",
     },
-  },
+  }
 ]
 

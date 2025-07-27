@@ -1,7 +1,6 @@
 import AppLogoIcon from '@/components/app-logo-icon';
 import ReturnButton from '@/components/return-button';
-import { type SharedData } from '@/types';
-import { Link, usePage } from '@inertiajs/react';
+import { Link } from '@inertiajs/react';
 import { type PropsWithChildren } from 'react';
 
 interface AuthLayoutProps {

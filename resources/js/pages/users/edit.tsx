@@ -22,11 +22,11 @@ type FormData = {
   email: string
   password: string
   password_confirmation: string
-  role: number
+  role: string
 }
 
 type Props = {
-  user: User[],
+  user: User,
   roles: Role[]
 }
 
@@ -37,7 +37,7 @@ export default function Edit({user, roles}: Props) {
     email: user.email || '',
     password: '',
     password_confirmation: '',
-    role: user.roles?.[0]?.id ?? 1,
+    role: user.roles[0]?.name || '',
   })
   const submit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -49,7 +49,7 @@ export default function Edit({user, roles}: Props) {
       <div className="p-6 space-y-6 max-w-md">
         <h1 className="text-2xl font-bold mb-4">Edit User</h1>
         <Link
-          href={route('users.index', user)}
+          href={route('users.index', user.id)}
           className="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2 text-white hover:bg-primary/90 dark:bg-gray-200 dark:text-black dark:hover:bg-gray-300 mb-6"
         >
           <ArrowBigLeft /> Back

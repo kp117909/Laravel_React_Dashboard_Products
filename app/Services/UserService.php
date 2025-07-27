@@ -14,9 +14,9 @@ class UserService
         'password' => Hash::make($data['password']),
         ]);
 
-        $roleName = Role::findOrFail($data['role'])->name;
-
-        $user->assignRole($roleName);
+        if (isset($data['role'])) {
+            $user->assignRole($data['role']);
+        }
 
         return $user;
     }
@@ -31,10 +31,12 @@ class UserService
             unset($data['password']);
         }
 
-        $roleId = $data['role'];
+        $roleName = $data['role'];
         unset($data['role']);
 
-        $roleName = Role::findOrFail($roleId)->name;
+        if (isset($roleName)) {
+            $user->assignRole($roleName);
+        }
 
         $user->update($data);
         $user->syncRoles($roleName);

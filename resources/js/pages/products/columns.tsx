@@ -1,16 +1,13 @@
 import { ColumnDef } from "@tanstack/react-table"
 import { Product } from "@/types/index.d"
-import { Link } from "@inertiajs/react"
-import { Button } from "@/components/ui/button"
-import { DeleteProductDialog } from "@/components/delete-product-dialog"
-import { SquarePen, Eye, PackageCheck, PackageMinus, Star} from "lucide-react"
-import { can } from "@/lib/can"
+import { PackageCheck, PackageMinus, Star, BookCheck, BookMinus} from "lucide-react"
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
 import { Badge } from "@/components/ui/badge"
+import { ProductActionsCell } from "@/components/product-actions-cell"
 
 export const columns: ColumnDef<Product>[] = [
   {
@@ -40,17 +37,39 @@ export const columns: ColumnDef<Product>[] = [
     cell: ({ row }) => {
     const isAvailable = row.getValue("is_available")
     return (
-        <Tooltip>
-            <TooltipTrigger asChild>
-                {isAvailable ? <PackageCheck /> : <PackageMinus />}
-            </TooltipTrigger>
-            <TooltipContent>
-                <p>{isAvailable ? "Available" : "Not available"}</p>
-            </TooltipContent>
-        </Tooltip>
+        <div className="flex ml-6">
+            <Tooltip>
+                <TooltipTrigger asChild>
+                    {isAvailable ? <PackageCheck /> : <PackageMinus />}
+                </TooltipTrigger>
+                <TooltipContent>
+                    <p>{isAvailable ? "Available" : "Not available"}</p>
+                </TooltipContent>
+            </Tooltip>
+        </div>
     )
     },
   },
+    {
+        accessorKey: "is_published",
+        header: "Published",
+        cell: ({ row }) => {
+        const isPublished = row.getValue("is_published")
+        return (
+             <div className="flex ml-6">
+                <Tooltip>
+                <TooltipTrigger asChild>
+                    {isPublished ? <BookCheck /> : <BookMinus />}
+                </TooltipTrigger>
+                <TooltipContent>
+                    <p>{isPublished ? "Published" : "Not published"}</p>
+                </TooltipContent>
+                </Tooltip>
+            </div>
+        )
+        },
+    },
+
   {
     accessorKey: "average_rating",
     header: "Rating",
@@ -80,46 +99,6 @@ export const columns: ColumnDef<Product>[] = [
   },
   {
     id: "actions",
-    cell: ({ row }) => {
-      const product = row.original
-      return (
-        <div className="flex justify-end gap-2">
-          <Link href={route("products.show", product.id)}>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button variant="outline" size="sm">
-                  <Eye />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>View</p>
-              </TooltipContent>
-            </Tooltip>
-          </Link>
-
-          {can("products.edit") && (
-            <Link href={route("products.edit", product.id)}>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button variant="outline" size="sm">
-                    <SquarePen />
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>Edit</p>
-                </TooltipContent>
-              </Tooltip>
-            </Link>
-          )}
-
-          {can("products.delete") && (
-            <DeleteProductDialog
-              productId={product.id}
-              productName={product.name}
-            />
-          )}
-        </div>
-      )
-    },
+    cell: ({ row }) => <ProductActionsCell product={row.original} />,
   },
 ]

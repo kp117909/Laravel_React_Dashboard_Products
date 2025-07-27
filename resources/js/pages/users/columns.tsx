@@ -1,16 +1,7 @@
 import { ColumnDef } from "@tanstack/react-table"
 import { User } from "@/types/index.d"
-import { Link } from '@inertiajs/react'
-import { Button } from "@/components/ui/button"
-import { DeleteUserDialog } from "@/components/delete-user-dialog"
-import { SquarePen, Eye  } from 'lucide-react';
-import { can } from "@/lib/can"
 import { RoleBadge } from "@/components/role-badge"
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip"
+import { UserActionsCell } from "@/components/user-actions-cell"
 
 
 export const columns: ColumnDef<User>[] = [
@@ -49,42 +40,9 @@ export const columns: ColumnDef<User>[] = [
   },
 
   {
-    id: 'Actions',
-    cell: ({ row }) => {
-      const user = row.original
-
-      return (
-        <div className="flex justify-end gap-2">
-          <Link href={route('users.show', user.id)}>
-            <Tooltip>
-                <TooltipTrigger asChild>
-                    <Button variant="outline" size ="sm"><Eye/></Button>
-                </TooltipTrigger>
-                <TooltipContent>
-                    <p>View</p>
-                </TooltipContent>
-            </Tooltip>
-          </Link>
-         {can('users.edit') &&
-          <Link href={route('users.edit', user.id)}>
-               <Tooltip>
-                <TooltipTrigger asChild>
-                    <Button variant="outline" size="sm"><SquarePen/></Button>
-                </TooltipTrigger>
-                <TooltipContent>
-                    <p>Edit</p>
-                </TooltipContent>
-            </Tooltip>
-          </Link>
-         }
-         {can('users.delete') &&
-          <DeleteUserDialog userId={user.id} userName={user.name} />
-         }
-        </div>
-      )
-    },
-
-    enableSorting: true,
-    enableColumnFilter: true,
-  },
+    id: "actions",
+    cell: ({ row }) => <UserActionsCell user={row.original} />,
+    enableSorting: false,
+    enableColumnFilter: false,
+  }
 ]

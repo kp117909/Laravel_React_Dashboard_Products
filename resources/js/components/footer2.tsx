@@ -1,4 +1,3 @@
-import { Logo, LogoImage } from "@/components/logo";
 import AppLogo from "./app-logo";
 
 interface MenuItem {

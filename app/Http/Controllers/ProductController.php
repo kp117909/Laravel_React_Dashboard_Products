@@ -31,7 +31,7 @@ class ProductController extends Controller
 
     public function show($id)
     {
-        $product = $this->products->find($id);
+        $product = $this->products->find($id, ['category']);
         if (!$product) {
             abort(404);
         }
@@ -52,11 +52,9 @@ class ProductController extends Controller
     public function store(StoreProductRequest $request)
     {
 
-        $product = $this->productService->createProduct($request->validated(), $request->file('image'));
+        $this->productService->createProduct($request->validated(), $request->file('image'));
 
-        return Inertia::render('products/show', [
-            'product' => $product
-        ]);
+        return redirect()->route('products.index');
     }
 
     public function update(UpdateProductRequest $request, int $id)

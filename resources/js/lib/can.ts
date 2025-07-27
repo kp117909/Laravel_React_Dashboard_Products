@@ -1,6 +1,6 @@
 import {usePage} from '@inertiajs/react'
 
-export function can(permission: string): boolean {
+export function useCan(permission: string): boolean {
     const { auth } = usePage().props as {
         auth : {
             permissions: string[];

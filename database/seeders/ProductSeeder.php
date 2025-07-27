@@ -11,7 +11,6 @@ class ProductSeeder extends Seeder
     public function run()
     {
 
-        // Pobierz istniejące kategorie
         $categories = Category::all();
 
         if ($categories->isEmpty()) {
@@ -19,7 +18,6 @@ class ProductSeeder extends Seeder
             return;
         }
 
-        // Przykładowe dane produktów
         $productsData = [
             [
                 'name' => 'Guitar',
@@ -51,10 +49,8 @@ class ProductSeeder extends Seeder
         ];
 
         foreach ($productsData as $data) {
-            // Losowo przypisz kategorię
             $category = $categories->random();
 
-            // Utwórz produkt i przypisz kategorię
             $product = Product::create([
                 'name' => $data['name'],
                 'description' => $data['description'],
@@ -67,10 +63,8 @@ class ProductSeeder extends Seeder
             ]);
         }
 
-        // Upewnij się że masz jakieś kategorie
         Category::factory(5)->create();
 
-        // Stwórz 20 produktów
         Product::factory(20)->create();
 
     }

@@ -22,7 +22,7 @@ type FormData = {
   email: string
   password: string
   password_confirmation: string
-  role: number | string;
+  role: string;
 }
 
 interface Props {

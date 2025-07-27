@@ -3,7 +3,7 @@ import { Link } from '@inertiajs/react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
-import { DollarSign, ShoppingCart, Star, Tag, CheckCircle, Eye } from 'lucide-react';
+import { DollarSign, Star, Tag, CheckCircle, Eye } from 'lucide-react';
 
 interface ProductCardProps {
   product: Product;

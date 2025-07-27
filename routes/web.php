@@ -10,8 +10,8 @@ use App\Helpers\CrudRouteHelper;
 use App\Http\Controllers\WelcomeController;
 
 Route::get('/', [WelcomeController::class, 'index'])->name('home');
-
 Route::get('/shop/products/{product}', [ShopProductController::class, 'show'])->name('shop.products.show');
+
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dashboard', function () {
         return Inertia::render('dashboard');

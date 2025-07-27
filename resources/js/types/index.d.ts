@@ -90,7 +90,8 @@ export interface Product {
     price: number;
     average_rating?: number;
     reviews_count?: number;
-    is_available?: boolean;
+    is_available: boolean;
+    is_published: boolean;
     image?: string;
     created_at: string;
     updated_at: string;

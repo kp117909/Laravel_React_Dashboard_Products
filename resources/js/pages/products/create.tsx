@@ -7,7 +7,7 @@ import type { BreadcrumbItem } from '@/types'
 import { InputFile } from '@/components/input-file'
 import { Category } from '@/types'
 import CategorySelect from '@/components/category-select'
-import { CheckoxAvailableProduct } from '@/components/checkbox-available-product'
+import { CheckboxProduct } from '@/components/checkbox-product'
 const breadcrumbs: BreadcrumbItem[] = [
   {
     title: 'Products',
@@ -25,6 +25,7 @@ type FormData = {
   price: string
   category_id: number | string
   is_available: boolean
+  is_published: boolean
   image: File | null
 }
 
@@ -39,6 +40,7 @@ export default function CreateProduct({categories}: Props) {
     price: '',
     category_id: '',
     is_available: false,
+    is_published: false,
     image: null,
   })
 
@@ -112,11 +114,21 @@ export default function CreateProduct({categories}: Props) {
             </div>
 
 
+
           <InputFile onFileSelect={(file) => setData('image', file)} />
 
-          <CheckoxAvailableProduct
+          <CheckboxProduct
+            label = 'Product available'
+            description = 'Not checked means product will be visible on dashboard but buying will be blocked.'
             checked={data.is_available}
             onChange={(val) => setData('is_available', val)}
+           />
+
+           <CheckboxProduct
+            label = 'Product published'
+            description = 'Not checked means product will not be visible on dashboard.'
+            checked={data.is_published}
+            onChange={(val) => setData('is_published', val)}
            />
           <Button type="submit" disabled={processing}>
             Create Product

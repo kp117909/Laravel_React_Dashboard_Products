@@ -24,9 +24,11 @@ class UpdateProductRequest extends FormRequest
         return [
             'name' => 'sometimes|required|string|max:255',
             'description' => 'sometimes|nullable|string',
+            'category_id' => 'sometimes|required|exists:categories,id',
             'type' => 'sometimes|required|string',
             'price' => 'sometimes|required|numeric|min:0',
             'is_available' => 'sometimes|boolean',
+            'is_published' => 'sometimes|boolean',
         ];
     }
 }

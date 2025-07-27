@@ -5,7 +5,7 @@ import { Head, Link } from '@inertiajs/react';
 import { columns } from "@/pages/users/columns";
 import { User } from '@/types/index.d';
 import { Plus } from 'lucide-react';
-import { can } from '@/lib/can';
+import { useCan } from "@/lib/can";
 const breadcrumbs: BreadcrumbItem[] = [
     {
         title: 'Users',
@@ -23,7 +23,7 @@ export default function Index({ users }: Props) {
       <Head title="Users" />
       <div className="p-6 space-y-6">
         <h1 className="text-2xl font-bold">Users</h1>
-        {can('users.create') &&
+        {useCan('users.create') &&
         <Link
             href={route('users.create')}
             className="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2 text-white hover:bg-primary/90 dark:bg-gray-200 text-black dark:text-black dark:hover:bg-gray-300"

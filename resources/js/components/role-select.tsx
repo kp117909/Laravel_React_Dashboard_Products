@@ -10,24 +10,21 @@ import { Role } from "@/types"
 
 type Props = {
   roles: Role[]
-  value: number | string
-  onChange: (value: number) => void
+  value: string
+  onChange: (value: string) => void
   error?: string
 }
 
 export default function RoleSelect({ roles, value, onChange, error }: Props) {
   return (
     <div>
-      <Select
-        value={String(value)}
-        onValueChange={(val) => onChange(Number(val))}
-      >
+      <Select value={value} onValueChange={onChange}>
         <SelectTrigger>
           <SelectValue placeholder="Select role" />
         </SelectTrigger>
         <SelectContent>
           {roles.map((role) => (
-            <SelectItem key={role.id} value={String(role.id)}>
+            <SelectItem key={role.name} value={role.name}>
               {role.name}
             </SelectItem>
           ))}
@@ -37,3 +34,4 @@ export default function RoleSelect({ roles, value, onChange, error }: Props) {
     </div>
   )
 }
+

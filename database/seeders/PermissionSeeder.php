@@ -34,22 +34,21 @@ class PermissionSeeder extends Seeder
             Permission::firstOrCreate(['name' => $value]);
         }
 
-        // Tworzenie ról
         $admin = Role::firstOrCreate(['name' => 'Admin']);
-        $manager = Role::firstOrCreate(['name' => 'Manager']);
+        $moderator = Role::firstOrCreate(['name' => 'Moderator']);
         $user = Role::firstOrCreate(['name' => 'User']);
 
-        // Przypisywanie permisji do ról
+
         $admin->givePermissionTo($permissions);
 
-        $managerPermissions = [
+        $moderatorPermissions = [
             "users.view",
             "products.view",
             "products.edit",
             "products.create",
             "products.delete",
         ];
-        $manager->givePermissionTo($managerPermissions);
+        $moderator->givePermissionTo($moderatorPermissions);
 
         $userPermissions = [
             "products.view",

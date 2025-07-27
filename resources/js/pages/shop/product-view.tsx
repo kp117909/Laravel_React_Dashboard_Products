@@ -8,7 +8,6 @@ import { Separator } from '@/components/ui/separator';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { CheckCircle, Clock, DollarSign, Star, ShoppingCart, Tag } from 'lucide-react';
 import ReturnButton from '@/components/return-button';
-import AppLogoIcon from '@/components/app-logo-icon';
 
 interface Props {
   product: Product;
