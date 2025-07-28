@@ -57,20 +57,32 @@ class ProductController extends Controller
         return redirect()->route('products.index');
     }
 
-    public function update(UpdateProductRequest $request, int $id)
+    public function edit(int $id)
     {
-        $data = $request->validated();
-
-        try {
-            $product = $this->products->update($id, $data);
-        } catch (ModelNotFoundException $e) {
-            return redirect()->route('products.index')->with('error', 'Product not found');
+        $product = $this->products->find($id, ['category']);
+        if (!$product) {
+            abort(404);
         }
 
-        return Inertia::render('products/show', [
-            'product' => $product
+        $categories = Category::all();
+
+        return Inertia::render('products/edit', [
+            'product' => $product,
+            'categories' => $categories
         ]);
     }
+
+    public function update(UpdateProductRequest $request, int $id)
+    {
+        try {
+            $this->productService->updateProduct($id, $request->validated(), $request->file('image'));
+        } catch (ModelNotFoundException $e) {
+            return redirect()->route('products.index');
+        }
+
+        return Inertia::location(route('products.index'));
+    }
+
 
     public function destroy($id)
     {

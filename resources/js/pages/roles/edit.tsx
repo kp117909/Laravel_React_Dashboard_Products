@@ -24,7 +24,7 @@ type FormData = {
 
 type Props = {
   permissions: Permission[]
-  role : Role[]
+  role : Role
 }
 
 

@@ -92,7 +92,7 @@ export interface Product {
     reviews_count?: number;
     is_available: boolean;
     is_published: boolean;
-    image?: string;
+    image?: File;
     created_at: string;
     updated_at: string;
 }

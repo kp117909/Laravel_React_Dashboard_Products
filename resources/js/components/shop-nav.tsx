@@ -17,7 +17,7 @@ export default function ShopNav({ navItems = [] }: { navItems?: NavItemWithAuth[
     <nav className="fixed top-0 inset-x-0 z-50 bg-background border-b shadow-sm">
   <div className="mx-auto flex max-w-screen-xl items-center justify-between px-4 py-3">
     <div className="flex items-center mr-4">
-      <AppLogo />
+      <AppLogo/>
     </div>
 
     {/* Desktop menu */}

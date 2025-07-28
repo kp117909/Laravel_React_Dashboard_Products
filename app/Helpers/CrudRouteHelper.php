@@ -14,7 +14,7 @@ class CrudRouteHelper
             Route::post('/', 'store')->name('store')->middleware("can.redirect:{$permissionPrefix}.create");
             Route::get("/{{$param}}", 'show')->name('show')->middleware("can.redirect:{$permissionPrefix}.view");
             Route::get("/{{$param}}/edit", 'edit')->name('edit')->middleware("can.redirect:{$permissionPrefix}.edit");
-            Route::put("/{{$param}}", 'update')->name('update')->middleware("can.redirect:{$permissionPrefix}.edit");
+            Route::match(['PUT', 'POST', 'PATCH'], "/{{$param}}", 'update')->name('update')->middleware("can.redirect:{$permissionPrefix}.edit");
             Route::delete("/{{$param}}", 'destroy')->name('destroy')->middleware("can.redirect:{$permissionPrefix}.delete");
         });
     }
