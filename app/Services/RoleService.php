@@ -33,7 +33,7 @@ class RoleService
         $role = Role::findOrFail($id);
 
         if ($role->users()->exists()) {
-            throw new \Exception("Nie można usunąć roli, która jest przypisana do użytkowników.");
+            throw new \Exception('Cannot delete role that is assigned to users.');
         }
 
         $role->delete();

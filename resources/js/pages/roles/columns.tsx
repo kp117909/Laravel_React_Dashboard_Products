@@ -1,10 +1,9 @@
 import { ColumnDef } from "@tanstack/react-table"
 import { Role } from "@/types/index.d"
 import { Badge } from "@/components/ui/badge"
-import { BadgeCheckIcon,} from "lucide-react"
-
-
+import { BadgeCheckIcon} from "lucide-react"
 import { RoleActionsCell } from "@/components/role-actions-cell"
+
 export const columns: ColumnDef<Role>[] = [
   {
     accessorKey: "name",
@@ -15,7 +14,7 @@ export const columns: ColumnDef<Role>[] = [
     header: "Permissions",
     cell: ({ row }) => {
         const permissions = row.original.permissions as { name: string }[]
-        if (!permissions || permissions.length === 0) return <span>Brak</span>
+        if (!permissions || permissions.length === 0) return <span><Badge>None</Badge></span>
 
         return (
         <div className="flex flex-wrap gap-1">

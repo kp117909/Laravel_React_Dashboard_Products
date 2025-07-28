@@ -57,8 +57,33 @@ test('authorized users can access product list', function () {
 });
 
 
+test('unathorized users cannot access role list', function () {
+    $user = User::factory()->create();
+
+    $this->actingAs($user);
+
+    $this->get('/roles')->assertRedirect('/');
+});
 
 
+test('authorized users can access role list', function () {
+    Permission::findOrCreate('roles.view');
+    $role = Role::findOrCreate('Admin');
+    $role->givePermissionTo('roles.view');
 
+    $user = User::factory()->create();
+    $user->assignRole($role);
 
+    $this->actingAs($user);
+
+    $this->get('/roles')->assertOk();
+});
+
+test('users can access shop page from dashboard', function () {
+    $user = User::factory()->create();
+
+    $this->actingAs($user);
+
+    $this->get('/')->assertOk();
+});
 
