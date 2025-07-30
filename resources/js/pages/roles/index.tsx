@@ -6,6 +6,7 @@ import { columns } from "@/pages/roles/columns";
 import { Role } from '@/types/index.d';
 import { Link } from '@inertiajs/react'
 import { Plus } from 'lucide-react'
+import { useCan } from '@/lib/can';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -25,13 +26,16 @@ export default function Index({ roles }: Props) {
       <Head title="Roles" />
       <div className="p-6 space-y-6">
         <h1 className="text-2xl font-bold">Roles</h1>
-        <Link
+        {useCan('roles.create') && (
+          <Link
             href={route('roles.create')}
             className="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2 text-white hover:bg-primary/90 dark:bg-gray-200 text-black dark:text-black dark:hover:bg-gray-300"
-            >
+          >
             <Plus className="h-4 w-4" />
             Add new role
-        </Link>
+          </Link>
+        )}
+
         <DataTable columns={columns} data={roles} />
       </div>
     </AppLayout>

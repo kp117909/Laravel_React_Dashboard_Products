@@ -3,11 +3,14 @@
 namespace App\Helpers;
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Log;
 
 class CrudRouteHelper
 {
     public static function routes(string $prefix, string $controller, string $permissionPrefix, string $param = 'id'): void
     {
+        Log::info("{$prefix} - {$controller} - {$permissionPrefix} - {$param}");
+
         Route::controller($controller)->prefix($prefix)->name("{$prefix}.")->group(function () use ($permissionPrefix, $param) {
             Route::get('/', 'index')->name('index')->middleware("can.redirect:{$permissionPrefix}.view");
             Route::get('/create', 'create')->name('create')->middleware("can.redirect:{$permissionPrefix}.create");

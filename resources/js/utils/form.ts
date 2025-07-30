@@ -1,4 +1,4 @@
-export function buildFormData(payload: Record<string, any>): FormData {
+export function buildFormData<T extends Record<string, unknown>>(payload: T): FormData {
   const formData = new FormData()
 
   Object.entries(payload).forEach(([key, value]) => {
@@ -15,3 +15,4 @@ export function buildFormData(payload: Record<string, any>): FormData {
 
   return formData
 }
+

@@ -57,9 +57,10 @@ test('authorized users can access product list', function () {
 });
 
 
-test('unathorized users cannot access role list', function () {
+test('unauthorized users cannot access role list', function () {
     $user = User::factory()->create();
-
+    $role = Role::findOrCreate('User');
+    $user->assignRole($role);
     $this->actingAs($user);
 
     $this->get('/roles')->assertRedirect('/');

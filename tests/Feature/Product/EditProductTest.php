@@ -90,3 +90,52 @@ test('unauthorized users cannot update product', function () {
         'name' => 'Updated Product',
     ]);
 });
+
+
+test('admin cannot update product with invalid data', function () {
+    Permission::findOrCreate('products.edit');
+    $role = Role::findOrCreate('Admin');
+    $role->givePermissionTo('products.edit');
+
+    $admin = User::factory()->create();
+    $admin->assignRole($role);
+
+    $product = Product::factory()->create();
+
+    $this->actingAs($admin);
+
+    $this->put(route('products.update', $product->id), [
+        'name' => '',
+        'description' => 'Updated description',
+        'price' => 89.99,
+        'reviews_count' => 0,
+        'is_available' => true,
+        'is_published' => true,
+        'category_id' => 1,
+    ]);
+
+    $this->assertDatabaseMissing('products', [
+        'id' => $product->id,
+        'name' => '',
+    ]);
+});
+
+test('quest cannot update product', function () {
+    $product = Product::factory()->create();
+
+    $response = $this->put(route('products.update', $product->id), [
+        'name' => 'Updated Product',
+        'description' => 'Updated description',
+        'price' => 89.99,
+        'reviews_count' => 0,
+        'is_available' => true,
+        'is_published' => true,
+        'category_id' => 1,
+    ]);
+
+    $response->assertRedirect('/login');
+    $this->assertDatabaseMissing('products', [
+        'id' => $product->id,
+        'name' => 'Updated Product',
+    ]);
+});

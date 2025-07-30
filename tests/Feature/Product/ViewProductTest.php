@@ -39,3 +39,12 @@ test('unauthorized users cannot view product details', function () {
 
     $response->assertRedirect('/');
 });
+
+
+test('guests cannot view product details', function () {
+    $product = Product::factory()->create();
+
+    $response = $this->get(route('products.show', $product->id));
+
+    $response->assertRedirect('/login');
+});

@@ -24,7 +24,7 @@ export default function PermissionCheckboxList({ permissions, selected, onChange
   }
 
   return (
-    <div className="grid md:grid-cols-3 gap-6">
+    <div className="grid md:grid-cols-4 gap-6">
       {Object.entries(grouped).map(([group, perms]) => (
         <div key={group}>
           <h4 className="font-semibold mb-2 capitalize">{group}</h4>

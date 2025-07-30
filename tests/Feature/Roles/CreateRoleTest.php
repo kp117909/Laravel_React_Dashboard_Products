@@ -47,7 +47,7 @@ test('admin cannot create invalid role', function () {
     $this->actingAs($admin);
 
     $response = $this->post('/roles', [
-        'name' => '', // Invalid name
+        'name' => '',
         'guard_name' => 'web',
     ]);
 
@@ -69,4 +69,43 @@ test('unauthorized user cannot create role', function () {
 });
 
 # assing permission to role do tests
+test('admin can assign permission to role', function () {
+    Permission::findOrCreate('roles.edit');
+    Permission::findOrCreate('products.view');
+    $admin = User::factory()->create();
+    $role_admin = Role::findOrCreate('Admin');
+    $role_admin->givePermissionTo('roles.edit');
+    $admin->assignRole($role_admin);
 
+    $this->actingAs($admin);
+
+    $role_moderator = Role::findOrCreate('Moderator');
+    $permissions = Permission::where('name', 'products.view')->get();
+
+    $role_moderator->syncPermissions($permissions->pluck('id')->toArray());
+
+    $this->assertDatabaseHas('role_has_permissions', [
+        'role_id' => $role_moderator->id,
+        'permission_id' => $permissions->pluck('id')->first(),
+    ]);
+});
+
+test('user cannot assign permission to role', function () {
+    $user = User::factory()->create();
+    $role = Role::findOrCreate('Moderator');
+    $permissions = Permission::where('name', 'products.view')->get();
+
+    $this->actingAs($user);
+
+    $role->syncPermissions($permissions->pluck('id')->toArray());
+
+    $this->assertDatabaseMissing('role_has_permissions', [
+        'role_id' => $role->id,
+        'permission_id' => $permissions->pluck('id')->first(),
+    ]);
+});
+
+
+test('quest cannot enter create role page', function () {
+    $this->get('/roles/create')->assertRedirect('/login');
+});

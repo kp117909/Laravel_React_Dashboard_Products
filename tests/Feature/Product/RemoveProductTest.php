@@ -34,3 +34,13 @@ test('unauthorized user cannot remove product', function () {
     $response->assertRedirect('/');
     $this->assertDatabaseHas('products', ['id' => $product->id]);
 });
+
+
+test('quest cannot remove product', function () {
+    $product = Product::factory()->create();
+
+    $response = $this->delete(route('products.destroy', $product->id));
+
+    $response->assertRedirect('/login');
+    $this->assertDatabaseHas('products', ['id' => $product->id]);
+});

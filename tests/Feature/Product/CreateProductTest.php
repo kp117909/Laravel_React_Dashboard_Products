@@ -94,3 +94,19 @@ test('user can not enter create product page', function () {
 
     $response->assertRedirect('/');
 });
+
+
+test('guest can not create product', function () {
+    $response = $this->post('/products', [
+        'name' => 'Test Product',
+        'description' => 'Test description',
+        'price' => 99.99,
+        'reviews_count' => 0,
+        'is_available' => true,
+        'is_published' => true,
+        'category_id' => 1,
+    ]);
+
+    $response->assertRedirect('/login');
+    $this->assertDatabaseMissing('products', ['name' => 'Test Product']);
+});

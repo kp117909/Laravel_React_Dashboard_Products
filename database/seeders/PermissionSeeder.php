@@ -28,6 +28,7 @@ class PermissionSeeder extends Seeder
             "roles.edit",
             "roles.create",
             "roles.delete",
+            "sync.permissions"
         ];
 
         foreach ($permissions as $value) {
