@@ -2,10 +2,11 @@ import AppLayout from '@/layouts/app-layout'
 import { type BreadcrumbItem } from '@/types'
 import { Head, useForm } from '@inertiajs/react'
 import { Link } from '@inertiajs/react'
-import { ArrowBigLeft } from 'lucide-react'
+import { ArrowBigLeft, ShieldEllipsis } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import PermissionCheckboxList from '@/components/permission-checkbox-list';
 import { Permission } from '@/types'
+import FormLayout from '@/layouts/dashboard/form-layout'
 const breadcrumbs: BreadcrumbItem[] = [
   {
     title: 'Roles',
@@ -41,7 +42,7 @@ export default function CreateRole({ permissions }:Props) {
   return (
     <AppLayout breadcrumbs={breadcrumbs}>
       <Head title="Create Role" />
-      <div className="p-6 space-y-6 max-w-md">
+      <div className="p-6 space-y-6">
         <h1 className="text-2xl font-bold mb-4">Create Role</h1>
 
         <Link
@@ -50,7 +51,7 @@ export default function CreateRole({ permissions }:Props) {
         >
           <ArrowBigLeft /> Back
         </Link>
-
+        <FormLayout title="Role Information" description="Create a new role with associated permissions" icon = {ShieldEllipsis}>
         <form onSubmit={submit} className="space-y-4">
           <div>
             <label htmlFor="name" className="block font-medium">
@@ -83,6 +84,7 @@ export default function CreateRole({ permissions }:Props) {
             Create Role
           </Button>
         </form>
+        </FormLayout>
       </div>
     </AppLayout>
   )

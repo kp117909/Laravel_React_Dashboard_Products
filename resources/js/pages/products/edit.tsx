@@ -2,7 +2,7 @@ import AppLayout from '@/layouts/app-layout'
 import { Head } from '@inertiajs/react'
 import { Inertia, type Method } from '@inertiajs/inertia'
 import { Link } from '@inertiajs/react'
-import { ArrowBigLeft } from 'lucide-react'
+import { ArrowBigLeft, PackageSearch } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import type { BreadcrumbItem, Product, Category } from '@/types'
 import { InputFile } from '@/components/input-file'
@@ -10,6 +10,7 @@ import CategorySelect from '@/components/category-select'
 import { CheckboxProduct } from '@/components/checkbox-product'
 import { useState } from 'react'
 import { buildFormData } from '@/utils/form'
+import FormLayout from '@/layouts/dashboard/form-layout'
 
 const breadcrumbs: BreadcrumbItem[] = [
   {
@@ -72,103 +73,88 @@ const EditProduct = ({ product, categories }: Props) => {
         >
           <ArrowBigLeft /> Back
         </Link>
-
-        <form onSubmit={submit} className="space-y-4">
-          <div className="md:grid md:grid-cols-2 md:gap-6">
-            <div className="md:col-span-1">
-              <div className="px-4 sm:px-0">
-                <h3 className="text-lg font-medium leading-6 dark:text-white">Product Information</h3>
-                <p className="mt-1 text-sm text-gray-400">
-                  Change the product's name, description, price and associated category
-                </p>
-              </div>
-            </div>
-            <div className="mt-5 md:mt-0 md:col-span-2">
-              <div className="shadow-md sm:rounded-md sm:overflow-hidden">
-                <div className="px-4 py-5 dark:bg-neutral-900 space-y-6 sm:p-6">
-                  <div>
-                    <label htmlFor="name" className="block font-medium">Name</label>
-                    <input
-                      id="name"
-                      type="text"
-                      value={form.name}
-                      onChange={(e) => setForm({ ...form, name: e.target.value })}
-                      className="w-full rounded border px-3 py-2"
-                    />
-                    {errors.name && <div className="text-sm text-red-600 mt-1">{errors.name}</div>}
-                  </div>
-
-                  <div>
-                    <label htmlFor="description" className="block font-medium">Description</label>
-                    <textarea
-                      id="description"
-                      value={form.description}
-                      onChange={(e) => setForm({ ...form, description: e.target.value })}
-                      className="w-full rounded border px-3 py-2"
-                    />
-                    {errors.description && <div className="text-sm text-red-600 mt-1">{errors.description}</div>}
-                  </div>
-
-                  <div>
-                    <label htmlFor="price" className="block font-medium">Price</label>
-                    <input
-                      id="price"
-                      type="number"
-                      step="0.01"
-                      value={form.price}
-                      onChange={(e) => setForm({ ...form, price: e.target.value })}
-                      className="w-full rounded border px-3 py-2"
-                    />
-                    {errors.price && <div className="text-sm text-red-600 mt-1">{errors.price}</div>}
-                  </div>
-
-                  <div>
-                    <label className="block font-medium">Category</label>
-                    <CategorySelect
-                      categories={categories}
-                      value={form.category_id}
-                      onChange={(value) => setForm({ ...form, category_id: value })}
-                      error={errors.category_id}
-                    />
-                  </div>
-
-                  {product.image && (
-                    <div>
-                      <label className="block font-medium mb-1">Current Image</label>
-                      <img
-                        src={`${product.image}`}
-                        alt={form.name}
-                        className="w-40 h-auto rounded border mb-2"
-                      />
-                    </div>
-                  )}
-                  <InputFile
-                    onFileSelect={(file) => setForm({ ...form, image: file })}
-                  />
-                  {errors.image && (<div className="text-sm text-red-600 mt-1">{errors.image}</div>)}
-
-                  <CheckboxProduct
-                    label="Product available"
-                    description="Not checked means product will be visible on dashboard but buying will be blocked."
-                    checked={form.is_available}
-                    onChange={(val) => setForm({ ...form, is_available: val })}
-                  />
-
-                  <CheckboxProduct
-                    label="Product published"
-                    description="Not checked means product will not be visible on dashboard."
-                    checked={form.is_published}
-                    onChange={(val) => setForm({ ...form, is_published: val })}
-                  />
-
-                  <Button type="submit" disabled={processing}>
-                    Update Product
-                  </Button>
+        <FormLayout title="Product information" description="Edit the product details" icon={PackageSearch}>
+            <form onSubmit={submit} className="space-y-4">
+                <div>
+                <label htmlFor="name" className="block font-medium">Name</label>
+                <input
+                    id="name"
+                    type="text"
+                    value={form.name}
+                    onChange={(e) => setForm({ ...form, name: e.target.value })}
+                    className="w-full rounded border px-3 py-2"
+                />
+                {errors.name && <div className="text-sm text-red-600 mt-1">{errors.name}</div>}
                 </div>
-              </div>
-            </div>
-          </div>
-        </form>
+
+                <div>
+                <label htmlFor="description" className="block font-medium">Description</label>
+                <textarea
+                    id="description"
+                    value={form.description}
+                    onChange={(e) => setForm({ ...form, description: e.target.value })}
+                    className="w-full rounded border px-3 py-2"
+                />
+                {errors.description && <div className="text-sm text-red-600 mt-1">{errors.description}</div>}
+                </div>
+
+                <div>
+                <label htmlFor="price" className="block font-medium">Price</label>
+                <input
+                    id="price"
+                    type="number"
+                    step="0.01"
+                    value={form.price}
+                    onChange={(e) => setForm({ ...form, price: e.target.value })}
+                    className="w-full rounded border px-3 py-2"
+                />
+                {errors.price && <div className="text-sm text-red-600 mt-1">{errors.price}</div>}
+                </div>
+
+                <div>
+                <label className="block font-medium">Category</label>
+                <CategorySelect
+                    categories={categories}
+                    value={form.category_id}
+                    onChange={(value) => setForm({ ...form, category_id: value })}
+                    error={errors.category_id}
+                />
+                </div>
+
+                {product.image && (
+                <div>
+                    <label className="block font-medium mb-1">Current Image</label>
+                    <img
+                    src={`${product.image}`}
+                    alt={form.name}
+                    className="w-40 h-auto rounded border mb-2"
+                    />
+                </div>
+                )}
+                <InputFile
+                onFileSelect={(file) => setForm({ ...form, image: file })}
+                />
+                {errors.image && (<div className="text-sm text-red-600 mt-1">{errors.image}</div>)}
+
+                <CheckboxProduct
+                label="Product available"
+                description="Not checked means product will be visible on dashboard but buying will be blocked."
+                checked={form.is_available}
+                onChange={(val) => setForm({ ...form, is_available: val })}
+                />
+
+                <CheckboxProduct
+                label="Product published"
+                description="Not checked means product will not be visible on dashboard."
+                checked={form.is_published}
+                onChange={(val) => setForm({ ...form, is_published: val })}
+                />
+
+                <Button type="submit" disabled={processing}>
+                Update Product
+                </Button>
+            </form>
+        </FormLayout>
       </div>
     </AppLayout>
   )

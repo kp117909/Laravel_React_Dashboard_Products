@@ -1,13 +1,14 @@
 import AppLayout from '@/layouts/app-layout'
 import { Head, useForm } from '@inertiajs/react'
 import { Link } from '@inertiajs/react'
-import { ArrowBigLeft } from 'lucide-react'
+import { ArrowBigLeft, Package } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import type { BreadcrumbItem } from '@/types'
 import { InputFile } from '@/components/input-file'
 import { Category } from '@/types'
 import CategorySelect from '@/components/category-select'
 import { CheckboxProduct } from '@/components/checkbox-product'
+import FormLayout from '@/layouts/dashboard/form-layout'
 const breadcrumbs: BreadcrumbItem[] = [
   {
     title: 'Products',
@@ -53,7 +54,7 @@ export default function CreateProduct({categories}: Props) {
     <AppLayout breadcrumbs={breadcrumbs}>
       <Head title="Create Product" />
 
-      <div className="p-6 space-y-6 max-w-md">
+      <div className="p-6 space-y-6">
         <h1 className="text-2xl font-bold mb-4">Create Product</h1>
 
         <Link
@@ -62,7 +63,7 @@ export default function CreateProduct({categories}: Props) {
         >
           <ArrowBigLeft /> Back
         </Link>
-
+        <FormLayout title="Product information" description="Create a new product" icon={Package}>
         <form onSubmit={submit} className="space-y-4">
           <div>
             <label htmlFor="name" className="block font-medium">Name</label>
@@ -134,6 +135,7 @@ export default function CreateProduct({categories}: Props) {
             Create Product
           </Button>
         </form>
+        </FormLayout>
       </div>
     </AppLayout>
   )
