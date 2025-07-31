@@ -36,7 +36,13 @@ export default function Index({ roles }: Props) {
           </Link>
         )}
 
-        <DataTable columns={columns} data={roles} />
+        <DataTable columns={columns} data={roles}
+        meta={{
+            current_page: roles.current_page,
+            last_page: roles.last_page,
+            per_page: roles.per_page,
+            total: roles.total,
+          }} />
       </div>
     </AppLayout>
   )

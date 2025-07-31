@@ -41,7 +41,6 @@ export default function Index({ products }: Props) {
             last_page: products.last_page,
             per_page: products.per_page,
             total: products.total,
-            links: products.links,
           }}
         />
       </div>

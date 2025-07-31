@@ -2,10 +2,12 @@ import { DataTable } from '@/components/ui/data-table';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import { Head, Link } from '@inertiajs/react';
-import { columns } from "@/pages/users/columns";
-import { User } from '@/types/index.d';
+import { getColumns } from "@/pages/users/columns";
+import { User, PaginatedResponse} from '@/types/index.d';
 import { Plus } from 'lucide-react';
 import { useCan } from "@/lib/can";
+import { useQueryParams } from '@/utils/data-table';
+
 const breadcrumbs: BreadcrumbItem[] = [
     {
         title: 'Users',
@@ -14,10 +16,11 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 interface Props {
-  users: User[]
+  users: PaginatedResponse<User>
 }
 
 export default function Index({ users }: Props) {
+  const filterParams = useQueryParams();
   return (
     <AppLayout breadcrumbs={breadcrumbs}>
       <Head title="Users" />
@@ -32,7 +35,16 @@ export default function Index({ users }: Props) {
             Add new user
         </Link>
         }
-        <DataTable columns={columns} data={users} />
+        <p className="text-sm text-muted-foreground text-gray-400">
+            You can search table by name, email and role.
+        </p>
+        <DataTable columns={getColumns(filterParams)} data={users.data}
+        meta={{
+            current_page: users.current_page,
+            last_page: users.last_page,
+            per_page: users.per_page,
+            total: users.total,
+          }} />
       </div>
     </AppLayout>
   )

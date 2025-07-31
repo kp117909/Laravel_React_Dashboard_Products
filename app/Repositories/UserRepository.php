@@ -21,11 +21,25 @@ class UserRepository
     }
 
     // Get user with roles and pagination, sorted by newest
-    public function allWithRoles($perPage = 15)
+    public function allWithRoles($perPage = 10, $search = null, array $options = [])
     {
 
-        return $this->model->latest()->with('roles')->paginate($perPage);
+        $query = $this->model->latest()->with('roles');
+        if ($search) {
+            $query->where(function ($query) use ($search) {
+                $query->where('name', 'like', "%{$search}%")
+                    ->orWhere('email', 'like', "%{$search}%")
+                    ->orWhereHas('roles', function ($query) use ($search) {
+                        $query->where('name', 'like', "%{$search}%");
+                    });
+            });
+        }
 
+        if(!empty($options['sort'] && in_array($options['sort'], ['name', 'email', 'created_at']))) {
+            $query->orderBy($options['sort'], $options['direction'] ?? 'asc');
+        }
+
+        return $query->paginate($perPage)->withQueryString();
     }
 
     // Find user by id with optional relations
