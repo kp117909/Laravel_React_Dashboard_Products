@@ -21,7 +21,7 @@ class ProductRepository
     }
 
     // Get Product with category and pagination, sorted by newest
-    public function allWithCategory($perPage = 15)
+    public function allWithCategory($perPage = 10)
     {
         return $this->model
             ->with('category')
@@ -74,7 +74,7 @@ class ProductRepository
             ->get();
     }
     // Get paginated published products with relations
-    public function paginatePublished(array $relations = [], int $perPage = 9): \Illuminate\Pagination\LengthAwarePaginator
+    public function paginatePublished(array $relations = [], int $perPage = 9)
     {
         return $this->model
             ->with($relations)

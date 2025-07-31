@@ -9,6 +9,7 @@ interface Props {
   products: PaginatedResponse<Product>;
 }
 
+
 export default function Welcome({ products }: Props) {
   return (
     <AppShopLayout>

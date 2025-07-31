@@ -7,14 +7,18 @@ use App\Models\User;
 use App\Services\UserService;
 use App\Http\Requests\User\StoreUserRequest;
 use App\Http\Requests\User\UpdateUserRequest;
+use App\Repositories\UserRepository;
 use Spatie\Permission\Models\Role;
 
 class UserController extends Controller
 {
+    protected UserRepository $users;
     protected UserService $userService;
 
-    public function __construct(UserService $userService)
+
+    public function __construct(UserService $userService, UserRepository $users)
     {
+        $this->users = $users;
         $this->userService = $userService;
     }
 
@@ -23,7 +27,7 @@ class UserController extends Controller
      */
     public function index()
     {
-        $users = User::with('roles')->get();
+        $users = $this->users->allWithRoles();
         return Inertia::render('users/index', [
             'users' => $users,
         ]);

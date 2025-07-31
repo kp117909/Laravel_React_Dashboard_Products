@@ -1,18 +1,24 @@
 <?php
 
 namespace App\Services;
-use App\Models\User;
+
+use App\Repositories\UserRepository;
 use Illuminate\Support\Facades\Hash;
-use Spatie\Permission\Models\Role;
+use App\Models\User;
+
 class UserService
 {
+    protected $userRepository;
+
+    public function __construct(UserRepository $userRepository)
+    {
+        $this->userRepository = $userRepository;
+    }
+
     public function create(array $data): User
     {
-        $user = User::create([
-        'name' => $data['name'],
-        'email' => $data['email'],
-        'password' => Hash::make($data['password']),
-        ]);
+        $data['password'] = Hash::make($data['password']);
+        $user = $this->userRepository->create($data);
 
         if (isset($data['role'])) {
             $user->assignRole($data['role']);
@@ -23,31 +29,27 @@ class UserService
 
     public function update(array $data, int $id): User
     {
-        $user = User::findOrFail($id);
-
         if (!empty($data['password'])) {
             $data['password'] = Hash::make($data['password']);
         } else {
             unset($data['password']);
         }
 
-        $roleName = $data['role'];
+        $roleName = $data['role'] ?? null;
         unset($data['role']);
 
-        if (isset($roleName)) {
-            $user->assignRole($roleName);
-        }
+        $user = $this->userRepository->update($id, $data);
 
-        $user->update($data);
-        $user->syncRoles($roleName);
+        if ($roleName) {
+            $user->syncRoles($roleName);
+        }
 
         return $user;
     }
 
     public function delete(int $id)
     {
-        $user = User::findOrFail($id);
-        $user ->delete();
-
+        $this->userRepository->delete($id);
     }
 }
+

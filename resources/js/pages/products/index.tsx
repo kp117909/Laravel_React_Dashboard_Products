@@ -13,7 +13,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 interface Props {
-  products: PaginatedResponse<Product>
+  products: PaginatedResponse<Product>;
 }
 
 export default function Index({ products }: Props) {
@@ -22,17 +22,30 @@ export default function Index({ products }: Props) {
       <Head title="Products" />
       <div className="p-6 space-y-6">
         <h1 className="text-2xl font-bold">Products</h1>
-        {useCan('products.create') &&
-        <Link
+
+        {useCan('products.create') && (
+          <Link
             href={route('products.create')}
             className="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2 text-white hover:bg-primary/90 dark:bg-gray-200 text-black dark:text-black dark:hover:bg-gray-300"
-            >
+          >
             <Plus className="h-4 w-4" />
             Add new product
-        </Link>
-        }
-        <DataTable columns={columns} data={products.data} />
+          </Link>
+        )}
+
+        <DataTable
+          columns={columns}
+          data={products.data}
+          meta={{
+            current_page: products.current_page,
+            last_page: products.last_page,
+            per_page: products.per_page,
+            total: products.total,
+            links: products.links,
+          }}
+        />
       </div>
     </AppLayout>
-  )
+  );
 }
+

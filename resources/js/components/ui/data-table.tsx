@@ -1,49 +1,33 @@
-import {
-  flexRender,
-  getCoreRowModel,
-  useReactTable,
-  getPaginationRowModel,
-  getSortedRowModel,
-  getFilteredRowModel,
-  type ColumnDef,
-  type SortingState,
-  type ColumnFiltersState,
-  type VisibilityState
-} from "@tanstack/react-table";
+import {flexRender, getCoreRowModel, useReactTable, getSortedRowModel, getFilteredRowModel,
+    type ColumnDef, type SortingState, type ColumnFiltersState, type VisibilityState} from "@tanstack/react-table";
 import { useState } from "react";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow
+import {Table, TableBody, TableCell, TableHead, TableHeader,TableRow
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import {
-  DropdownMenu,
-  DropdownMenuTrigger,
-  DropdownMenuContent,
-  DropdownMenuLabel,
-  DropdownMenuCheckboxItem,
-  DropdownMenuSeparator
+import {DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuLabel, DropdownMenuCheckboxItem, DropdownMenuSeparator
 } from "@/components/ui/dropdown-menu";
 import { ArrowUpDown, Columns2 } from "lucide-react";
+import {getColumnId, goToPage,  formatShowingRange, handlePageChange} from "@/utils/data-table";
+
+interface PaginationMeta {
+  current_page: number;
+  last_page: number;
+  per_page: number;
+  total: number;
+}
 
 interface DataTableProps<TData extends object> {
   columns: ColumnDef<TData>[];
   data: TData[];
+  meta: PaginationMeta;
 }
 
 export function DataTable<TData extends object>({
   columns,
-  data
+  data,
+  meta
 }: DataTableProps<TData>) {
-  function getColumnId(col: ColumnDef<TData>): string {
-    const raw = col.id ?? ("accessorKey" in col ? col.accessorKey : "");
-    return typeof raw === "string" || typeof raw === "number" ? String(raw) : "";
-  }
 
   const [sorting, setSorting] = useState<SortingState>([]);
   const [globalFilter, setGlobalFilter] = useState("");
@@ -74,10 +58,7 @@ export function DataTable<TData extends object>({
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
-    getPaginationRowModel: getPaginationRowModel()
   });
-
-  const pageCount = table.getPageCount();
 
   return (
     <div>
@@ -181,50 +162,52 @@ export function DataTable<TData extends object>({
           <Button
             variant="outline"
             size="sm"
-            onClick={() => table.previousPage()}
-            disabled={!table.getCanPreviousPage()}
-          >
+            onClick={() => handlePageChange(meta.current_page - 1)}
+            disabled={meta.current_page <= 1}
+            >
             Previous Page
-          </Button>
+            </Button>
 
-          <Button
+            <Button
             variant="outline"
             size="sm"
-            onClick={() => table.nextPage()}
-            disabled={!table.getCanNextPage()}
-          >
+            onClick={() => handlePageChange(meta.current_page + 1)}
+            disabled={meta.current_page >= meta.last_page}
+            >
             Next Page
-          </Button>
+        </Button>
 
           <div className="flex items-center space-x-2">
             <span>Go to page:</span>
             <Input
-              type="number"
-              min={1}
-              max={pageCount}
-              value={gotoPage}
-              onChange={(e) => setGotoPage(e.target.value)}
-              className="w-16"
+                type="number"
+                min={1}
+                max={meta.last_page}
+                value={gotoPage}
+                onChange={(e) => setGotoPage(e.target.value)}
+                className="w-20"
             />
             <Button
-              variant="outline"
-              size="sm"
-              onClick={() => {
-                const page = gotoPage ? Number(gotoPage) - 1 : 0;
-                if (page >= 0 && page < pageCount) {
-                  table.setPageIndex(page);
+                variant="outline"
+                size="sm"
+                onClick={() => {
+                const page = Number(gotoPage);
+                if (!isNaN(page)) {
+                    goToPage(page);
                 }
-              }}
+                }}
             >
-              Go
+                Go
             </Button>
-          </div>
+           </div>
 
-          <div className="ml-4">
-            Page {table.getState().pagination.pageIndex + 1} of {pageCount}
-          </div>
+
+        <div className="ml-4 text-sm text-muted-foreground">
+            {formatShowingRange(meta.current_page, meta.per_page, meta.total)}
+        </div>
         </div>
       </div>
     </div>
   );
 }
+
