@@ -4,6 +4,8 @@ namespace App\Repositories;
 
 use App\Models\User;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use App\Queries\SortableUsersQuery;
+use App\Queries\SearchUsersQuery;
 
 class UserRepository
 {
@@ -24,19 +26,15 @@ class UserRepository
     public function allWithRoles($perPage = 10, $search = null, array $options = [])
     {
 
-        $query = $this->model->latest()->with('roles');
-        if ($search) {
-            $query->where(function ($query) use ($search) {
-                $query->where('name', 'like', "%{$search}%")
-                    ->orWhere('email', 'like', "%{$search}%")
-                    ->orWhereHas('roles', function ($query) use ($search) {
-                        $query->where('name', 'like', "%{$search}%");
-                    });
-            });
-        }
+        $query = $this->model->with('roles');
+        $query = SearchUsersQuery::apply($query, $search);
 
-        if(!empty($options['sort'] && in_array($options['sort'], ['name', 'email', 'created_at']))) {
-            $query->orderBy($options['sort'], $options['direction'] ?? 'asc');
+        if (!empty($options['sort']) && is_string($options['sort'])) {
+            $query = SortableUsersQuery::apply(
+                $query,
+                $options['sort'],
+                $options['direction'] ?? 'asc'
+            );
         }
 
         return $query->paginate($perPage)->withQueryString();

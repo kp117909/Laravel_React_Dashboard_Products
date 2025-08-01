@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuLabel, DropdownMenuCheckboxItem, DropdownMenuSeparator
 } from "@/components/ui/dropdown-menu";
-import { ArrowUpDown, Columns2 } from "lucide-react";
+import { Columns2 } from "lucide-react";
 import {getColumnId,  formatShowingRange, handlePageChange, createHandleSearch, useQueryParams} from "@/utils/data-table";
 
 
@@ -36,6 +36,7 @@ export function DataTable<TData extends object>({
   // Search query to all data
   const [searchQuery, setSearchQuery] = useState(filterParams.search || "");
   const handleSearch = useMemo(() => createHandleSearch(), []);
+
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [gotoPage, setGotoPage] = useState("");

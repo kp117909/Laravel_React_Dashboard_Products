@@ -9,7 +9,7 @@ export function getColumnId<T>(col: ColumnDef<T>): string {
   return typeof raw === "string" || typeof raw === "number" ? String(raw) : "";
 }
 
-export function goToPage(page: number, extraParams: Record<string, any> = {}) {
+export function goToPage(page: number, extraParams: Record<string, unknown> = {}) {
   if (!page || page < 1) return;
   router.get(route(route().current()!), { page, ...extraParams }, { preserveState: true });
 }
@@ -22,7 +22,7 @@ export function formatShowingRange(currentPage: number, perPage: number, total: 
 
 export function handlePageChange(
   page: number,
-  currentFilters: Record<string, any> = {}
+  currentFilters: Record<string, unknown> = {}
 ) {
   router.get(route(route().current()!), { ...currentFilters, page }, {
     preserveState: true,
@@ -30,7 +30,7 @@ export function handlePageChange(
   });
 }
 
-export function createHandleSearch<T extends Record<string, any>>(delay = 500, extraParams: T = {}) {
+export function createHandleSearch<T extends Record<string, unknown>>(delay = 500, extraParams?: T) {
   return debounce((value: string) => {
     router.get(route(route().current()!), { search: value, ...extraParams }, { preserveState: true });
   }, delay);
@@ -38,7 +38,7 @@ export function createHandleSearch<T extends Record<string, any>>(delay = 500, e
 
 export function handleSort(
   column: string,
-  currentFilters: Record<string, any> = {}
+  currentFilters: Record<string, unknown> = {}
 ) {
   const isSame = currentFilters.sort === column;
   const newDirection = isSame && currentFilters.direction === "asc" ? "desc" : "asc";
