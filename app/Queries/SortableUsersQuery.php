@@ -6,11 +6,21 @@ use Illuminate\Support\Facades\DB;
 
 class SortableUsersQuery
 {
+    protected static array $sortableFields = [
+        'name',
+        'email',
+        'created_at',
+        'role_name',
+
+    ];
+
+
     public static function apply(Builder $query, string $sort, string $direction = 'asc'): Builder
     {
-        if (in_array($sort, ['name', 'email', 'created_at'])) {
-            return $query->orderBy($sort, $direction);
+        if (!in_array($sort, self::$sortableFields)) {
+            return $query;
         }
+
 
         if ($sort === 'role_name') {
             return $query->orderBy(
@@ -23,6 +33,8 @@ class SortableUsersQuery
                     ->limit(1),
                 $direction
             );
+        }else{
+            return $query->orderBy($sort, $direction);
         }
 
         return $query;

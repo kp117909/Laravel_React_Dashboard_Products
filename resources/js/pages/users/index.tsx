@@ -6,7 +6,7 @@ import { getColumns } from "@/pages/users/columns";
 import { User, PaginatedResponse} from '@/types/index.d';
 import { Plus } from 'lucide-react';
 import { useCan } from "@/lib/can";
-import { useQueryParams } from '@/utils/data-table';
+import { useQueryParams, useLinkWithFilters } from '@/utils/data-table';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -21,6 +21,7 @@ interface Props {
 
 export default function Index({ users }: Props) {
   const filterParams = useQueryParams();
+  const linkWithFilters = useLinkWithFilters();
   return (
     <AppLayout breadcrumbs={breadcrumbs}>
       <Head title="Users" />
@@ -28,7 +29,7 @@ export default function Index({ users }: Props) {
         <h1 className="text-2xl font-bold">Users</h1>
         {useCan('users.create') &&
         <Link
-            href={route('users.create')}
+            href={linkWithFilters('users.create')}
             className="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2 text-white hover:bg-primary/90 dark:bg-gray-200 text-black dark:text-black dark:hover:bg-gray-300"
             >
             <Plus className="h-4 w-4" />

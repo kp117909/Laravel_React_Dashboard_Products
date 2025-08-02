@@ -6,8 +6,12 @@ use Illuminate\Database\Eloquent\Builder;
 
 class SearchUsersQuery
 {
-       public static function apply(Builder $query, ?string $search): Builder
+    public static function apply(Builder $query, ?string $search): Builder
     {
+        if (!$search) {
+            return $query;
+        }
+
         return $query->where(function (Builder $query) use ($search) {
             $query->where('name', 'like', "%{$search}%")
                 ->orWhere('email', 'like', "%{$search}%")

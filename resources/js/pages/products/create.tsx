@@ -1,7 +1,6 @@
 import AppLayout from '@/layouts/app-layout'
 import { Head, useForm } from '@inertiajs/react'
-import { Link } from '@inertiajs/react'
-import { ArrowBigLeft, Package } from 'lucide-react'
+import { Package } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import type { BreadcrumbItem } from '@/types'
 import { InputFile } from '@/components/input-file'
@@ -9,10 +8,12 @@ import { Category } from '@/types'
 import CategorySelect from '@/components/category-select'
 import { CheckboxProduct } from '@/components/checkbox-product'
 import FormLayout from '@/layouts/dashboard/form-layout'
-const breadcrumbs: BreadcrumbItem[] = [
+import { useBackToListUrl } from '@/utils/data-table'
+import BackToListButton from '@/components/back-to-list-button'
+const breadcrumbs = (backToListUrl: string): BreadcrumbItem[] => [
   {
-    title: 'Products',
-    href: '/products',
+    title: 'Products List',
+    href: backToListUrl,
   },
   {
     title: 'Create',
@@ -31,10 +32,11 @@ type FormData = {
 }
 
 type Props = {
-    categories: Category[]
+    categories: Category
 }
 
 export default function CreateProduct({categories}: Props) {
+  const backToListUrl = useBackToListUrl('products.index');
   const { data, setData, post, processing, errors } = useForm<FormData>({
     name: '',
     description: '',
@@ -51,18 +53,15 @@ export default function CreateProduct({categories}: Props) {
   }
 
   return (
-    <AppLayout breadcrumbs={breadcrumbs}>
+    <AppLayout breadcrumbs={breadcrumbs(backToListUrl)}>
       <Head title="Create Product" />
 
       <div className="p-6 space-y-6">
-        <h1 className="text-2xl font-bold mb-4">Create Product</h1>
-
-        <Link
-          href={route('products.index')}
-          className="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2 text-white hover:bg-primary/90 dark:bg-gray-200 dark:text-black dark:hover:bg-gray-300 mb-6"
-        >
-          <ArrowBigLeft /> Back
-        </Link>
+        <BackToListButton
+            title="Craete Product"
+            backHref={backToListUrl}
+            backLabel="Return to product list"
+        />
         <FormLayout title="Product information" description="Create a new product" icon={Package}>
         <form onSubmit={submit} className="space-y-4">
           <div>

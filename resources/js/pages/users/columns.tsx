@@ -50,7 +50,7 @@ export function getColumns(filterParams: Record<string, string>): ColumnDef<User
                 </div>
             ),
             cell: ({ row }) => {
-                return row.original.roles.map((role: { name: string }) => <RoleBadge name={role.name} />)
+                return row.original.roles.map((role: { name: string }) => <RoleBadge key ={role.name} name={role.name} />)
             },
         },
         {

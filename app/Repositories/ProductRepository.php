@@ -4,6 +4,8 @@ namespace App\Repositories;
 
 use App\Models\Product;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use App\Queries\SearchProductsQuery;
+use App\Queries\SortableProductsQuery;
 
 class ProductRepository
 {
@@ -21,13 +23,24 @@ class ProductRepository
     }
 
     // Get Product with category and pagination, sorted by newest
-    public function allWithCategory($perPage = 10)
+    public function allWithCategory(int $perPage = 15, ?string $search = null, array $options = [])
     {
-        return $this->model
-            ->with('category')
-            ->orderBy('created_at', 'desc')
-            ->paginate($perPage);
+        $query = $this->model->with('category');
+
+        $query = SearchProductsQuery::apply($query, $search, $options);
+
+        if (!empty($options['sort']) && is_string($options['sort'])) {
+            $query = SortableProductsQuery::apply(
+                $query,
+                $options['sort'],
+                $options['direction'] ?? 'asc'
+            );
+        }
+
+
+        return $query->paginate($perPage)->withQueryString();
     }
+
 
     // Find product by id with optional relations
     public function find(int $id, array $with = []): ?Product

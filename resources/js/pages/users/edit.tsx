@@ -1,21 +1,20 @@
 import AppLayout from '@/layouts/app-layout'
 import { type BreadcrumbItem } from '@/types'
 import { Head, useForm } from '@inertiajs/react'
-import { Link } from '@inertiajs/react'
-import { ArrowBigLeft } from 'lucide-react'
 import { User as UserIcon } from 'lucide-react'
 import { Button } from '@/components/ui/button';
 import RoleSelect from '@/components/role-select';
 import { User, Role } from '@/types/index.d'
 import FormLayout from '@/layouts/dashboard/form-layout'
-
-const breadcrumbs: BreadcrumbItem[] = [
+import { useBackToListUrl } from '@/utils/data-table'
+import BackToListButton from '@/components/back-to-list-button'
+const breadcrumbs = (backToListUrl: string): BreadcrumbItem[] => [
   {
-    title: 'Users Edit',
-    href: '/users',
+    title: 'Users List',
+    href: backToListUrl,
   },
   {
-    title: 'Create',
+    title: 'Edit',
     href: '/users/edit',
   },
 ]
@@ -34,6 +33,8 @@ type Props = {
 }
 
 export default function Edit({ user, roles }: Props) {
+  const backToListUrl = useBackToListUrl('users.index')
+
   const { data, setData, put, processing, errors } = useForm<FormData>({
     name: user.name || '',
     email: user.email || '',
@@ -48,16 +49,14 @@ export default function Edit({ user, roles }: Props) {
   }
 
   return (
-    <AppLayout breadcrumbs={breadcrumbs}>
-      <Head title="Users Edit" />
+    <AppLayout breadcrumbs={breadcrumbs(backToListUrl)}>
+      <Head title="User Edit" />
       <div className="p-6 space-y-6">
-        <h1 className="text-2xl font-bold mb-4">Edit User</h1>
-        <Link
-          href={route('users.index', user.id)}
-          className="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2 text-white hover:bg-primary/90 dark:bg-gray-200 dark:text-black dark:hover:bg-gray-300 mb-6"
-        >
-          <ArrowBigLeft /> Back
-        </Link>
+        <BackToListButton
+            title="User Edit"
+            backHref={backToListUrl}
+            backLabel="Return to user list"
+        />
         <FormLayout title="User Information" description="Change the user's name, email, and password" icon = {UserIcon}>
             <form onSubmit={submit} className="space-y-4">
                 <div>

@@ -1,16 +1,17 @@
 import AppLayout from '@/layouts/app-layout'
 import { Role, type BreadcrumbItem } from '@/types'
 import { Head, useForm } from '@inertiajs/react'
-import { Link } from '@inertiajs/react'
-import { ArrowBigLeft, UserIcon } from 'lucide-react'
+import { UserIcon } from 'lucide-react'
 import { Button } from '@/components/ui/button';
 import RoleSelect from '@/components/role-select';
 import FormLayout from '@/layouts/dashboard/form-layout'
+import { useBackToListUrl } from '@/utils/data-table'
+import BackToListButton from '@/components/back-to-list-button'
 
-const breadcrumbs: BreadcrumbItem[] = [
+const breadcrumbs = (backToListUrl:string): BreadcrumbItem[] => [
   {
-    title: 'Users Create',
-    href: '/users',
+    title: 'Users List',
+    href: backToListUrl,
   },
   {
     title: 'Create',
@@ -39,22 +40,22 @@ export default function Create({roles}: Props) {
     role: '',
   })
 
+  const backToListUrl = useBackToListUrl('users.index')
+
   const submit = (e: React.FormEvent) => {
     e.preventDefault()
     post(route('users.store'))
   }
 
   return (
-    <AppLayout breadcrumbs={breadcrumbs}>
-      <Head title="Users Create" />
+    <AppLayout breadcrumbs={breadcrumbs(backToListUrl)}>
+      <Head title="User Create" />
       <div className="p-6 space-y-6">
-        <h1 className="text-2xl font-bold mb-4">Create User</h1>
-        <Link
-          href={route('users.index')}
-          className="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2 text-white hover:bg-primary/90 dark:bg-gray-200 dark:text-black dark:hover:bg-gray-300 mb-6"
-        >
-          <ArrowBigLeft /> Back
-        </Link>
+        <BackToListButton
+            title="User Create"
+            backHref={backToListUrl}
+            backLabel="Return to user list"
+        />
         <FormLayout title="User Information" description="Enter the user's name, email, and password" icon = {UserIcon}>
         <form onSubmit={submit} className="space-y-4">
           <div>

@@ -7,21 +7,22 @@ import {
   CardContent,
   CardFooter,
 } from '@/components/ui/card';
-import { Head, Link } from '@inertiajs/react';
+import { Head } from '@inertiajs/react';
 import { Product } from '@/types';
-import { ArrowBigLeft, BookMinus, BookPlus, PackageCheck, PackageMinus, Star } from 'lucide-react';
+import { BookMinus, BookPlus, PackageCheck, PackageMinus, Star } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
+import { useBackToListUrl } from '@/utils/data-table';
+import BackToListButton from '@/components/back-to-list-button';
 
 interface ShowProductProps {
   product: Product;
 }
 
-const breadcrumbs: BreadcrumbItem[] = [
+const breadcrumbs = (backToListUrl: string): BreadcrumbItem[] => [
   {
-    title: 'Product View',
-    href: '/products',
+    title: 'Products List',
+    href: backToListUrl,
   },
   {
     title: 'View',
@@ -30,19 +31,18 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 export default function ShowProduct({ product }: ShowProductProps) {
+  const backToListUrl = useBackToListUrl('products.index');
   return (
-    <AppLayout breadcrumbs={breadcrumbs}>
-      <Head title={`Product: ${product.name}`} />
+    <AppLayout breadcrumbs={breadcrumbs(backToListUrl)}>
+      <Head title={`Product view: ${product.name}`} />
 
       <div className="p-6 space-y-6">
-        <div className="flex items-center justify-between">
-          <h1 className="text-3xl font-bold tracking-tight">Product Details</h1>
-          <Button asChild variant="outline">
-            <Link href={route('products.index')} className="gap-2">
-              <ArrowBigLeft className="h-5 w-5" /> Return to product list
-            </Link>
-          </Button>
-        </div>
+
+        <BackToListButton
+            title="Product Details"
+            backHref={backToListUrl}
+            backLabel="Return to product list"
+        />
 
         <Card className="shadow-md">
             <CardHeader>

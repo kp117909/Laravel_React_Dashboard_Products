@@ -9,6 +9,7 @@ import {DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuLabe
 } from "@/components/ui/dropdown-menu";
 import { Columns2 } from "lucide-react";
 import {getColumnId,  formatShowingRange, handlePageChange, createHandleSearch, useQueryParams} from "@/utils/data-table";
+import CategorySelect from "../category-select";
 
 
 interface PaginationMeta {
@@ -16,6 +17,7 @@ interface PaginationMeta {
   last_page: number;
   per_page: number;
   total: number;
+  categories?: { id: number; name: string};
 }
 
 interface DataTableProps<TData extends object> {
@@ -27,7 +29,7 @@ interface DataTableProps<TData extends object> {
 export function DataTable<TData extends object>({
   columns,
   data,
-  meta
+  meta,
 }: DataTableProps<TData>) {
 
   // Save filters beetwen pages
@@ -35,7 +37,7 @@ export function DataTable<TData extends object>({
 
   // Search query to all data
   const [searchQuery, setSearchQuery] = useState(filterParams.search || "");
-  const handleSearch = useMemo(() => createHandleSearch(), []);
+  const handleSearch = useMemo(() => createHandleSearch(500, {}), []);
 
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
@@ -71,11 +73,18 @@ export function DataTable<TData extends object>({
             value={searchQuery}
             onChange={(e) => {
                 setSearchQuery(e.target.value);
-                handleSearch(e.target.value);
+                    handleSearch(e.target.value, { category_id: filterParams.category_id });
             }}
             className="max-w-sm"
             type="search"
         />
+        {meta.categories && (
+            <CategorySelect
+            categories={meta.categories}
+            value={filterParams.category_id || ""}
+            onChange={(val) => handleSearch(searchQuery, { ...filterParams, category_id: val })}
+            />
+        )}
 
         <DropdownMenu>
           <DropdownMenuTrigger asChild>

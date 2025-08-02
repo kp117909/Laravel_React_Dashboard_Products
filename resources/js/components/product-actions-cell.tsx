@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
 import { SquarePen, Eye } from "lucide-react"
 import { DeleteProductDialog } from "@/components/delete-product-dialog"
+import { useLinkWithFilters } from "@/utils/data-table"
 
 type Props = {
   product: Product
@@ -14,10 +15,10 @@ type Props = {
 export function ProductActionsCell({ product }: Props) {
   const canEdit = useCan("products.edit")
   const canDelete = useCan("products.delete")
-
+  const linkWithFilters = useLinkWithFilters()
   return (
     <div className="flex justify-end gap-2">
-      <Link href={route("products.show", product.id)}>
+      <Link href={linkWithFilters("products.show", product.id)}>
         <Tooltip>
           <TooltipTrigger asChild>
             <Button variant="outline" size="sm">
@@ -31,7 +32,7 @@ export function ProductActionsCell({ product }: Props) {
       </Link>
 
       {canEdit && (
-        <Link href={route("products.edit", product.id)}>
+        <Link href={linkWithFilters("products.edit", product.id)}>
           <Tooltip>
             <TooltipTrigger asChild>
               <Button variant="outline" size="sm">

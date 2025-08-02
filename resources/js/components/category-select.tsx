@@ -9,7 +9,7 @@ import {
 import { Category } from "@/types"
 
 type Props = {
-  categories: Category[]
+  categories: Category
   value: number | string
   onChange: (value: number) => void
   error?: string
@@ -26,7 +26,7 @@ export default function CategorySelect({ categories, value, onChange, error }: P
           <SelectValue placeholder="Select Category" />
         </SelectTrigger>
         <SelectContent>
-          {categories.map((category) => (
+          {categories.map((category: Category) => (
             <SelectItem key={category.id} value={String(category.id)}>
               {category.name}
             </SelectItem>

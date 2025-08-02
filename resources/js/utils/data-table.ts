@@ -3,6 +3,7 @@ import { router } from "@inertiajs/react";
 import { ColumnDef } from "@tanstack/react-table";
 import { useMemo } from 'react';
 import debounce from "lodash/debounce";
+import type { FormDataConvertible } from '@inertiajs/core';
 
 export function getColumnId<T>(col: ColumnDef<T>): string {
   const raw = col.id ?? ("accessorKey" in col ? col.accessorKey : "");
@@ -30,11 +31,23 @@ export function handlePageChange(
   });
 }
 
-export function createHandleSearch<T extends Record<string, unknown>>(delay = 500, extraParams?: T) {
-  return debounce((value: string) => {
-    router.get(route(route().current()!), { search: value, ...extraParams }, { preserveState: true });
+export function createHandleSearch<T extends Record<string, FormDataConvertible>>(delay = 500) {
+  return debounce((value: string, extraParams: T = {} as T) => {
+    const url = new URL(window.location.href);
+    const currentParams = Object.fromEntries(new URLSearchParams(url.search).entries()) as T;
+
+    const mergedParams = {
+      ...currentParams,
+      ...extraParams,
+      search: value,
+    };
+
+    router.get(route(route().current()!), mergedParams, {
+      preserveState: true,
+    });
   }, delay);
 }
+
 
 export function handleSort(
   column: string,
@@ -61,3 +74,29 @@ export function useQueryParams(): Record<string, string> {
     return Object.fromEntries(new URLSearchParams(query).entries());
   }, [url]);
 }
+
+export function useBackToListUrl(indexRouteName: string) {
+  const params = useQueryParams();
+  const searchParams = new URLSearchParams(params).toString();
+  return `${route(indexRouteName)}${searchParams ? "?" + searchParams : ""}`;
+}
+
+
+export function useLinkWithFilters() {
+  const filterParams = useQueryParams();
+
+  return function generateUrl(
+    routeName: string,
+    routeParams: string | number | Record<string, unknown> = {}
+  ) {
+    const normalizedParams =
+      typeof routeParams === 'string' || typeof routeParams === 'number'
+        ? { id: routeParams }
+        : routeParams;
+
+    const baseUrl = route(routeName, normalizedParams);
+    const query = new URLSearchParams(filterParams).toString();
+    return `${baseUrl}${query ? `?${query}` : ''}`;
+  };
+}
+

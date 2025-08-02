@@ -1,10 +1,11 @@
 import { DataTable } from '@/components/ui/data-table';
 import AppLayout from '@/layouts/app-layout';
-import { type BreadcrumbItem, PaginatedResponse, Product } from '@/types';
+import { type BreadcrumbItem, Category, PaginatedResponse, Product } from '@/types';
 import { Head, Link } from '@inertiajs/react';
-import { columns } from "@/pages/products/columns";
+import { getColumns } from "@/pages/products/columns";
 import { Plus } from 'lucide-react';
 import { useCan } from "@/lib/can";
+import { useLinkWithFilters, useQueryParams } from '@/utils/data-table';
 const breadcrumbs: BreadcrumbItem[] = [
     {
         title: 'Products',
@@ -14,9 +15,12 @@ const breadcrumbs: BreadcrumbItem[] = [
 
 interface Props {
   products: PaginatedResponse<Product>;
+  categories: Category;
 }
 
-export default function Index({ products }: Props) {
+export default function Index({ products, categories }: Props) {
+  const filterParams = useQueryParams();
+  const linkWithFilters = useLinkWithFilters();
   return (
     <AppLayout breadcrumbs={breadcrumbs}>
       <Head title="Products" />
@@ -25,22 +29,22 @@ export default function Index({ products }: Props) {
 
         {useCan('products.create') && (
           <Link
-            href={route('products.create')}
+            href={linkWithFilters('products.create')}
             className="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2 text-white hover:bg-primary/90 dark:bg-gray-200 text-black dark:text-black dark:hover:bg-gray-300"
           >
             <Plus className="h-4 w-4" />
             Add new product
           </Link>
         )}
-
         <DataTable
-          columns={columns}
+          columns={getColumns(filterParams)}
           data={products.data}
           meta={{
             current_page: products.current_page,
             last_page: products.last_page,
             per_page: products.per_page,
             total: products.total,
+            categories: categories,
           }}
         />
       </div>

@@ -1,8 +1,6 @@
 import AppLayout from '@/layouts/app-layout'
-import { Head } from '@inertiajs/react'
 import { Inertia, type Method } from '@inertiajs/inertia'
-import { Link } from '@inertiajs/react'
-import { ArrowBigLeft, PackageSearch } from 'lucide-react'
+import { PackageSearch } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import type { BreadcrumbItem, Product, Category } from '@/types'
 import { InputFile } from '@/components/input-file'
@@ -11,11 +9,14 @@ import { CheckboxProduct } from '@/components/checkbox-product'
 import { useState } from 'react'
 import { buildFormData } from '@/utils/form'
 import FormLayout from '@/layouts/dashboard/form-layout'
+import { useBackToListUrl } from '@/utils/data-table'
+import BackToListButton from '@/components/back-to-list-button'
+import { Head } from '@inertiajs/react'
 
-const breadcrumbs: BreadcrumbItem[] = [
+const breadcrumbs = (backToListUrl: string): BreadcrumbItem[] => [
   {
-    title: 'Products',
-    href: '/products',
+    title: 'Products List',
+    href: backToListUrl,
   },
   {
     title: 'Edit',
@@ -25,7 +26,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 
 type Props = {
   product: Product
-  categories: Category[]
+  categories: Category
 }
 const EditProduct = ({ product, categories }: Props) => {
   const [form, setForm] = useState({
@@ -40,7 +41,7 @@ const EditProduct = ({ product, categories }: Props) => {
 
   const [errors, setErrors] = useState<Record<string, string>>({})
   const [processing, setProcessing] = useState(false)
-
+  const backToListUrl = useBackToListUrl('products.index')
   const submit = (e: React.FormEvent) => {
     e.preventDefault()
     setProcessing(true)
@@ -61,18 +62,14 @@ const EditProduct = ({ product, categories }: Props) => {
   }
 
   return (
-    <AppLayout breadcrumbs={breadcrumbs}>
+    <AppLayout breadcrumbs={breadcrumbs(backToListUrl)}>
       <Head title="Edit Product" />
-
       <div className="p-6 space-y-6">
-        <h1 className="text-2xl font-bold mb-4">Edit Product</h1>
-
-        <Link
-          href={route('products.index')}
-          className="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2 text-white hover:bg-primary/90 dark:bg-gray-200 dark:text-black dark:hover:bg-gray-300 mb-6"
-        >
-          <ArrowBigLeft /> Back
-        </Link>
+        <BackToListButton
+            title="Edit Product"
+            backHref={backToListUrl}
+            backLabel="Return to product list"
+        />
         <FormLayout title="Product information" description="Edit the product details" icon={PackageSearch}>
             <form onSubmit={submit} className="space-y-4">
                 <div>

@@ -7,25 +7,41 @@ use App\Http\Requests\Product\UpdateProductRequest;
 use App\Models\Category;
 use Inertia\Inertia;
 use App\Repositories\ProductRepository;
+use App\Repositories\CategoryRepository;
 use App\Services\ProductService;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
     protected ProductRepository $products;
     protected ProductService $productService;
+    protected CategoryRepository $categories;
 
-    public function __construct(ProductRepository $products, ProductService $productService)
+    public function __construct(ProductRepository $products, ProductService $productService, CategoryRepository $categories)
     {
         $this->products = $products;
         $this->productService = $productService;
+        $this->categories = $categories;
     }
 
-    public function index()
+    public function index(Request $request)
     {
-         $products = $this->products->allWithCategory();
+
+        $search = $request->input('search');
+        $sort = $request->input('sort', 'created_at');
+        $direction = $request->input('direction', 'desc');
+        $category_id = $request->input('category_id');
+
+        $products = $this->products->allWithCategory(10, $search,[
+            'sort'  => $sort,
+            'direction' => $direction,
+            'category_id' => $category_id,
+        ]);
+
          return Inertia::render('products/index', [
-            'products' => $products
+            'products' => $products,
+            'categories' => $this->categories->listToFilter(),
         ]);
     }
 
