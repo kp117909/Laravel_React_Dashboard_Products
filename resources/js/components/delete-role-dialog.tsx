@@ -16,7 +16,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
-
+import { useLinkWithFilters } from "@/utils/data-table";
 
 interface DeleteRoleDialogProps {
   roleId: number
@@ -24,6 +24,7 @@ interface DeleteRoleDialogProps {
 }
 
 export function DeleteRoleDialog({ roleId, roleName }: DeleteRoleDialogProps) {
+  const linkWithFilters = useLinkWithFilters()
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
@@ -49,7 +50,7 @@ export function DeleteRoleDialog({ roleId, roleName }: DeleteRoleDialogProps) {
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>
           <AlertDialogAction
-            onClick={() => router.delete(route('roles.destroy', roleId))}
+            onClick={() => router.delete(linkWithFilters('roles.destroy', roleId))}
           >
             Delete
           </AlertDialogAction>

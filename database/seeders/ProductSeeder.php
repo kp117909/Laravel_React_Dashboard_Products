@@ -115,7 +115,7 @@ class ProductSeeder extends Seeder
         foreach ($productsData as $data) {
             $category = $categories->random();
 
-            $product = Product::create([
+            Product::create([
                 'name' => $data['name'],
                 'description' => $data['description'],
                 'price' => $data['price'],

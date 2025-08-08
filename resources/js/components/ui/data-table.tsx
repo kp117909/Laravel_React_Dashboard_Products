@@ -7,9 +7,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuLabel, DropdownMenuCheckboxItem, DropdownMenuSeparator
 } from "@/components/ui/dropdown-menu";
-import { Columns2 } from "lucide-react";
+import { Columns2, X } from "lucide-react";
 import {getColumnId,  formatShowingRange, handlePageChange, createHandleSearch, useQueryParams} from "@/utils/data-table";
 import CategorySelect from "../category-select";
+import { Link } from "@inertiajs/react";
 
 
 interface PaginationMeta {
@@ -17,7 +18,7 @@ interface PaginationMeta {
   last_page: number;
   per_page: number;
   total: number;
-  categories?: { id: number; name: string};
+  categories?: { id: number; name: string}[];
 }
 
 interface DataTableProps<TData extends object> {
@@ -37,7 +38,7 @@ export function DataTable<TData extends object>({
 
   // Search query to all data
   const [searchQuery, setSearchQuery] = useState(filterParams.search || "");
-  const handleSearch = useMemo(() => createHandleSearch(500, {}), []);
+  const handleSearch = useMemo(() => createHandleSearch(250), []);
 
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
@@ -84,6 +85,17 @@ export function DataTable<TData extends object>({
             value={filterParams.category_id || ""}
             onChange={(val) => handleSearch(searchQuery, { ...filterParams, category_id: val })}
             />
+        )}
+        {Object.keys(filterParams).length > 0 && !Object.keys(filterParams).every((key) => key === "page") && (
+        <div className="flex items-center gap-2">
+            <Link
+                href={route("roles.index", { ...{}, page: 1 })}
+                className="flex items-center gap-1 text-sm text-primary hover:text-primary/90 dark:text-gray-300 dark:hover:text-gray-300"
+            >
+                <X className="h-4 w-4" />
+                Clear filters
+            </Link>
+        </div>
         )}
 
         <DropdownMenu>

@@ -6,11 +6,12 @@ import { ArrowBigLeft, ShieldEllipsis } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import PermissionCheckboxList from '@/components/permission-checkbox-list'
 import FormLayout from '@/layouts/dashboard/form-layout'
+import { useBackToListUrl } from '@/utils/data-table'
 
-const breadcrumbs: BreadcrumbItem[] = [
+const breadcrumbs = (backToListUrl: string): BreadcrumbItem[] => [
   {
     title: 'Roles',
-    href: '/roles',
+    href: backToListUrl,
   },
   {
     title: 'Edit',
@@ -32,7 +33,7 @@ type Props = {
 export default function EditRole({ permissions, role}:Props) {
   const { data, setData, put, processing, errors } = useForm<FormData>({
     name: role.name || '',
-    permissions: role.permissions.map((p) => p.id),
+    permissions: role.permissions.map(({ id }) => id),
   })
 
   const submit = (e: React.FormEvent) => {
@@ -40,14 +41,15 @@ export default function EditRole({ permissions, role}:Props) {
     put(route('roles.update', role.id))
   }
 
+  const backToListUrl = useBackToListUrl('roles.index')
   return (
-    <AppLayout breadcrumbs={breadcrumbs}>
+    <AppLayout breadcrumbs={breadcrumbs(backToListUrl)}>
     <Head title="Edit Role" />
         <div className="p-6 space-y-6">
         <h1 className="text-2xl font-bold mb-4 dark:text-white">Edit Role</h1>
 
         <Link
-            href={route('roles.index')}
+            href={backToListUrl}
             className="inline-flex items-center gap-2 rounded-md bg-neutral-100 px-4 py-2 dark:text-black dark:hover:bg-neutral-200 mb-6"
         >
             <ArrowBigLeft /> Back
@@ -79,11 +81,9 @@ export default function EditRole({ permissions, role}:Props) {
                             <div className="text-sm text-red-600 mt-1">{errors.permissions}</div>
                         )}
                     </div>
-                    <div className="px-4 py-3 dark:bg-neutral-800 bg-neutral-100 text-right sm:px-6">
-                        <Button type="submit" disabled={processing}>
-                            Update Role
-                        </Button>
-                    </div>
+                    <Button type="submit" disabled={processing}>
+                        Update Role
+                    </Button>
                 </form>
             </FormLayout>
         </div>

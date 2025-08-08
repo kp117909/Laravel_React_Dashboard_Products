@@ -8,25 +8,31 @@ use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
 use App\Http\Requests\Role\StoreRoleRequest;
 use App\Http\Requests\Role\UpdateRoleRequest;
+use App\Repositories\RoleRepository;
 use App\Services\RoleService;
 
 class RoleController extends Controller
 {
-
-
+    protected RoleRepository $role;
     protected RoleService $roleService;
 
-    public function __construct(RoleService $roleService)
+    public function __construct(RoleService $roleService, RoleRepository $role)
     {
+        $this->role = $role;
         $this->roleService = $roleService;
     }
 
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $roles = Role::with('permissions')->get();
+        $roles = $this->role->allWithPermissions(
+            perPage: $request->input('per_page', 10),
+            search: $request->input('search'),
+            options: $request->only(['sort', 'direction'])
+        );
+
         return Inertia::render('roles/index', [
             'roles' => $roles
         ]);

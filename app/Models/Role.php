@@ -2,13 +2,10 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
-use App\Models\User;
+use Spatie\Permission\Models\Role as SpatieRole;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class Role extends Model
+class Role extends SpatieRole
 {
-    public function users()
-    {
-        return $this->belongsToMany(User::class);
-    }
+    use HasFactory;
 }

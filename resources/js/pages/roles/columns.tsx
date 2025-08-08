@@ -1,49 +1,78 @@
-import { ColumnDef } from "@tanstack/react-table"
-import { Role } from "@/types/index.d"
-import { Badge } from "@/components/ui/badge"
-import { BadgeCheckIcon} from "lucide-react"
-import { RoleActionsCell } from "@/components/role-actions-cell"
+import { ColumnDef } from "@tanstack/react-table";
+import { Role } from "@/types";
+import { RoleActionsCell } from "@/components/role-actions-cell";
+import { ArrowDownIcon, ArrowUpIcon } from "lucide-react";
+import { handleSort } from "@/utils/data-table";
+import { Badge } from "@/components/ui/badge";
 
-export const columns: ColumnDef<Role>[] = [
-  {
-    accessorKey: "name",
-    header: "Name",
-  },
-  {
-    accessorKey: "permissions",
-    header: "Permissions",
-    cell: ({ row }) => {
-        const permissions = row.original.permissions as { name: string }[]
-        if (!permissions || permissions.length === 0) return <span><Badge>None</Badge></span>
-
-        return (
-        <div className="flex flex-wrap gap-1">
-            {permissions.map((p) => (
-            <Badge key={p.name} variant="secondary" className="bg-gray-900 text-white dark:bg-blue-100 dark:text-black">
-                <BadgeCheckIcon/>{p.name}
-            </Badge>
-            ))}
+export function getColumns(filterParams: Record<string, string>): ColumnDef<Role>[] {
+  return [
+    {
+      accessorKey: "name",
+      header: () => (
+        <div
+          onClick={() => handleSort("name", filterParams)}
+          className="cursor-pointer flex items-center gap-1"
+        >
+          Name
+          {filterParams.sort === "name" && (
+            filterParams.direction === "asc" ? <ArrowUpIcon /> : <ArrowDownIcon />
+          )}
         </div>
-        )
+      ),
     },
-  },
-  {
-    accessorKey: "created_at",
-    header: "Created at",
-    cell: ({ row }) => {
-      const date = new Date(row.getValue("created_at"))
-      return date.toLocaleDateString()
+    {
+      accessorKey: "permissions",
+      header: () => (
+        <div
+          onClick={() => handleSort("permissions", filterParams)}
+          className="cursor-pointer flex items-center gap-1"
+        >
+          Permissions
+          {filterParams.sort === "permissions" && (
+            filterParams.direction === "asc" ? <ArrowUpIcon /> : <ArrowDownIcon />
+          )}
+        </div>
+      ),
+      cell: ({ row }) => {
+        const permissions = row.original.permissions as { name: string; id: number }[];
+        return permissions.length ? (
+          <div className="flex gap-2">
+            {permissions.map(permission => (
+              <Badge key={permission.id}>
+                {permission.name}
+              </Badge>
+            ))}
+          </div>
+        ) : (
+          "-"
+        );
+      },
     },
-  },
-  {
-    id: 'actions',
-    header: () => <div className="text-right mr-13">Actions</div>,
-    cell: ({ row }) => <RoleActionsCell role={row.original} />,
-    enableSorting: true,
-    enableColumnFilter: true,
-    meta: {
-        className: "sticky right-0 bg-background z-10",
+    {
+      accessorKey: "created_at",
+      header: () => (
+        <div
+          onClick={() => handleSort("created_at", filterParams)}
+          className="cursor-pointer flex items-center gap-1"
+        >
+          Created at
+          {filterParams.sort === "created_at" && (
+            filterParams.direction === "asc" ? <ArrowUpIcon /> : <ArrowDownIcon />
+          )}
+        </div>
+      ),
+      cell: ({ row }) => {
+        const date = new Date(row.getValue("created_at"));
+        return date.toLocaleDateString();
+      },
     },
-  }
-]
+    {
+      id: "actions",
+      cell: ({ row }) => <RoleActionsCell role={row.original} />,
+      enableSorting: false,
+      enableColumnFilter: false,
+    },
+  ];
+}
 
