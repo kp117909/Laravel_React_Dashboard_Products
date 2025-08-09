@@ -6,6 +6,8 @@ use App\Models\Product;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Queries\SearchProductsQuery;
 use App\Queries\SortableProductsQuery;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class ProductRepository
 {
@@ -15,6 +17,12 @@ class ProductRepository
     {
         $this->model = $product;
     }
+
+    public function baseQuery(array $relations = [])
+    {
+        return $this->model::query()->where('is_published', true)->with($relations);
+    }
+
 
     // Get product with pagination
     public function all($perPage = 15)
@@ -86,24 +94,45 @@ class ProductRepository
             ->latest()
             ->get();
     }
+
+
     // Get paginated published products with relations
-    public function paginatePublished(array $relations = [], int $perPage = 9)
+    public function paginatePublished(array $relations = [], int $perPage = 9, array $filters = []): LengthAwarePaginator
     {
-        return $this->model
-            ->with($relations)
-            ->where('is_published', true)
-            ->latest()
-            ->paginate($perPage);
+
+       $q = $this->applyFilters($this->baseQuery($relations), $filters);
+
+        return $q->orderByDesc('created_at')
+                 ->paginate($perPage)
+                 ->withQueryString();
     }
 
     // Find published product by id
     public function findPublishedById(array $relations = [], int $id): ?Product
     {
-        return $this->model->where('id', $id)
-            ->with($relations)
-            ->where('is_published', true)
-            ->first();
+        return $this->baseQuery()->with($relations)->find($id);
     }
+
+    public function applyFilters(Builder $query, array $filters): Builder
+    {
+        if (!empty($filters['years'])) {
+            $query->yearIn($filters['years']);
+        }
+
+        if (!empty($filters['categories'])) {
+            $query->whereIn('category_id', $filters['categories']);
+        }
+
+        return $query;
+    }
+
+
+    public function distinctYears(): array
+    {
+        return $this->model::distinctYears()->pluck('year')->all();
+    }
+
+
 
 
 }

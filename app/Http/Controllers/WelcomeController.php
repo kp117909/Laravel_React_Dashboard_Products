@@ -3,22 +3,27 @@
 namespace App\Http\Controllers;
 
 use App\Repositories\ProductRepository;
+use App\Repositories\CategoryRepository;
 use Inertia\Inertia;
+use App\Http\Requests\Shop\ProductIndexRequest;
+use App\Services\ProductFilterService;
 
 class WelcomeController extends Controller
 {
-    protected ProductRepository $productRepository;
+    public function __construct(
+        protected ProductRepository $productRepository,
+        protected CategoryRepository $categoryRepository
+    ) {}
 
-    public function __construct(ProductRepository $productRepository)
+    public function index(ProductIndexRequest $request, ProductFilterService $filterService)
     {
-        $this->productRepository = $productRepository;
-    }
+        $filters = $filterService->withDefaults($request->filters());
 
-    public function index()
-    {
-        $products = $this->productRepository->paginatePublished(['category'], 9);
         return Inertia::render('welcome', [
-            'products' => $products,
+            'products'   => $this->productRepository->paginatePublished(['category'], 9, $filters),
+            'filters'    => $filters,
+            'years'      => $this->productRepository->distinctYears(),
+            'categories' => $this->categoryRepository->all(),
         ]);
     }
 }

@@ -39,4 +39,5 @@ class ProductService
 
         return $this->repository->update($id, $data);;
     }
+
 }

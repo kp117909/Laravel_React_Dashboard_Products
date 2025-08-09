@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 
@@ -26,6 +27,36 @@ class Product extends Model
     public function getPriceAttribute($value)
     {
         return round((float) $value, 2);
+    }
+
+     // Published scope
+    public function scopePublished(Builder $q): Builder
+    {
+        return $q->where('is_published', true);
+    }
+
+    // Filter: created_at year IN [..]
+    public function scopeYearIn(Builder $q, array $years): Builder
+    {
+        $years = array_values(array_unique(array_map('intval', $years)));
+        if (empty($years)) return $q;
+
+        return $q->where(function (Builder $sub) use ($years) {
+            foreach ($years as $i => $year) {
+                $i === 0
+                    ? $sub->whereYear('created_at', $year)
+                    : $sub->orWhereYear('created_at', $year);
+            }
+        });
+    }
+
+    // Distinct years from created_at (for facet options)
+    public function scopeDistinctYears(Builder $q)
+    {
+        return $q->selectRaw('YEAR(created_at) as year')
+                 ->published()
+                 ->distinct()
+                 ->orderByDesc('year');
     }
 
     protected $fillable = [

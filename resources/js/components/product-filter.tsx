@@ -4,71 +4,80 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import PriceRangeSlider from "./price-range-slider";
 import SearchInput from "./search-input";
+import { Category, Product } from "@/types";
+import { YearFilter } from "./filters/year-filter";
+import { CategoryFilter } from "./filters/category-filter";
 
-const categories = ["Clothing", "Shoes", "Accessories", "Sportswear", "Outerwear", "Formal Wear", "Casual Wear"];
-const brands = ["Nike", "Adidas", "Puma", "Under Armour", "New Balance", "Levi's", "H&M", "Zara"];
 const ratings = ["4", "3", "2", "1"];
 
-export default function ProductFilters() {
+interface Props {
+    products: Product[];
+    categories: Category[];
+    years: number[];
+    selectedYears: Set<number>;
+    onYearsChange: (years: Set<number>) => void;
+    onCategoriesChange: (categories: Set<number>) => void;
+    selectedCategories: Set<number>;
+    onSearchChange: (search: string) => void;
+}
+
+export default function ProductFilters({
+     categories,
+     products,
+     onYearsChange,
+     selectedYears,
+     years,
+     onCategoriesChange,
+     selectedCategories,
+     onSearchChange }: Props) {
+
   const [search, setSearch] = useState("");
   const [price, setPrice] = useState([0, 100]);
+
+  const handleSearchChange = (search: string) => {
+    setSearch(search);
+    onSearchChange(search);
+  };
 
   return (
     <div className="p-4 space-y-6 text-left">
       <h2 className="text-xl font-bold">Shop Products</h2>
       <h3 className="text-md font-semibold">Filters</h3>
 
-      <SearchInput value={search} onChange={setSearch} />
+      <SearchInput value={search} onChange={handleSearchChange} />
       <PriceRangeSlider value={price} onChange={setPrice} />
 
 
       <Accordion type="multiple" className="w-full space-y-2">
 
-        {/* Categories */}
+
         <AccordionItem value="categories">
           <AccordionTrigger className="text-sm font-medium">Categories</AccordionTrigger>
           <AccordionContent className="space-y-2 pt-2">
-            {categories.map((cat) => (
-              <div key={cat} className="flex items-center space-x-2">
-                <Checkbox id={`cat-${cat}`} />
-                <Label htmlFor={`cat-${cat}`} className="text-sm">{cat}</Label>
-              </div>
-            ))}
+            <CategoryFilter categories={categories} selected={selectedCategories} onChange={onCategoriesChange} />
           </AccordionContent>
         </AccordionItem>
 
-        {/* Brands */}
-        <AccordionItem value="brands">
-          <AccordionTrigger className="text-sm font-medium">Brands</AccordionTrigger>
+
+        <AccordionItem value="availability">
+          <AccordionTrigger className="text-sm font-medium">Availability</AccordionTrigger>
           <AccordionContent className="space-y-2 pt-2">
-            {brands.map((brand) => (
-              <div key={brand} className="flex items-center space-x-2">
-                <Checkbox id={`brand-${brand}`} />
-                <Label htmlFor={`brand-${brand}`} className="text-sm">{brand}</Label>
-              </div>
-            ))}
+            <div className="flex items-center space-x-2">
+              <Checkbox id="availability" />
+              <Label htmlFor="availability" className="text-sm">Available</Label>
+            </div>
           </AccordionContent>
         </AccordionItem>
 
-        {/* Colors */}
-        <AccordionItem value="colors">
-          <AccordionTrigger className="text-sm font-medium">Colors</AccordionTrigger>
-          <AccordionContent className="pt-2 text-sm text-muted-foreground">
-            {/* Example placeholder */}
-            <p>Color pickers go here.</p>
-          </AccordionContent>
+
+        <AccordionItem value="years">
+        <AccordionTrigger className="text-sm font-medium">Years</AccordionTrigger>
+            <AccordionContent className="space-y-2 pt-2">
+                <YearFilter years={years} selected={selectedYears} onChange={onYearsChange} />
+            </AccordionContent>
         </AccordionItem>
 
-        {/* Sizes */}
-        <AccordionItem value="sizes">
-          <AccordionTrigger className="text-sm font-medium">Sizes</AccordionTrigger>
-          <AccordionContent className="pt-2 text-sm text-muted-foreground">
-            {/* Example placeholder */}
-            <p>Sizes filter here.</p>
-          </AccordionContent>
-        </AccordionItem>
 
-        {/* Rating */}
         <AccordionItem value="rating">
           <AccordionTrigger className="text-sm font-medium">Rating</AccordionTrigger>
           <AccordionContent className="space-y-2 pt-2">
@@ -87,3 +96,4 @@ export default function ProductFilters() {
     </div>
   );
 }
+
