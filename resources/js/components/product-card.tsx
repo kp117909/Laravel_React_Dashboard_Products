@@ -14,7 +14,7 @@ export default function ProductCard({ product }: ProductCardProps) {
     <Card className="flex flex-col overflow-hidden hover:shadow-lg transition hover:scale-[1.02]">
       {product.image && (
         <img
-          src={product.image}
+          src={`${product.image}`}
           alt={product.name}
           className="w-full h-48 object-cover"
         />

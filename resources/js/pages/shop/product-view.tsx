@@ -23,7 +23,7 @@ export default function ProductPage({ product }: Props) {
             {/* Product Image */}
             <div className="lg:w-1/2 w-full">
                 <img
-                src={product.image}
+                src={`${product.image}`}
                 alt={product.name}
                 className="object-cover w-full h-96 lg:h-full"
               />

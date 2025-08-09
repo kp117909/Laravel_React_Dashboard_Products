@@ -15,7 +15,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 
 interface Props {
   products: PaginatedResponse<Product>;
-  categories: Category;
+  categories: Category[];
 }
 
 export default function Index({ products, categories }: Props) {
@@ -36,6 +36,10 @@ export default function Index({ products, categories }: Props) {
             Add new product
           </Link>
         )}
+
+        <p className="text-sm text-muted-foreground">
+          You can search table by product name or category.
+        </p>
         <DataTable
           columns={getColumns(filterParams)}
           data={products.data}

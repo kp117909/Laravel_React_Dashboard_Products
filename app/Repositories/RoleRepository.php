@@ -14,7 +14,7 @@ class RoleRepository
         $this->model = $role;
     }
 
-    public function allWithPermissions($perPage = 10, $search = null, array $options = [])
+    public function allWithPermissions(int $perPage = 10, ?string $search = null, array $options = [])
     {
         $query = $this->model->with('permissions');
         $query = SearchRolesQuery::apply($query, $search, $options);

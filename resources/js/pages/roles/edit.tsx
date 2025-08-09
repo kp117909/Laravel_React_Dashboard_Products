@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button'
 import PermissionCheckboxList from '@/components/permission-checkbox-list'
 import FormLayout from '@/layouts/dashboard/form-layout'
 import { useBackToListUrl } from '@/utils/data-table'
+import BackToListButton from '@/components/back-to-list-button'
 
 const breadcrumbs = (backToListUrl: string): BreadcrumbItem[] => [
   {
@@ -46,14 +47,11 @@ export default function EditRole({ permissions, role}:Props) {
     <AppLayout breadcrumbs={breadcrumbs(backToListUrl)}>
     <Head title="Edit Role" />
         <div className="p-6 space-y-6">
-        <h1 className="text-2xl font-bold mb-4 dark:text-white">Edit Role</h1>
-
-        <Link
-            href={backToListUrl}
-            className="inline-flex items-center gap-2 rounded-md bg-neutral-100 px-4 py-2 dark:text-black dark:hover:bg-neutral-200 mb-6"
-        >
-            <ArrowBigLeft /> Back
-        </Link>
+           <BackToListButton
+                title="Edit Role"
+                backHref={backToListUrl}
+                backLabel="Return to role list"
+            />
             <FormLayout title="Role Information" description="Change the role's name and associated permissions" icon = {ShieldEllipsis}>
                 <form onSubmit={submit} className="space-y-4">
                     <div>

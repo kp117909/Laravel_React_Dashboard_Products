@@ -3,7 +3,7 @@ import AppLayout from "@/layouts/app-layout";
 import { type BreadcrumbItem, PaginatedResponse, Role } from "@/types";
 import { Head, Link } from "@inertiajs/react";
 import { getColumns } from "@/pages/roles/columns";
-import { Plus, X } from "lucide-react";
+import { Plus } from "lucide-react";
 import { useCan } from "@/lib/can";
 import { useQueryParams } from "@/utils/data-table";
 

@@ -5,7 +5,6 @@ namespace App\Services;
 use Spatie\Permission\Models\Role;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Auth\AuthManager;
-use Illuminate\Support\Facades\Log;
 
 class RoleService
 {

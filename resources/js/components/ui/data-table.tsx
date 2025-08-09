@@ -11,6 +11,7 @@ import { Columns2, X } from "lucide-react";
 import {getColumnId,  formatShowingRange, handlePageChange, createHandleSearch, useQueryParams} from "@/utils/data-table";
 import CategorySelect from "../category-select";
 import { Link } from "@inertiajs/react";
+import { Category } from "@/types";
 
 
 interface PaginationMeta {
@@ -18,7 +19,7 @@ interface PaginationMeta {
   last_page: number;
   per_page: number;
   total: number;
-  categories?: { id: number; name: string}[];
+  categories?: Category[];
 }
 
 interface DataTableProps<TData extends object> {

@@ -28,14 +28,11 @@ class UserController extends Controller
      */
     public function index(Request $request)
     {
-        $search = $request->input('search');
-        $sort = $request->input('sort', 'created_at');
-        $direction = $request->input('direction', 'desc');
-
-        $users = $this->users->allWithRoles(10, $search,[
-            'sort'  => $sort,
-            'direction' => $direction,
-        ]);
+        $users = $this->users->allWithRoles(
+            perPage: $request->input('per_page', 10),
+            search: $request->input('search'),
+            options: $request->only(['sort', 'direction'])
+        );
 
         return Inertia::render('users/index', [
             'users' => $users,

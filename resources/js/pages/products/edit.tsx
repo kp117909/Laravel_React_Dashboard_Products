@@ -26,7 +26,7 @@ const breadcrumbs = (backToListUrl: string): BreadcrumbItem[] => [
 
 type Props = {
   product: Product
-  categories: Category
+  categories: Category[]
 }
 const EditProduct = ({ product, categories }: Props) => {
   const [form, setForm] = useState({

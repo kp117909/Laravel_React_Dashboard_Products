@@ -23,7 +23,7 @@ class UserRepository
     }
 
     // Get user with roles and pagination, sorted by newest
-    public function allWithRoles($perPage = 10, $search = null, array $options = [])
+    public function allWithRoles(int $perPage = 10, ?string $search = null, array $options = [])
     {
 
         $query = $this->model->with('roles');

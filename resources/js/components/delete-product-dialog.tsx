@@ -17,7 +17,6 @@ import{
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
-import { useLinkWithFilters } from "@/utils/data-table";
 
 interface DeleteProductDialogProps {
   productId: number

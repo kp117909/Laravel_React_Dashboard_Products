@@ -107,11 +107,11 @@ export default function ShowProduct({ product }: ShowProductProps) {
 
                 {product.image && (
                 <div className="flex justify-center items-start">
-                <img
-                    src={product.image}
+               <img
+                    src={`${product.image}`}
                     alt={product.name}
                     className="w-full max-w-sm rounded-md shadow-md"
-                    />
+                />
                 </div>
                 )}
             </CardContent>

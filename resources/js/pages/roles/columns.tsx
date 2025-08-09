@@ -37,9 +37,9 @@ export function getColumns(filterParams: Record<string, string>): ColumnDef<Role
       cell: ({ row }) => {
         const permissions = row.original.permissions as { name: string; id: number }[];
         return permissions.length ? (
-          <div className="flex gap-2">
-            {permissions.map(permission => (
-              <Badge key={permission.id}>
+          <div className="flex flex-wrap gap-2">
+            {permissions.map((permission, index) => (
+              <Badge key={permission.id} className={index >= 12 ? "mt-2" : ""}>
                 {permission.name}
               </Badge>
             ))}

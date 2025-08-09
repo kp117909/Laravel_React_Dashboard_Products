@@ -28,16 +28,11 @@ class ProductController extends Controller
     public function index(Request $request)
     {
 
-        $search = $request->input('search');
-        $sort = $request->input('sort', 'created_at');
-        $direction = $request->input('direction', 'desc');
-        $category_id = $request->input('category_id');
-
-        $products = $this->products->allWithCategory(10, $search,[
-            'sort'  => $sort,
-            'direction' => $direction,
-            'category_id' => $category_id,
-        ]);
+        $products = $this->products->allWithCategory(
+            perPage: $request->input('per_page', 10),
+            search: $request->input('search'),
+            options: $request->only(['sort', 'direction', 'category_id'])
+        );
 
          return Inertia::render('products/index', [
             'products' => $products,
