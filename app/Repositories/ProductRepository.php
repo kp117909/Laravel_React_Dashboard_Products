@@ -99,7 +99,6 @@ class ProductRepository
     // Get paginated published products with relations
     public function paginatePublished(array $relations = [], int $perPage = 9, array $filters = []): LengthAwarePaginator
     {
-
        $q = $this->applyFilters($this->baseQuery($relations), $filters);
 
         return $q->orderByDesc('created_at')
@@ -123,6 +122,41 @@ class ProductRepository
             $query->whereIn('category_id', $filters['categories']);
         }
 
+        // Apply search filter
+        if (!empty($filters['search'])) {
+            $query = SearchProductsQuery::apply($query, $filters['search']);
+        }
+
+        // Apply price range filter
+        if (!empty($filters['price_min']) || !empty($filters['price_max'])) {
+            if (!empty($filters['price_min'])) {
+                $query->where('price', '>=', $filters['price_min']);
+            }
+            if (!empty($filters['price_max'])) {
+                $query->where('price', '<=', $filters['price_max']);
+            }
+        }
+
+        // Apply availability filter
+        if (isset($filters['available']) || isset($filters['not_available'])) {
+            $available = $filters['available'] ?? false;
+            $notAvailable = $filters['not_available'] ?? false;
+
+            if ($available && !$notAvailable) {
+                // Show only available products
+                $query->where('is_available', true);
+            } elseif (!$available && $notAvailable) {
+                // Show only not available products
+                $query->where('is_available', false);
+            } elseif ($available && $notAvailable) {
+                // Show both available and not available (no filter)
+                // Don't add any where clause
+            } else {
+                // Neither checked - default to available only
+                $query->where('is_available', true);
+            }
+        }
+
         return $query;
     }
 
@@ -132,7 +166,47 @@ class ProductRepository
         return $this->model::distinctYears()->pluck('year')->all();
     }
 
+    /**
+     * Get price range from all published products
+     */
+    public function getPriceRange(): array
+    {
+        $minPrice = $this->model->where('is_published', true)->min('price') ?? 0;
+        $maxPrice = $this->model->where('is_published', true)->max('price') ?? 1000;
 
+        return [
+            'min' => (int) floor($minPrice),
+            'max' => (int) ceil($maxPrice)
+        ];
+    }
+
+    /**
+     * Get product counts for each year
+     */
+    public function getYearCounts(): array
+    {
+        return $this->model
+            ->where('is_published', true)
+            ->selectRaw('YEAR(created_at) as year, COUNT(*) as count')
+            ->groupBy('year')
+            ->orderByDesc('year')
+            ->pluck('count', 'year')
+            ->toArray();
+    }
+
+    /**
+     * Get product counts for availability
+     */
+    public function getAvailabilityCounts(): array
+    {
+        $availableCount = $this->model->where('is_published', true)->where('is_available', true)->count();
+        $notAvailableCount = $this->model->where('is_published', true)->where('is_available', false)->count();
+
+        return [
+            'available' => $availableCount,
+            'not_available' => $notAvailableCount
+        ];
+    }
 
 
 }

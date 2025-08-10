@@ -15,7 +15,19 @@ class CategoryRepository
     }
     public function all()
     {
-        return Category::all();
+        return $this->model->all();
+    }
+
+    /**
+     * Get product counts for each category
+     */
+    public function getProductCounts(): array
+    {
+        return $this->model
+            ->withCount('products')
+            ->get()
+            ->pluck('products_count', 'id')
+            ->toArray();
     }
 
     public function listToFilter()

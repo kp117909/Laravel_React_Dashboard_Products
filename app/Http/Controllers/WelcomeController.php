@@ -24,6 +24,10 @@ class WelcomeController extends Controller
             'filters'    => $filters,
             'years'      => $this->productRepository->distinctYears(),
             'categories' => $this->categoryRepository->all(),
+            'priceRange' => $this->productRepository->getPriceRange(),
+            'categoryCounts' => $this->categoryRepository->getProductCounts(),
+            'yearCounts' => $this->productRepository->getYearCounts(),
+            'availabilityCounts' => $this->productRepository->getAvailabilityCounts(),
         ]);
     }
 }
