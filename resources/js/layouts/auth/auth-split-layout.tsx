@@ -16,12 +16,12 @@ export default function AuthSplitLayout({ children, title, description }: PropsW
       <div className="relative hidden h-full flex-col bg-muted p-10 text-white lg:flex dark:border-r">
         {/* ReturnButton desktop */}
         <div className="relative z-30 mb-4">
-          <ReturnButton href={route('home')} label="Return to Shop" iconPosition="left" />
+          <ReturnButton href={route('shop')} label="Return to Shop" iconPosition="left" />
         </div>
 
         <div className="absolute inset-0 bg-zinc-900 z-0" />
 
-        <Link href={route('home')} className="relative z-20 flex items-center text-lg font-medium">
+        <Link href={route('shop')} className="relative z-20 flex items-center text-lg font-medium">
           <AppLogoIcon className="mr-2 size-190 fill-current text-white" />
         </Link>
 
@@ -40,7 +40,7 @@ export default function AuthSplitLayout({ children, title, description }: PropsW
             {/* MOBILE Return Button — widoczny tylko na małych ekranach */}
             <div className="absolute left-0 top-0 z-20 lg:hidden">
             <ReturnButton
-                href={route('home')}
+                href={route('shop')}
                 label="Return"
                 iconPosition="left"
                 className="p-2"
@@ -49,7 +49,7 @@ export default function AuthSplitLayout({ children, title, description }: PropsW
 
             {/* Mobile logo */}
             <div className="flex justify-center lg:hidden mt-2">
-            <Link href={route('home')} className="z-10 flex items-center justify-center">
+            <Link href={route('shop')} className="z-10 flex items-center justify-center">
                 <AppLogoIcon className="size-36 fill-current text-white" />
             </Link>
             </div>

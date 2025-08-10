@@ -10,7 +10,7 @@ interface ReturnButtonProps {
 }
 
 export default function ReturnButton({
-  href = route("home"),
+  href = route("shop"),
   label = "Back to Home",
   iconPosition = "left",
   className = "",

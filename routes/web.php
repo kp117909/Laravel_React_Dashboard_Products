@@ -7,9 +7,9 @@ use App\Http\Controllers\RoleController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\Shop\ProductController as ShopProductController;
 use App\Helpers\CrudRouteHelper;
-use App\Http\Controllers\WelcomeController;
+use App\Http\Controllers\ShopController;
 
-Route::get('/', [WelcomeController::class, 'index'])->name('home');
+Route::get('/', [ShopController::class, 'index'])->name('shop');
 Route::get('/shop/products/{product}', [ShopProductController::class, 'show'])->name('shop.products.show');
 
 Route::middleware(['auth', 'verified'])->group(function () {

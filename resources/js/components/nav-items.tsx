@@ -5,7 +5,7 @@ export function getMainNavItems(permissions: string[] = []): NavItem[] {
   const navItems: NavItem[] = [
     {
       title: 'Shop Page',
-      href: route('home'),
+      href: route('shop'),
       icon: Store,
     },
     {

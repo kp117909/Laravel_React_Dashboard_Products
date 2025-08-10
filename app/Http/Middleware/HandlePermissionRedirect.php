@@ -14,7 +14,7 @@ class HandlePermissionRedirect
         // Log::info("User [{$user->id}] [{$user->name}] tries to access [{$permission}], hasPermission [{$permissions->contains('name', $permission)}], permission list: " . ($permissions->count() > 0 ? $permissions->pluck('name')->implode(', ') : 'EMPTY'), $permissions->pluck('name')->toArray());
 
         if (!$user || !$permissions->contains('name', $permission)) {
-            return redirect()->route('home');
+            return redirect()->route('shop');
         }
 
         return $next($request);

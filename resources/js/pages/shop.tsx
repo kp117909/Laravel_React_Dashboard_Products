@@ -19,15 +19,19 @@ interface Props {
     available?: boolean,
     not_available?: boolean
   };
-  years: number[];
-  categories: Category[];
-  priceRange: { min: number; max: number };
-  categoryCounts: Record<number, number>;
-  yearCounts: Record<number, number>;
-  availabilityCounts: Record<string, number>;
+  filterOptions: {
+    years: number[];
+    categories: Category[];
+    priceRange: { min: number; max: number };
+  };
+  counts: {
+    categoryCounts: Record<number, number>;
+    yearCounts: Record<number, number>;
+    availabilityCounts: Record<string, number>;
+  };
 }
 
-export default function Shop({ products, categories, filters, years, priceRange, categoryCounts, yearCounts, availabilityCounts }: Props) {
+export default function Shop({ products, filters, filterOptions, counts }: Props) {
   const onYearsChange = (next: Set<number>) => {
     updateFilters(
       Array.from(next),
@@ -81,7 +85,7 @@ export default function Shop({ products, categories, filters, years, priceRange,
     [filters.years]
   );
 
-  const allCategoryIds = useMemo(() => categories.map(c => c.id), [categories]);
+  const allCategoryIds = useMemo(() => filterOptions.categories.map(c => c.id), [filterOptions.categories]);
 
   const selectedCategories = useMemo(
     () => new Set<number>((filters.categories?.length ? filters.categories : allCategoryIds).map(Number)),
@@ -102,14 +106,14 @@ export default function Shop({ products, categories, filters, years, priceRange,
 
   const initialPriceRange: [number, number] = useMemo(() => {
     return [
-      filters.price_min ?? priceRange.min,
-      filters.price_max ?? priceRange.max
+      filters.price_min ?? filterOptions.priceRange.min,
+      filters.price_max ?? filterOptions.priceRange.max
     ];
-  }, [filters.price_min, filters.price_max, priceRange]);
+  }, [filters.price_min, filters.price_max, filterOptions.priceRange]);
 
   const filterChecker = useMemo(() =>
-    createShopFilterChecker(filters, years, allCategoryIds, priceRange),
-    [filters, years, allCategoryIds, priceRange]
+    createShopFilterChecker(filters, filterOptions.years, allCategoryIds, filterOptions.priceRange),
+    [filters, filterOptions.years, allCategoryIds, filterOptions.priceRange]
   );
 
   const hasActiveFilters = useMemo(() => filterChecker.hasActiveFilters(), [filterChecker]);
@@ -121,9 +125,9 @@ export default function Shop({ products, categories, filters, years, priceRange,
 
         <div className="w-full lg:w-72 mb-6 lg:mb-0 shadow-lg rounded-lg bg-white dark:bg-[#18181b]">
           <ProductFilters
-            categories={categories}
+            categories={filterOptions.categories}
             products = {products.data}
-            years={years}
+            years={filterOptions.years}
             onYearsChange={onYearsChange}
             selectedYears={selectedYears}
             onCategoriesChange={onCategoriesChange}
@@ -133,12 +137,12 @@ export default function Shop({ products, categories, filters, years, priceRange,
             onAvailabilityChange={onAvailabilityChange}
             initialSearch={filters.search || ""}
             initialPriceRange={initialPriceRange}
-            priceRange={priceRange}
+            priceRange={filterOptions.priceRange}
             initialAvailable={filters.available ?? true}
             initialNotAvailable={filters.not_available ?? true}
-            categoryCounts={categoryCounts}
-            yearCounts={yearCounts}
-            availabilityCounts={availabilityCounts}
+            categoryCounts={counts.categoryCounts}
+            yearCounts={counts.yearCounts}
+            availabilityCounts={counts.availabilityCounts}
           />
         </div>
 

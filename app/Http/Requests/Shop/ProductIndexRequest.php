@@ -9,8 +9,10 @@ class ProductIndexRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'years' => ['array'], 'years.*' => ['integer'],
-            'categories' => ['array'], 'categories.*' => ['integer'],
+            'years' => ['array'],
+            'years.*' => ['integer'],
+            'categories' => ['array'],
+            'categories.*' => ['integer'],
             'search' => ['nullable', 'string', 'max:255'],
             'price_min' => ['nullable', 'numeric', 'min:0'],
             'price_max' => ['nullable', 'numeric', 'min:0', 'gte:price_min'],

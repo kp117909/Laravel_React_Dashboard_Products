@@ -2,7 +2,7 @@ import { router } from '@inertiajs/react';
 import { createFilterChecker, type FilterState } from './filter-utils';
 
 
-export function createWelcomeFilterChecker(
+export function createShopFilterChecker(
   filters: { years: number[]; categories: number[]; search?: string; price_min?: number; price_max?: number; available?: boolean; not_available?: boolean },
   years: number[],
   allCategoryIds: number[],
@@ -31,7 +31,7 @@ export function createWelcomeFilterChecker(
  * Clear all filters function
  */
 export function clearAllFilters() {
-  router.get(route('home'), { page: 1 }, {
+  router.get(route('shop'), { page: 1 }, {
     preserveState: true,
     replace: true,
     only: ['products', 'filters']
@@ -76,7 +76,7 @@ export function updateFilters(
     params.not_available = not_available;
   }
 
-  router.get(route('home'), params, {
+  router.get(route('shop'), params, {
     preserveState: true,
     replace: true,
     only: ['products', 'filters']
