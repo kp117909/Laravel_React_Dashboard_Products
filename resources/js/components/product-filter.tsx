@@ -1,4 +1,4 @@
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { Accordion } from "@/components/ui/accordion";
 import { useState, useEffect, useCallback } from "react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
@@ -7,6 +7,7 @@ import SearchInput from "./search-input";
 import { Category, Product } from "@/types";
 import { YearFilter } from "./filters/year-filter";
 import { CategoryFilter } from "./filters/category-filter";
+import AccordionItemSheet from "./accordion-item";
 
 const ratings = ["4", "3", "2", "1"];
 
@@ -56,6 +57,9 @@ export default function ProductFilters({
   const [price, setPrice] = useState(initialPriceRange || [priceRange.min, priceRange.max]);
   const [available, setAvailable] = useState(initialAvailable);
   const [notAvailable, setNotAvailable] = useState(initialNotAvailable);
+
+  // For category search
+  const [categorySearch, setCategorySearch] = useState("");
 
   // Update local search state when initialSearch prop changes
   useEffect(() => {
@@ -119,9 +123,16 @@ export default function ProductFilters({
   };
 
   return (
-    <div className="p-4 space-y-6 text-left">
-      <h2 className="text-xl font-bold">Shop Products</h2>
-      <h3 className="text-md font-semibold">Filters</h3>
+    <div className="p-4 space-y-4 lg:space-y-6 text-left bg-white dark:bg-[#18181b] min-h-screen lg:min-h-0 lg:rounded-lg">
+      <div className="flex items-center justify-between mb-4">
+        <h3 className="text-md font-semibold">Filters</h3>
+        <button
+          onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+          className="text-sm text-blue-600 dark:text-blue-400 lg:hidden"
+        >
+          Back to top
+        </button>
+      </div>
 
       <SearchInput value={search} onChange={handleSearchChange} />
       <PriceRangeSlider
@@ -134,68 +145,61 @@ export default function ProductFilters({
       />
 
       <Accordion type="multiple" className="w-full space-y-2">
+        <AccordionItemSheet value="categories" title={<span className="text-sm font-medium">Categories</span>}>
+          <CategoryFilter
+            categories={categories}
+            categoryCounts={categoryCounts}
+            selected={selectedCategories}
+            onChange={onCategoriesChange}
+            search={categorySearch}
+            onSearchChange={setCategorySearch}
+          />
+        </AccordionItemSheet>
 
-        <AccordionItem value="categories">
-          <AccordionTrigger className="text-sm font-medium">Categories</AccordionTrigger>
-          <AccordionContent className="space-y-2 pt-2">
-            <CategoryFilter
-              categories={categories}
-              categoryCounts={categoryCounts}
-              selected={selectedCategories}
-              onChange={onCategoriesChange}
-            />
-          </AccordionContent>
-        </AccordionItem>
-
-        <AccordionItem value="availability">
-          <AccordionTrigger className="text-sm font-medium">Availability</AccordionTrigger>
-          <AccordionContent className="space-y-2 pt-2">
-            <div className="space-y-2">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-2">
-                  <Checkbox
-                    id="available"
-                    checked={available}
-                    onCheckedChange={handleAvailableChange}
-                  />
-                  <Label htmlFor="available" className="text-sm">Available</Label>
-                </div>
-                <span className="text-xs text-gray-500 dark:text-gray-400">
-                  ({availabilityCounts.available || 0})
-                </span>
-              </div>
-              <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-2">
-                  <Checkbox
-                    id="not-available"
-                    checked={notAvailable}
-                    onCheckedChange={handleNotAvailableChange}
-                  />
-                  <Label htmlFor="not-available" className="text-sm">Not Available</Label>
-                </div>
-                <span className="text-xs text-gray-500 dark:text-gray-400">
-                  ({availabilityCounts.not_available || 0})
-                </span>
-              </div>
-            </div>
-          </AccordionContent>
-        </AccordionItem>
-
-        <AccordionItem value="years">
-        <AccordionTrigger className="text-sm font-medium">Years</AccordionTrigger>
-            <AccordionContent className="space-y-2 pt-2">
-                <YearFilter
-                  years={years}
-                  yearCounts={yearCounts}
-                  selected={selectedYears}
-                  onChange={onYearsChange}
+        <AccordionItemSheet value="availability" title={<span className="text-sm font-medium">Availability</span>}>
+          <div className="space-y-2 pt-2">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-2">
+                <Checkbox
+                  id="available"
+                  checked={available}
+                  onCheckedChange={handleAvailableChange}
                 />
-            </AccordionContent>
-        </AccordionItem>
+                <Label htmlFor="available" className="text-sm">Available</Label>
+              </div>
+              <span className="text-xs text-gray-500 dark:text-gray-400">
+                ({availabilityCounts.available || 0})
+              </span>
+            </div>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-2">
+                <Checkbox
+                  id="not-available"
+                  checked={notAvailable}
+                  onCheckedChange={handleNotAvailableChange}
+                />
+                <Label htmlFor="not-available" className="text-sm">Not Available</Label>
+              </div>
+              <span className="text-xs text-gray-500 dark:text-gray-400">
+                ({availabilityCounts.not_available || 0})
+              </span>
+            </div>
+          </div>
+        </AccordionItemSheet>
 
-        <AccordionItem value="rating">
-          <AccordionTrigger className="text-sm font-medium">Rating</AccordionTrigger>
-          <AccordionContent className="space-y-2 pt-2">
+        <AccordionItemSheet value="years" title={<span className="text-sm font-medium">Years</span>}>
+          <div className="space-y-2 pt-2">
+            <YearFilter
+              years={years}
+              yearCounts={yearCounts}
+              selected={selectedYears}
+              onChange={onYearsChange}
+            />
+          </div>
+        </AccordionItemSheet>
+
+        <AccordionItemSheet value="rating" title={<span className="text-sm font-medium">Rating</span>}>
+          <div className="space-y-2 pt-2">
             {ratings.map((rate) => (
               <div key={rate} className="flex items-center space-x-2">
                 <Checkbox id={`rate-${rate}`} />
@@ -204,11 +208,9 @@ export default function ProductFilters({
                 </Label>
               </div>
             ))}
-          </AccordionContent>
-        </AccordionItem>
-
+          </div>
+        </AccordionItemSheet>
       </Accordion>
     </div>
   );
 }
-

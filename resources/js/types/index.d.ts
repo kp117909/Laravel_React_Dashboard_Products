@@ -29,12 +29,15 @@ export interface NavItemWithAuth extends NavItem {
     align?: "left" | "right";
 }
 
+import { CartSummary } from './cart';
+
 export interface SharedData {
     name: string;
     quote: { message: string; author: string };
     auth: Auth;
     ziggy: Config & { location: string };
     sidebarOpen: boolean;
+    cart: CartSummary;
     [key: string]: unknown;
 }
 

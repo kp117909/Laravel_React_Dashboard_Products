@@ -4,6 +4,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
 import { DollarSign, Star, Tag, CheckCircle, Eye } from 'lucide-react';
+import { AddToCartButton } from '@/components/add-to-cart-button';
 
 interface ProductCardProps {
   product: Product;
@@ -45,17 +46,26 @@ export default function ProductCard({ product }: ProductCardProps) {
         <p className="text-sm text-muted-foreground line-clamp-3">{product.description}</p>
       </CardContent>
 
-      <CardFooter className="p-4 flex items-center justify-between">
+      <CardFooter className="p-4 flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-2">
         <span className="text-xl font-bold flex items-center gap-1">
           <DollarSign className="w-4 h-4" />
           {product.price.toFixed(2)}
         </span>
-        <Button size="sm" variant="default" asChild className="flex items-center gap-2">
-          <Link href={route('shop.products.show', product.id)}>
-            <Eye className="w-4 h-4" />
-            View
-          </Link>
-        </Button>
+        <div className="flex w-full sm:w-auto gap-2 justify-end">
+          <Button size="sm" variant="outline" asChild className="flex-1 sm:flex-none flex items-center justify-center gap-2">
+            <Link href={route('shop.products.show', product.id)}>
+              <Eye className="w-4 h-4" />
+              View
+            </Link>
+          </Button>
+          <AddToCartButton
+            productId={product.id}
+            isAvailable={product.is_available}
+            showQuantity={false}
+            variant="default"
+            className="flex-1 sm:flex-none"
+          />
+        </div>
       </CardFooter>
     </Card>
   );

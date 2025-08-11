@@ -3,10 +3,10 @@ import ProductCard from '@/components/product-card';
 import { Category, type PaginatedResponse, Product } from '@/types';
 import ProductFilters from '@/components/product-filter';
 import AppShopLayout from '@/layouts/app/app-navigation-layout';
-import {FooterShop } from '@/components/footer2';
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { createShopFilterChecker, clearAllFilters, updateFilters } from '@/utils/shop-utils';
 import { X } from 'lucide-react';
+import { MobileFilterToggle } from '@/components/mobile-filter-toggle';
 
 interface Props {
   products: PaginatedResponse<Product>;
@@ -32,6 +32,7 @@ interface Props {
 }
 
 export default function Shop({ products, filters, filterOptions, counts }: Props) {
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
   const onYearsChange = (next: Set<number>) => {
     updateFilters(
       Array.from(next),
@@ -121,9 +122,9 @@ export default function Shop({ products, filters, filterOptions, counts }: Props
 
   return (
     <AppShopLayout>
-      <div className="flex flex-col lg:flex-row w-full gap-6 text-[#1b1b18] dark:text-[#EDEDEC]">
+      <div className="container mx-auto flex flex-col lg:flex-row w-full gap-4 lg:gap-6 text-[#1b1b18] dark:text-[#EDEDEC] px-2 sm:px-4 lg:px-6">
 
-        <div className="w-full lg:w-72 mb-6 lg:mb-0 shadow-lg rounded-lg bg-white dark:bg-[#18181b]">
+        <div className={`fixed lg:relative top-0 left-0 right-0 z-50 lg:z-auto w-full lg:w-72 shadow-lg rounded-lg bg-white dark:bg-[#18181b] lg:mb-0 transform transition-transform duration-300 ${isFilterOpen ? 'translate-y-0' : 'translate-y-[100%] lg:translate-y-0'}`}>
           <ProductFilters
             categories={filterOptions.categories}
             products = {products.data}
@@ -176,7 +177,7 @@ export default function Shop({ products, filters, filterOptions, counts }: Props
             </div>
           )}
 
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 w-full">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 w-full max-w-none">
             {products?.data?.length ? (
               products.data.map((product) => (
                 <ProductCard key={product.id} product={product} />
@@ -188,12 +189,12 @@ export default function Shop({ products, filters, filterOptions, counts }: Props
             )}
           </div>
 
-          <div className="flex flex-col items-center mt-8 gap-4">
+          <div className="flex flex-col items-center mt-8 gap-4 pb-16 lg:pb-8">
             <div className="text-sm text-gray-600 dark:text-gray-400">
               Showing {products.from || 0} to {products.to || 0} of {products.total || 0} products
             </div>
 
-            <div className="flex justify-center gap-2">
+            <div className="flex flex-wrap justify-center gap-2 px-4">
               {products.links?.map((link, idx) => (
                 <Link
                   key={idx}
@@ -210,7 +211,8 @@ export default function Shop({ products, filters, filterOptions, counts }: Props
           </div>
         </main>
       </div>
-      <FooterShop/>
+      <MobileFilterToggle onClick={() => setIsFilterOpen(!isFilterOpen)} isOpen={isFilterOpen} />
+
     </AppShopLayout>
   );
 }

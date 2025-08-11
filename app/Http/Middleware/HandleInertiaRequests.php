@@ -6,9 +6,13 @@ use Illuminate\Foundation\Inspiring;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 use Tighten\Ziggy\Ziggy;
+use App\Services\CartService;
 
 class HandleInertiaRequests extends Middleware
 {
+    public function __construct(
+        private CartService $cartService
+    ) {}
     /**
      * The root template that's loaded on the first page visit.
      *
@@ -54,6 +58,7 @@ class HandleInertiaRequests extends Middleware
                 'location' => $request->url(),
             ],
             'sidebarOpen' => ! $request->hasCookie('sidebar_state') || $request->cookie('sidebar_state') === 'true',
+            'cart' => $this->cartService->getCartSummary(),
         ];
     }
 }

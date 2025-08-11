@@ -73,10 +73,10 @@ const FooterShop = ({
   ],
 }: FooterShopProps) => {
   return (
-    <section className="py-32">
-      <div className="container">
+    <section className="py-16 lg:py-32 mt-10 w-full">
+      <div className="container mx-auto px-4 lg:px-6">
         <footer>
-          <div className="grid grid-cols-2 gap-8 lg:grid-cols-6">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-8">
             <div className="col-span-2 mb-8 lg:mb-0">
               <div className="flex items-center gap-2 lg:justify-start">
                 <AppLogo size = {36}/>
@@ -99,7 +99,7 @@ const FooterShop = ({
               </div>
             ))}
           </div>
-          <div className="text-muted-foreground mt-24 flex flex-col justify-between gap-4 border-t pt-8 text-sm font-medium md:flex-row md:items-center">
+          <div className="text-muted-foreground mt-16 lg:mt-24 flex flex-col justify-between gap-4 border-t pt-8 text-sm font-medium md:flex-row md:items-center">
             <p>{copyright}</p>
             <ul className="flex gap-4">
               {bottomLinks.map((link, linkIdx) => (

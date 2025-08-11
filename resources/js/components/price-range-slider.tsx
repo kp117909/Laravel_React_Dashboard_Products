@@ -102,7 +102,7 @@ export default function PriceRangeSlider({
                 <Label className="text-sm font-medium">Price Range</Label>
       <div className="flex justify-between items-center">
 
-        <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
+        <div className="flex items-center gap-1 sm:gap-2 text-sm text-gray-600 dark:text-gray-400">
           <span>$</span>
           <Input
             type="number"
@@ -111,7 +111,7 @@ export default function PriceRangeSlider({
             onBlur={handleMinBlur}
             min={min}
             max={localValue[1]}
-            className="w-18 h-6 text-xs"
+            className="w-16 sm:w-18 h-6 text-xs"
             disabled={disabled}
           />
           <span>-</span>
@@ -123,7 +123,7 @@ export default function PriceRangeSlider({
             onBlur={handleMaxBlur}
             min={localValue[0]}
             max={max}
-            className="w-18 h-6 text-xs"
+            className="w-16 sm:w-18 h-6 text-xs"
             disabled={disabled}
           />
         </div>

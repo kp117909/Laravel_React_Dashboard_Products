@@ -15,7 +15,7 @@ export function AppShell({ children, variant = 'header' }: AppShellProps) {
     }
 
     if (variant === 'navigation') {
-        return <>{children}</>;
+        return <div className="min-h-screen flex flex-col">{children}</div>;
     }
 
     return <SidebarProvider defaultOpen={isOpen}>{children}</SidebarProvider>;

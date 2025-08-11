@@ -107,7 +107,7 @@ class ProductRepository
     }
 
     // Find published product by id
-    public function findPublishedById(array $relations = [], int $id): ?Product
+    public function findPublishedById(int $id, array $relations = []): ?Product
     {
         return $this->baseQuery()->with($relations)->find($id);
     }
@@ -143,16 +143,10 @@ class ProductRepository
             $notAvailable = $filters['not_available'] ?? false;
 
             if ($available && !$notAvailable) {
-                // Show only available products
                 $query->where('is_available', true);
             } elseif (!$available && $notAvailable) {
-                // Show only not available products
                 $query->where('is_available', false);
-            } elseif ($available && $notAvailable) {
-                // Show both available and not available (no filter)
-                // Don't add any where clause
-            } else {
-                // Neither checked - default to available only
+            } elseif (!$available && !$notAvailable) {
                 $query->where('is_available', true);
             }
         }

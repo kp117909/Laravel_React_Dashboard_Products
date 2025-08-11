@@ -1,0 +1,69 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\CartItem;
+use App\Models\Product;
+use App\Services\CartService;
+use Inertia\Inertia;
+use App\Http\Requests\Cart\CartAddRequest;
+use App\Http\Requests\Cart\CartUpdateRequest;
+
+class CartController extends Controller
+{
+    public function __construct(
+        private CartService $cartService
+    ) {}
+
+    public function index()
+    {
+        $summary = $this->cartService->getCartSummary();
+
+        return Inertia::render('cart/index', [
+            'cart' => $summary
+        ]);
+    }
+
+    public function add(CartAddRequest $request, Product $product)
+    {
+        $this->cartService->addItem($product, $request->quantity);
+
+        return back()->with([
+            'success' => 'Product added to cart',
+            'cart' => $this->cartService->getCartSummary()
+        ]);
+    }
+
+    public function update(CartUpdateRequest $request, CartItem $cartItem)
+    {
+        $this->cartService->updateQuantity($cartItem, $request->quantity);
+
+        // Stay on the previous page (shop page)
+        return back()->with([
+            'success' => 'Cart updated',
+            'cart' => $this->cartService->getCartSummary()
+        ]);
+    }
+
+    public function remove(CartItem $cartItem)
+    {
+        $this->cartService->removeItem($cartItem);
+
+        // Stay on the previous page (shop page)
+        return back()->with([
+            'success' => 'Item removed from cart',
+            'cart' => $this->cartService->getCartSummary()
+        ]);
+    }
+
+    public function clear()
+    {
+        $this->cartService->clearCart();
+
+        // Stay on the previous page (shop page)
+        return back()->with([
+            'success' => 'Cart cleared',
+            'cart' => $this->cartService->getCartSummary()
+        ]);
+    }
+}

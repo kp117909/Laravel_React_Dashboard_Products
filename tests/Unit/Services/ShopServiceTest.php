@@ -54,36 +54,46 @@ test('getShopPageData returns correct structure', function () {
     expect($result['counts'])->toHaveKeys(['categoryCounts', 'yearCounts', 'availabilityCounts']);
 });
 
-// test('getProducts calls repository with correct parameters', function () {
-//     $filters = ['years' => [2023], 'categories' => [1]];
-//     $products = collect([new Product(), new Product()]);
+test('getProducts calls repository with correct parameters', function () {
+    $filters = ['years' => [2023], 'categories' => [1]];
+    $products = mock(\Illuminate\Pagination\LengthAwarePaginator::class);
 
-//     $this->productRepository->shouldReceive('paginatePublished')
-//         ->once()
-//         ->with(['category'], 9, $filters)
-//         ->andReturn($products);
+    $this->productRepository->shouldReceive('paginatePublished')
+        ->once()
+        ->with(['category'], 9, $filters)
+        ->andReturn($products);
 
-//     $result = $this->shopService->getProducts($filters);
+    // Call the private method getProducts using reflection
+    $reflection = new ReflectionClass($this->shopService);
+    $method = $reflection->getMethod('getProducts');
+    $method->setAccessible(true);
 
-//     expect($result)->toBe($products);
-// });
+    $result = $method->invoke($this->shopService, $filters);
 
-// test('getFilterOptions returns all required data', function () {
-//     $years = [2023, 2024];
-//     $categories = collect([new Category(), new Category()]);
-//     $priceRange = ['min' => 10, 'max' => 100];
+    expect($result)->toBe($products);
+});
 
-//     $this->productRepository->shouldReceive('distinctYears')->once()->andReturn($years);
-//     $this->categoryRepository->shouldReceive('all')->once()->andReturn($categories);
-//     $this->productRepository->shouldReceive('getPriceRange')->once()->andReturn($priceRange);
+test('getFilterOptions returns all required data', function () {
+    $years = [2023, 2024];
+    $categories = collect([new Category(), new Category()]);
+    $priceRange = ['min' => 10, 'max' => 100];
 
-//     $result = $this->shopService->getFilterOptions();
+    $this->productRepository->shouldReceive('distinctYears')->once()->andReturn($years);
+    $this->categoryRepository->shouldReceive('all')->once()->andReturn($categories);
+    $this->productRepository->shouldReceive('getPriceRange')->once()->andReturn($priceRange);
 
-//     expect($result)->toHaveKeys(['years', 'categories', 'priceRange']);
-//     expect($result['years'])->toBe($years);
-//     expect($result['categories'])->toBe($categories);
-//     expect($result['priceRange'])->toBe($priceRange);
-// });
+    // Call the private method getFilterOptions using reflection
+    $reflection = new ReflectionClass($this->shopService);
+    $method = $reflection->getMethod('getFilterOptions');
+    $method->setAccessible(true);
+
+    $result = $method->invoke($this->shopService);
+
+    expect($result)->toHaveKeys(['years', 'categories', 'priceRange']);
+    expect($result['years'])->toBe($years);
+    expect($result['categories'])->toBe($categories);
+    expect($result['priceRange'])->toBe($priceRange);
+});
 
 test('getShopPageData includes counts', function () {
     $request = mock(ProductIndexRequest::class);

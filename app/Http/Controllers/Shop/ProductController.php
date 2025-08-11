@@ -20,7 +20,7 @@ class ProductController extends Controller
 
     public function show(int $id)
     {
-        $product = $this->products->findPublishedById(['category'], $id);
+        $product = $this->products->findPublishedById($id, ['category']);
         abort_unless($product, 404);
         return inertia('shop/product-view', [
             'product' => $product,

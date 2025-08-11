@@ -26,7 +26,7 @@ export default function ShopNav({ navItems = [] }: { navItems?: NavItemWithAuth[
     </div>
 
     {/* Mobile menu */}
-    <div className="md:hidden">
+    <div className="md:hidden flex items-center">
       <NavigationSheet navItems={filteredItems} />
     </div>
   </div>

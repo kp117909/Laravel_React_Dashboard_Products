@@ -6,7 +6,8 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { CheckCircle, Clock, DollarSign, Star, ShoppingCart, Tag } from 'lucide-react';
+import { CheckCircle, Clock, DollarSign, Star, Tag } from 'lucide-react';
+import { AddToCartButton } from '@/components/add-to-cart-button';
 import ReturnButton from '@/components/return-button';
 
 interface Props {
@@ -81,10 +82,11 @@ export default function ProductPage({ product }: Props) {
                  {product.price.toFixed(2)} <DollarSign className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 text-green-600 dark:text-green-400" />
 
                 </span>
-               <Button className="flex items-center gap-2 px-3 py-2 text-sm sm:px-4 sm:py-2 sm:text-base">
-                  <ShoppingCart className="w-4 h-4 sm:w-5 sm:h-5" />
-                  Add to Cart
-                </Button>
+               <AddToCartButton
+                  productId={product.id}
+                  isAvailable={product.is_available}
+                  className="px-3 py-2 text-sm sm:px-4 sm:py-2 sm:text-base"
+                />
               </CardFooter>
             </div>
           </div>

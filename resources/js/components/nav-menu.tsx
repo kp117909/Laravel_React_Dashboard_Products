@@ -4,8 +4,9 @@ import {
   NavigationMenuLink,
   NavigationMenuList,
 } from "@/components/ui/navigation-menu"
-import { Link } from "@inertiajs/react"
-import { type NavItemWithAuth } from "@/types"
+import { Link, usePage } from "@inertiajs/react"
+import { type NavItemWithAuth, type SharedData } from "@/types"
+import { CartPreview } from "./cart-preview"
 import { NavigationMenuProps } from "@radix-ui/react-navigation-menu"
 import AppearanceTabs from "./appearance-tabs"
 
@@ -14,6 +15,7 @@ interface NavMenuProps extends NavigationMenuProps {
 }
 
 export const NavMenu = ({ navItems = [], ...props }: NavMenuProps) => {
+  const page = usePage<SharedData>();
   const leftItems = navItems.filter(item => item.align !== "right")
   const rightItems = navItems.filter(item => item.align === "right")
 
@@ -50,6 +52,7 @@ function getLinkClass(variant?: string) {
             </div>
 
             <div className="flex items-center gap-4 ml-auto">
+            <CartPreview cart={page.props.cart} />
             {rightItems.map((item, idx) => (
                 <NavigationMenuItem key={`right-${idx}`}>
                     <NavigationMenuLink asChild>
