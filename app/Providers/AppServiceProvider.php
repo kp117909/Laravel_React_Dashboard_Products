@@ -4,10 +4,14 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Event;
+use Illuminate\Auth\Events\Login;
+use Illuminate\Auth\Events\Registered;
 use App\Http\Middleware\HandlePermissionRedirect;
 
 use App\Models\Product;
 use App\Repositories\ProductRepository;
+use App\Services\CartService;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -26,7 +30,15 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-
         Route::aliasMiddleware('can.redirect', HandlePermissionRedirect::class);
+
+        // Transfer guest cart to authenticated user on login/register
+        Event::listen(Login::class, function (Login $event) {
+            app(CartService::class)->transferGuestCart();
+        });
+
+        Event::listen(Registered::class, function (Registered $event) {
+            app(CartService::class)->transferGuestCart();
+        });
     }
 }

@@ -27,6 +27,7 @@ export interface NavItemWithAuth extends NavItem {
     method?: 'get' | 'post' | 'put' | 'delete';
     variant?: 'primary' | 'secondary';
     align?: "left" | "right";
+    onClick?: (cleanup?: () => void) => void;
 }
 
 import { CartSummary } from './cart';

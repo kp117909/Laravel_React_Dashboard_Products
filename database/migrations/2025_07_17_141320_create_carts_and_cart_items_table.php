@@ -10,9 +10,9 @@ return new class extends Migration
     {
         Schema::create('carts', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->nullable()->constrained()->onDelete('cascade');
-            $table->string('session_id')->nullable(); // For guest users
-            $table->string('status')->default('active'); // active, completed, abandoned
+            $table->foreignId('user_id')->nullable()->constrained()->cascadeOnDelete();
+            $table->string('session_id')->nullable();
+            $table->string('status')->default('active');
             $table->timestamps();
 
             $table->index(['user_id', 'session_id', 'status']);
@@ -20,8 +20,8 @@ return new class extends Migration
 
         Schema::create('cart_items', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('cart_id')->constrained()->onDelete('cascade');
-            $table->foreignId('product_id')->constrained()->onDelete('cascade');
+            $table->foreignId('cart_id')->constrained('carts')->cascadeOnDelete();
+            $table->foreignId('product_id')->constrained('products')->cascadeOnDelete();
             $table->integer('quantity')->default(1);
             $table->timestamps();
 
@@ -35,3 +35,5 @@ return new class extends Migration
         Schema::dropIfExists('carts');
     }
 };
+
+

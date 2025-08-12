@@ -12,7 +12,7 @@ use App\Http\Controllers\CartController;
 
 Route::get('/', [ShopController::class, 'index'])->name('shop');
 
-// Cart routes
+
 Route::prefix('cart')->name('cart.')->group(function () {
     Route::get('/', [CartController::class, 'index'])->name('index');
     Route::post('/add/{product}', [CartController::class, 'add'])->name('add');

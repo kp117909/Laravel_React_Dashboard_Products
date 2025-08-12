@@ -21,18 +21,35 @@ class CartService
         $userId = Auth::id();
         $sessionId = session()->getId();
 
-        $cart = $this->cartModel->where(function ($query) use ($userId, $sessionId) {
-            $query->where('user_id', $userId)
-                  ->orWhere('session_id', $sessionId);
-        })
-        ->where('status', 'active')
-        ->first();
+        // Prefer a user cart when authenticated; otherwise use a guest cart by session
+        if ($userId) {
+            $cart = $this->cartModel
+                ->where('user_id', $userId)
+                ->where('status', 'active')
+                ->first();
+
+            if (!$cart) {
+                $cart = $this->cartModel->create([
+                    'user_id' => $userId,
+                    'session_id' => $sessionId,
+                    'status' => 'active',
+                ]);
+            }
+
+            return $cart;
+        }
+
+        $cart = $this->cartModel
+            ->where('session_id', $sessionId)
+            ->whereNull('user_id')
+            ->where('status', 'active')
+            ->first();
 
         if (!$cart) {
             $cart = $this->cartModel->create([
-                'user_id' => $userId,
+                'user_id' => null,
                 'session_id' => $sessionId,
-                'status' => 'active'
+                'status' => 'active',
             ]);
         }
 
@@ -92,15 +109,16 @@ class CartService
         ];
     }
 
-    public function transferGuestCart(): void
+    public function transferGuestCart(?string $sourceSessionId = null): void
     {
         if (!Auth::check()) {
             return;
         }
 
-        $sessionId = session()->getId();
-        $guestCart = $this->cartModel->where('session_id', $sessionId)
-            ->where('user_id', null)
+        $sessionId = $sourceSessionId ?? session()->getId();
+        $guestCart = $this->cartModel->with(['items.product'])
+            ->where('session_id', $sessionId)
+            ->whereNull('user_id')
             ->where('status', 'active')
             ->first();
 
@@ -108,11 +126,33 @@ class CartService
             return;
         }
 
-        $userCart = $this->getCurrentCart();
+        // Create or get user cart explicitly
+        $userId = Auth::id();
+        $userCart = $this->cartModel
+            ->where('user_id', $userId)
+            ->where('status', 'active')
+            ->first();
+
+        if (!$userCart) {
+            $userCart = $this->cartModel->create([
+                'user_id' => $userId,
+                'session_id' => session()->getId(),
+                'status' => 'active',
+            ]);
+        }
 
         // Transfer items from guest cart to user cart
         foreach ($guestCart->items as $item) {
-            $this->addItem($item->product, $item->quantity);
+            $existingItem = $userCart->items()->where('product_id', $item->product_id)->first();
+
+            if ($existingItem) {
+                $existingItem->update(['quantity' => $existingItem->quantity + $item->quantity]);
+            } else {
+                $userCart->items()->create([
+                    'product_id' => $item->product_id,
+                    'quantity' => $item->quantity
+                ]);
+            }
         }
 
         // Delete the guest cart

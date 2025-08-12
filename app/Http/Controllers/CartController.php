@@ -36,6 +36,15 @@ class CartController extends Controller
 
     public function update(CartUpdateRequest $request, CartItem $cartItem)
     {
+        // Ensure the cart item belongs to the current cart (user or guest)
+        $currentCartId = $this->cartService->getCurrentCart()->id;
+        if ($cartItem->cart_id !== $currentCartId) {
+            return back()->with([
+                'error' => 'Invalid cart item',
+                'cart' => $this->cartService->getCartSummary()
+            ]);
+        }
+
         $this->cartService->updateQuantity($cartItem, $request->quantity);
 
         // Stay on the previous page (shop page)
@@ -47,6 +56,15 @@ class CartController extends Controller
 
     public function remove(CartItem $cartItem)
     {
+        // Ensure the cart item belongs to the current cart (user or guest)
+        $currentCartId = $this->cartService->getCurrentCart()->id;
+        if ($cartItem->cart_id !== $currentCartId) {
+            return back()->with([
+                'error' => 'Invalid cart item',
+                'cart' => $this->cartService->getCartSummary()
+            ]);
+        }
+
         $this->cartService->removeItem($cartItem);
 
         // Stay on the previous page (shop page)

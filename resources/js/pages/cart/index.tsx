@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Head, Link, router } from '@inertiajs/react';
+import { Head, router } from '@inertiajs/react';
 import { Page } from '@inertiajs/core';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -7,23 +7,7 @@ import { Trash2, Plus, Minus, ShoppingBag, ArrowLeft } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
 import AppShopLayout from '@/layouts/app/app-navigation-layout';
-
-interface CartItem {
-    id: number;
-    quantity: number;
-    product: {
-        id: number;
-        name: string;
-        price: number;
-        image: string;
-    };
-}
-
-interface CartSummary {
-    items: CartItem[];
-    total: number;
-    item_count: number;
-}
+import { CartSummary } from '@/types/cart';
 
 interface PageProps extends Record<string, unknown> {
     cart: CartSummary;
