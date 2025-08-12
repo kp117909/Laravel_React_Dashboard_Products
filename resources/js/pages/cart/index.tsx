@@ -85,8 +85,7 @@ export default function Cart({ cart: initialCart }: Props) {
         <AppShopLayout>
             <Head title="Shopping Cart" />
 
-            <div className="container mx-auto px-4 lg:px-6 py-8">
-                <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 mb-8">
+            <div className="container mx-auto px-4 lg:px-6">
                     <Button
                         variant="outline"
                         size="sm"
@@ -96,6 +95,7 @@ export default function Cart({ cart: initialCart }: Props) {
                         <ArrowLeft className="h-4 w-4" />
                         Back to Shop
                     </Button>
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-center gap-4 mb-2 mt-2 align-middle">
                     <h1 className="text-3xl font-bold">Shopping Cart</h1>
                 </div>
 
@@ -104,14 +104,6 @@ export default function Cart({ cart: initialCart }: Props) {
                         <ShoppingBag className="mx-auto h-12 w-12 text-gray-400 mb-4" />
                         <h2 className="text-xl font-semibold mb-2">Your cart is empty</h2>
                         <p className="text-gray-500 mb-4">Add some items to your cart to continue shopping</p>
-                        <Button
-                            variant="outline"
-                            onClick={() => window.history.back()}
-                            className="flex items-center gap-2"
-                        >
-                            <ArrowLeft className="h-4 w-4" />
-                            Back to Shop
-                        </Button>
                     </div>
                 ) : (
                     <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 lg:gap-8">

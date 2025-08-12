@@ -114,3 +114,22 @@ export interface Category {
     updated_at:string;
 }
 
+export interface FilterCallbacks {
+    onSearchChange: (search: string) => void;
+    onPriceChange?: (priceRange: [number, number]) => void;
+    onAvailabilityChange?: (available: boolean, notAvailable: boolean) => void;
+    onYearsChange: (years: Set<number>) => void;
+    onCategoriesChange: (categories: Set<number>) => void;
+}
+
+export interface FilterData {
+    categories: Category[];
+    categoryCounts: Record<number, number>;
+    yearCounts: Record<number, number>;
+    availabilityCounts: Record<string, number>;
+    years: number[];
+    selectedYears: Set<number>;
+    selectedCategories: Set<number>;
+    priceRange: { min: number; max: number };
+}
+

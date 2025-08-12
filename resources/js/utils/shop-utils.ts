@@ -1,5 +1,6 @@
 import { router } from '@inertiajs/react';
 import { createFilterChecker, type FilterState } from './filter-utils';
+import { RequestPayload } from '@inertiajs/inertia';
 
 
 export function createShopFilterChecker(
@@ -50,7 +51,7 @@ export function updateFilters(
   available?: boolean,
   not_available?: boolean
 ) {
-  const params: any = {
+  const params: Record<string, unknown> = {
     years,
     categories,
     page: 1
@@ -76,7 +77,7 @@ export function updateFilters(
     params.not_available = not_available;
   }
 
-  router.get(route('shop'), params, {
+  router.get(route('shop'), params as RequestPayload, {
     preserveState: true,
     replace: true,
     only: ['products', 'filters']

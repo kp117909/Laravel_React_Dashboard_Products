@@ -46,13 +46,13 @@ export default function ProductCard({ product }: ProductCardProps) {
         <p className="text-sm text-muted-foreground line-clamp-3">{product.description}</p>
       </CardContent>
 
-      <CardFooter className="p-4 flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-2">
+      <CardFooter className="p-4 flex flex-col 2xl:flex-row items-start 2xl:items-center gap-4 2xl:gap-2">
         <span className="text-xl font-bold flex items-center gap-1">
           <DollarSign className="w-4 h-4" />
           {product.price.toFixed(2)}
         </span>
-        <div className="flex w-full sm:w-auto gap-2 justify-end">
-          <Button size="sm" variant="outline" asChild className="flex-1 sm:flex-none flex items-center justify-center gap-2">
+        <div className="flex w-full 2xl:w-auto gap-2 justify-end lg:flex-col xl:flex-row">
+          <Button size="sm" variant="outline" asChild className="flex-1 2xl:flex-none flex items-center justify-center">
             <Link href={route('shop.products.show', product.id)}>
               <Eye className="w-4 h-4" />
               View
@@ -63,7 +63,7 @@ export default function ProductCard({ product }: ProductCardProps) {
             isAvailable={product.is_available}
             showQuantity={false}
             variant="default"
-            className="flex-1 sm:flex-none"
+            className="flex-1 2xl:flex-none flex items-center justify-center gap-2"
           />
         </div>
       </CardFooter>

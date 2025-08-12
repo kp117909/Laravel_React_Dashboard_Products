@@ -105,6 +105,7 @@ export function AddToCartButton({
                 onClick={addToCart}
                 disabled={isLoading}
                 className={className}
+                size="sm"
                 variant={variant}
             >
                 <ShoppingCart className="mr-2 h-4 w-4" />

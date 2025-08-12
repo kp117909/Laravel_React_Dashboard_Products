@@ -3,7 +3,6 @@ import { FooterShop } from '@/components/footer2';
 import { Product } from '@/types';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { CheckCircle, Clock, DollarSign, Star, Tag } from 'lucide-react';
