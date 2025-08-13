@@ -1,7 +1,7 @@
 import { router } from '@inertiajs/react';
 import { createFilterChecker, type FilterState } from './filter-utils';
 import { RequestPayload } from '@inertiajs/inertia';
-
+import { clearSavedShopFilters } from './filter-persistence';
 
 export function createShopFilterChecker(
   filters: { years: number[]; categories: number[]; search?: string; price_min?: number; price_max?: number; available?: boolean; not_available?: boolean },
@@ -32,6 +32,8 @@ export function createShopFilterChecker(
  * Clear all filters function
  */
 export function clearAllFilters() {
+  clearSavedShopFilters();
+
   router.get(route('shop'), { page: 1 }, {
     preserveState: true,
     replace: true,

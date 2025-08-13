@@ -1,39 +1,56 @@
-import { Link } from '@inertiajs/react';
-import ProductCard from '@/components/product-card';
-import { Category, type PaginatedResponse, Product } from '@/types';
-import ProductFilters from '@/components/product-filter';
 import AppShopLayout from '@/layouts/app/app-navigation-layout';
-import { useMemo, useState } from 'react';
-import { createShopFilterChecker, clearAllFilters, updateFilters } from '@/utils/shop-utils';
-import { X } from 'lucide-react';
+import { useState, useCallback } from 'react';
+import { clearAllFilters, updateFilters } from '@/utils/shop-utils';
 import { MobileFilterToggle } from '@/components/mobile-filter-toggle';
+import { Category, type PaginatedResponse, Product } from '@/types';
 
-interface Props {
-  products: PaginatedResponse<Product>;
-  filters: {
-    years: number[],
-    categories: number[],
-    search?: string,
-    price_min?: number,
-    price_max?: number,
-    available?: boolean,
-    not_available?: boolean
-  };
-  filterOptions: {
-    years: number[];
-    categories: Category[];
-    priceRange: { min: number; max: number };
-  };
-  counts: {
-    categoryCounts: Record<number, number>;
-    yearCounts: Record<number, number>;
-    availabilityCounts: Record<string, number>;
-  };
+import { ActiveFilters } from '@/pages/shop/active-filters';
+import { ProductList } from '@/pages/shop/product-list';
+import { Pagination } from '@/pages/shop/pagination';
+import { FilterSidebar } from '@/pages/shop/filter-sidebar';
+import { useShopState } from '@/hooks/use-shop-state';
+
+interface ShopFilters {
+  years: number[];
+  categories: number[];
+  search?: string;
+  price_min?: number;
+  price_max?: number;
+  available?: boolean;
+  not_available?: boolean;
 }
 
-export default function Shop({ products, filters, filterOptions, counts }: Props) {
+interface FilterOptions {
+  years: number[];
+  categories: Category[];
+  priceRange: { min: number; max: number };
+}
+
+interface FilterCounts {
+  categoryCounts: Record<number, number>;
+  yearCounts: Record<number, number>;
+  availabilityCounts: Record<string, number>;
+}
+
+interface ShopProps {
+  products: PaginatedResponse<Product>;
+  filters: ShopFilters;
+  filterOptions: FilterOptions;
+  counts: FilterCounts;
+}
+
+export default function Shop({ products, filters, filterOptions, counts }: ShopProps) {
   const [isFilterOpen, setIsFilterOpen] = useState(false);
-  const onYearsChange = (next: Set<number>) => {
+
+  const {
+    selectedYears,
+    selectedCategories,
+    initialPriceRange,
+    hasActiveFilters,
+    filterSummary
+  } = useShopState(filters, filterOptions, products);
+
+  const onYearsChange = useCallback((next: Set<number>) => {
     updateFilters(
       Array.from(next),
       Array.from(selectedCategories),
@@ -43,9 +60,9 @@ export default function Shop({ products, filters, filterOptions, counts }: Props
       filters.available ?? true,
       filters.not_available ?? true
     );
-  };
+  }, [selectedCategories, filters.search, filters.price_min, filters.price_max, filters.available, filters.not_available]);
 
-  const onCategoriesChange = (next: Set<number>) => {
+  const onCategoriesChange = useCallback((next: Set<number>) => {
     updateFilters(
       Array.from(selectedYears),
       Array.from(next),
@@ -55,9 +72,9 @@ export default function Shop({ products, filters, filterOptions, counts }: Props
       filters.available ?? true,
       filters.not_available ?? true
     );
-  }
+  }, [selectedYears, filters.search, filters.price_min, filters.price_max, filters.available, filters.not_available]);
 
-  const onPriceChange = (priceRange: [number, number]) => {
+  const onPriceChange = useCallback((priceRange: [number, number]) => {
     updateFilters(
       Array.from(selectedYears),
       Array.from(selectedCategories),
@@ -67,9 +84,9 @@ export default function Shop({ products, filters, filterOptions, counts }: Props
       filters.available ?? true,
       filters.not_available ?? true
     );
-  };
+  }, [selectedYears, selectedCategories, filters.search, filters.available, filters.not_available]);
 
-  const onAvailabilityChange = (available: boolean, notAvailable: boolean) => {
+  const onAvailabilityChange = useCallback((available: boolean, notAvailable: boolean) => {
     updateFilters(
       Array.from(selectedYears),
       Array.from(selectedCategories),
@@ -79,21 +96,9 @@ export default function Shop({ products, filters, filterOptions, counts }: Props
       available,
       notAvailable
     );
-  };
+  }, [selectedYears, selectedCategories, filters.search, filters.price_min, filters.price_max]);
 
-  const selectedYears = useMemo(
-    () => new Set<number>((filters.years ?? []).map(Number)),
-    [filters.years]
-  );
-
-  const allCategoryIds = useMemo(() => filterOptions.categories.map(c => c.id), [filterOptions.categories]);
-
-  const selectedCategories = useMemo(
-    () => new Set<number>((filters.categories?.length ? filters.categories : allCategoryIds).map(Number)),
-    [filters.categories, allCategoryIds]
-  );
-
-  const onSearchChange = (search: string) => {
+  const onSearchChange = useCallback((search: string) => {
     updateFilters(
       Array.from(selectedYears),
       Array.from(selectedCategories),
@@ -103,116 +108,52 @@ export default function Shop({ products, filters, filterOptions, counts }: Props
       filters.available ?? true,
       filters.not_available ?? true
     );
-  }
+  }, [selectedYears, selectedCategories, filters.price_min, filters.price_max, filters.available, filters.not_available]);
 
-  const initialPriceRange: [number, number] = useMemo(() => {
-    return [
-      filters.price_min ?? filterOptions.priceRange.min,
-      filters.price_max ?? filterOptions.priceRange.max
-    ];
-  }, [filters.price_min, filters.price_max, filterOptions.priceRange]);
+  const handleClearAllFilters = useCallback(() => {
+    clearAllFilters();
+  }, []);
 
-  const filterChecker = useMemo(() =>
-    createShopFilterChecker(filters, filterOptions.years, allCategoryIds, filterOptions.priceRange),
-    [filters, filterOptions.years, allCategoryIds, filterOptions.priceRange]
-  );
-
-  const hasActiveFilters = useMemo(() => filterChecker.hasActiveFilters(), [filterChecker]);
-  const filterSummary = useMemo(() => filterChecker.getFilterSummary(), [filterChecker]);
+  const toggleFilterOpen = useCallback(() => {
+    setIsFilterOpen(prev => !prev);
+  }, []);
 
   return (
     <AppShopLayout>
       <div className="container mx-auto flex flex-col lg:flex-row w-full gap-4 lg:gap-6 text-[#1b1b18] dark:text-[#EDEDEC] px-2 sm:px-4 lg:px-6">
-
-        <div className={`fixed lg:relative top-0 left-0 right-0 z-50 lg:z-auto w-full lg:w-72 shadow-lg rounded-lg bg-white dark:bg-[#18181b] lg:mb-0 transform transition-transform duration-300 ${isFilterOpen ? 'translate-y-0' : 'translate-y-[100%] lg:translate-y-0'}`}>
-          <ProductFilters
-            categories={filterOptions.categories}
-            products = {products.data}
-            years={filterOptions.years}
-            onYearsChange={onYearsChange}
-            selectedYears={selectedYears}
-            onCategoriesChange={onCategoriesChange}
-            selectedCategories={selectedCategories}
-            onSearchChange={onSearchChange}
-            onPriceChange={onPriceChange}
-            onAvailabilityChange={onAvailabilityChange}
-            initialSearch={filters.search || ""}
-            initialPriceRange={initialPriceRange}
-            priceRange={filterOptions.priceRange}
-            initialAvailable={filters.available ?? true}
-            initialNotAvailable={filters.not_available ?? true}
-            categoryCounts={counts.categoryCounts}
-            yearCounts={counts.yearCounts}
-            availabilityCounts={counts.availabilityCounts}
-          />
-        </div>
+        <FilterSidebar
+          isFilterOpen={isFilterOpen}
+          filterOptions={filterOptions}
+          products={products.data}
+          filters={filters}
+          counts={counts}
+          selectedYears={selectedYears}
+          selectedCategories={selectedCategories}
+          initialPriceRange={initialPriceRange}
+          onYearsChange={onYearsChange}
+          onCategoriesChange={onCategoriesChange}
+          onSearchChange={onSearchChange}
+          onPriceChange={onPriceChange}
+          onAvailabilityChange={onAvailabilityChange}
+        />
 
         <main className="flex flex-col items-center w-full">
           <h1 className="mb-6 text-2xl font-semibold">See products</h1>
 
-          {hasActiveFilters && (
-            <div className="mb-4 w-full">
-              <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
-                Current Filters
-              </h3>
-              <div className="flex items-center gap-4 flex-wrap">
-                {filterSummary.map((filter) => (
-                  <div
-                    key={filter.type}
-                    className="p-3 bg-white dark:bg-[#1b1b18] rounded-lg"
-                  >
-                    <p className="text-sm text-[#1b1b18] dark:text-white">
-                      {filter.label}: <span className="font-semibold">{filter.value}</span>
-                    </p>
-                  </div>
-                ))}
-
-                <button
-                  onClick={clearAllFilters}
-                  className="px-3 py-1 text-sm text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 border border-gray-300 dark:border-gray-600 rounded hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
-                >
-                  Clear all filters <X className="w-4 h-4 inline-block" />
-                </button>
-              </div>
-            </div>
-          )}
+          <ActiveFilters
+            filterSummary={filterSummary}
+            onClearAll={handleClearAllFilters}
+          />
 
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 w-full max-w-none">
-            {products?.data?.length ? (
-              products.data.map((product) => (
-                <ProductCard key={product.id} product={product} />
-              ))
-            ) : (
-              <p className="text-center col-span-full">
-                {filters.search ? `No products found for "${filters.search}".` : 'No products to list.'}
-              </p>
-            )}
+            <ProductList products={products.data} searchTerm={filters.search} />
           </div>
 
-          <div className="flex flex-col items-center mt-8 gap-4 pb-16 lg:pb-8">
-            <div className="text-sm text-gray-600 dark:text-gray-400">
-              Showing {products.from || 0} to {products.to || 0} of {products.total || 0} products
-            </div>
-
-            <div className="flex flex-wrap justify-center gap-2 px-4">
-              {products.links?.map((link, idx) => (
-                <Link
-                  key={idx}
-                  href={link.url || '#'}
-                  className={`px-3 py-1 rounded border text-sm ${
-                    link.active
-                      ? 'bg-[#1b1b18] text-white'
-                      : 'bg-white text-[#1b1b18] hover:bg-gray-100'
-                  } ${!link.url ? 'pointer-events-none opacity-50' : ''}`}
-                  dangerouslySetInnerHTML={{ __html: link.label }}
-                />
-              ))}
-            </div>
-          </div>
+          <Pagination products={products} />
         </main>
       </div>
-      <MobileFilterToggle onClick={() => setIsFilterOpen(!isFilterOpen)} isOpen={isFilterOpen} />
 
+      <MobileFilterToggle onClick={toggleFilterOpen} isOpen={isFilterOpen} />
     </AppShopLayout>
   );
 }

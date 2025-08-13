@@ -17,7 +17,11 @@ export default function ProductPage({ product }: Props) {
   return (
     <AppShopLayout>
       <div className="w-full px-4 py-8 text-[#1b1b18] dark:text-[#EDEDEC]">
-        <ReturnButton className='mb-2'/>
+        <ReturnButton
+          className='mb-2'
+          label="Back to Shop"
+          useSavedFilters={true}
+        />
         <Card className="overflow-hidden">
           <div className="flex flex-col lg:flex-row">
             {/* Product Image */}
