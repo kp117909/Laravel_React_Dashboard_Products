@@ -22,7 +22,7 @@ export default function ProductCard({ product }: ProductCardProps) {
       )}
 
       <CardContent className="p-4 flex flex-col gap-2 flex-1">
-        <div className="flex justify-between items-center">
+        <div className="flex flex-col 2xl:flex-row justify-between items-start 2xl:items-center gap-2">
           <Badge variant="secondary" className="flex items-center gap-1">
             <Tag className="w-4 h-4" />
             {product.category.name}

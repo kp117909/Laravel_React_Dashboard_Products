@@ -1,7 +1,7 @@
 import { Slider } from "@/components/ui/slider";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 
 interface Props {
   value: number[];
@@ -25,6 +25,7 @@ export default function PriceRangeSlider({
   const [localValue, setLocalValue] = useState(value);
   const [minInput, setMinInput] = useState(value[0].toString());
   const [maxInput, setMaxInput] = useState(value[1].toString());
+  const timeoutRef = useRef<NodeJS.Timeout | undefined>(undefined);
 
   useEffect(() => {
     setLocalValue(value);
@@ -34,15 +35,14 @@ export default function PriceRangeSlider({
 
   // Debounced onChange handler
   const debouncedOnChange = useCallback(
-    (() => {
-      let timeoutId: NodeJS.Timeout;
-      return (newValue: number[]) => {
-        clearTimeout(timeoutId);
-        timeoutId = setTimeout(() => {
-          onChange(newValue);
-        }, debounceMs);
-      };
-    })(),
+    (newValue: number[]) => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+      timeoutRef.current = setTimeout(() => {
+        onChange(newValue);
+      }, debounceMs);
+    },
     [onChange, debounceMs]
   );
 

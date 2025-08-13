@@ -1,14 +1,14 @@
-import AppShopLayout from '@/layouts/app/app-navigation-layout';
 import { useState, useCallback } from 'react';
-import { clearAllFilters, updateFilters } from '@/utils/shop-utils';
-import { MobileFilterToggle } from '@/components/mobile-filter-toggle';
+import { Head } from '@inertiajs/react';
+import AppShopLayout from '@/layouts/app/app-navigation-layout';
 import { Category, type PaginatedResponse, Product } from '@/types';
-
+import { FilterSidebar } from '@/pages/shop/filter-sidebar';
 import { ActiveFilters } from '@/pages/shop/active-filters';
 import { ProductList } from '@/pages/shop/product-list';
 import { Pagination } from '@/pages/shop/pagination';
-import { FilterSidebar } from '@/pages/shop/filter-sidebar';
+import { MobileFilterToggle } from '@/components/mobile-filter-toggle';
 import { useShopState } from '@/hooks/use-shop-state';
+import { clearAllFilters, updateFilters, useBodyScrollLock } from '@/utils/shop-utils';
 
 interface ShopFilters {
   years: number[];
@@ -46,7 +46,6 @@ export default function Shop({ products, filters, filterOptions, counts }: ShopP
     selectedYears,
     selectedCategories,
     initialPriceRange,
-    hasActiveFilters,
     filterSummary
   } = useShopState(filters, filterOptions, products);
 
@@ -117,6 +116,9 @@ export default function Shop({ products, filters, filterOptions, counts }: ShopP
   const toggleFilterOpen = useCallback(() => {
     setIsFilterOpen(prev => !prev);
   }, []);
+
+  // Prevent body scrolling when filter is open on mobile
+  useBodyScrollLock(isFilterOpen);
 
   return (
     <AppShopLayout>

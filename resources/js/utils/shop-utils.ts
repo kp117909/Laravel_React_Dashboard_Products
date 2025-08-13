@@ -2,6 +2,7 @@ import { router } from '@inertiajs/react';
 import { createFilterChecker, type FilterState } from './filter-utils';
 import { RequestPayload } from '@inertiajs/inertia';
 import { clearSavedShopFilters } from './filter-persistence';
+import { useEffect } from 'react';
 
 export function createShopFilterChecker(
   filters: { years: number[]; categories: number[]; search?: string; price_min?: number; price_max?: number; available?: boolean; not_available?: boolean },
@@ -84,4 +85,22 @@ export function updateFilters(
     replace: true,
     only: ['products', 'filters']
   });
+}
+
+/**
+ * Hook to prevent body scrolling when filter sidebar is open on mobile
+ */
+export function useBodyScrollLock(isLocked: boolean) {
+  useEffect(() => {
+    if (isLocked) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+
+    // Cleanup on unmount
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [isLocked]);
 }

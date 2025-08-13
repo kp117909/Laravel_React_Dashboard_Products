@@ -12,7 +12,7 @@ interface MobileNavMenuProps {
 export const MobileNavMenu = ({ navItems = [] }: MobileNavMenuProps) => {
   const page = usePage<SharedData>();
   return (
-    <nav className="flex flex-col gap-4 mt-8">
+    <nav className="flex flex-col gap-4 mt-8 overflow-y-auto">
       <h1 className="flex ml-2 items-center gap-2">VibeShop <AudioLines/> </h1>
       <AppearanceTabs className = "mr-2 ml-2 flex items-center justify-center"showLabel = {false} />
       {navItems.map((item, idx) => (

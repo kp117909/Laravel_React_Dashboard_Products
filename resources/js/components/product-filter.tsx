@@ -69,7 +69,14 @@ export default function ProductFilters({
   };
 
   return (
-    <div className="p-4 space-y-4 lg:space-y-6 text-left bg-white dark:bg-[#18181b] min-h-screen lg:min-h-0 lg:rounded-lg">
+    <div className={`
+      p-4 space-y-4 lg:space-y-6
+      bg-white dark:bg-[#18181b]
+      min-h-screen lg:min-h-0
+      lg:rounded-lg
+      overflow-y-auto
+      max-h-screen lg:max-h-none
+    `}>
       <FilterHeader />
 
       <SearchInput value={state.search} onChange={handleSearchChange} />
