@@ -91,7 +91,7 @@ class CartServiceTest extends TestCase
         $this->assertEquals(4, $updatedItem->quantity);
     }
 
-    public function test_update_quantity_removes_item_when_zero()
+    public function test_update_quantity_throws_exception_when_zero()
     {
         Auth::login($this->user);
 
@@ -102,11 +102,10 @@ class CartServiceTest extends TestCase
             'quantity' => 1
         ]);
 
-        $this->cartService->updateQuantity($cartItem, 0);
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('Quantity must be greater than 0.');
 
-        $this->assertDatabaseMissing('cart_items', [
-            'id' => $cartItem->id
-        ]);
+        $this->cartService->updateQuantity($cartItem, 0);
     }
 
     public function test_remove_item()

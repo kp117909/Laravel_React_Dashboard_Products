@@ -32,7 +32,7 @@ export default function Index({ users }: Props) {
             href={linkWithFilters('users.create')}
             className="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2 text-white hover:bg-primary/90 dark:bg-gray-200 text-black dark:text-black dark:hover:bg-gray-300"
             >
-            <Plus className="h-4 w-4" />
+            <Plus  />
             Add new user
         </Link>
         }

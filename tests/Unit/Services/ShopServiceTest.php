@@ -37,6 +37,7 @@ test('getShopPageData returns correct structure', function () {
     $availabilityCounts = ['available' => 8, 'not_available' => 2];
 
     $request->shouldReceive('filters')->once()->andReturn($filters);
+    $request->shouldReceive('input')->with('per_page', 9)->once()->andReturn(9);
     $this->filterService->shouldReceive('withDefaults')->once()->with($filters)->andReturn($filters);
     $this->productRepository->shouldReceive('paginatePublished')->once()->with(['category'], 9, $filters)->andReturn($products);
     $this->productRepository->shouldReceive('distinctYears')->once()->andReturn($years);
@@ -55,22 +56,33 @@ test('getShopPageData returns correct structure', function () {
 });
 
 test('getProducts calls repository with correct parameters', function () {
+    $request = mock(ProductIndexRequest::class);
     $filters = ['years' => [2023], 'categories' => [1]];
     $products = mock(\Illuminate\Pagination\LengthAwarePaginator::class);
+    $categories = collect([new Category(), new Category()]);
+    $years = [2023, 2024];
+    $priceRange = ['min' => 10, 'max' => 100];
+    $categoryCounts = [1 => 5, 2 => 3];
+    $yearCounts = [2023 => 5, 2024 => 3];
+    $availabilityCounts = ['available' => 8, 'not_available' => 2];
 
+    $request->shouldReceive('filters')->once()->andReturn($filters);
+    $request->shouldReceive('input')->with('per_page', 9)->once()->andReturn(9);
+    $this->filterService->shouldReceive('withDefaults')->once()->with($filters)->andReturn($filters);
     $this->productRepository->shouldReceive('paginatePublished')
         ->once()
         ->with(['category'], 9, $filters)
         ->andReturn($products);
+    $this->productRepository->shouldReceive('distinctYears')->once()->andReturn($years);
+    $this->categoryRepository->shouldReceive('all')->once()->andReturn($categories);
+    $this->productRepository->shouldReceive('getPriceRange')->once()->andReturn($priceRange);
+    $this->categoryRepository->shouldReceive('getProductCounts')->once()->andReturn($categoryCounts);
+    $this->productRepository->shouldReceive('getYearCounts')->once()->andReturn($yearCounts);
+    $this->productRepository->shouldReceive('getAvailabilityCounts')->once()->andReturn($availabilityCounts);
 
-    // Call the private method getProducts using reflection
-    $reflection = new ReflectionClass($this->shopService);
-    $method = $reflection->getMethod('getProducts');
-    $method->setAccessible(true);
+    $result = $this->shopService->getShopPageData($request);
 
-    $result = $method->invoke($this->shopService, $filters);
-
-    expect($result)->toBe($products);
+    expect($result['products'])->toBe($products);
 });
 
 test('getFilterOptions returns all required data', function () {
@@ -109,6 +121,7 @@ test('getShopPageData includes counts', function () {
     $availabilityCounts = ['available' => 8, 'not_available' => 2];
 
     $request->shouldReceive('filters')->once()->andReturn($filters);
+    $request->shouldReceive('input')->with('per_page', 9)->once()->andReturn(9);
     $this->filterService->shouldReceive('withDefaults')->once()->with($filters)->andReturn($filters);
     $this->productRepository->shouldReceive('paginatePublished')->once()->with(['category'], 9, $filters)->andReturn($products);
     $this->productRepository->shouldReceive('distinctYears')->once()->andReturn($years);
@@ -123,4 +136,33 @@ test('getShopPageData includes counts', function () {
     expect($result['counts']['categoryCounts'])->toBe($categoryCounts);
     expect($result['counts']['yearCounts'])->toBe($yearCounts);
     expect($result['counts']['availabilityCounts'])->toBe($availabilityCounts);
+});
+
+test('getShopPageData handles custom per_page parameter', function () {
+    $request = mock(ProductIndexRequest::class);
+    $filters = ['years' => [2023], 'categories' => [1]];
+
+    // Create a mock paginator
+    $products = mock(\Illuminate\Pagination\LengthAwarePaginator::class);
+    $categories = collect([new Category(), new Category()]);
+    $years = [2023, 2024];
+    $priceRange = ['min' => 10, 'max' => 100];
+    $categoryCounts = [1 => 5, 2 => 3];
+    $yearCounts = [2023 => 5, 2024 => 3];
+    $availabilityCounts = ['available' => 8, 'not_available' => 2];
+
+    $request->shouldReceive('filters')->once()->andReturn($filters);
+    $request->shouldReceive('input')->with('per_page', 9)->once()->andReturn(24);
+    $this->filterService->shouldReceive('withDefaults')->once()->with($filters)->andReturn($filters);
+    $this->productRepository->shouldReceive('paginatePublished')->once()->with(['category'], 24, $filters)->andReturn($products);
+    $this->productRepository->shouldReceive('distinctYears')->once()->andReturn($years);
+    $this->categoryRepository->shouldReceive('all')->once()->andReturn($categories);
+    $this->productRepository->shouldReceive('getPriceRange')->once()->andReturn($priceRange);
+    $this->categoryRepository->shouldReceive('getProductCounts')->once()->andReturn($categoryCounts);
+    $this->productRepository->shouldReceive('getYearCounts')->once()->andReturn($yearCounts);
+    $this->productRepository->shouldReceive('getAvailabilityCounts')->once()->andReturn($availabilityCounts);
+
+    $result = $this->shopService->getShopPageData($request);
+
+    expect($result['products'])->toBe($products);
 });

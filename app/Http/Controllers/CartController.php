@@ -26,6 +26,14 @@ class CartController extends Controller
 
     public function add(CartAddRequest $request, Product $product)
     {
+        // Check if product is published
+        if (!$product->is_published) {
+            return back()->with([
+                'error' => 'This product is not available for purchase.',
+                'cart' => $this->cartService->getCartSummary()
+            ]);
+        }
+
         $this->cartService->addItem($product, $request->quantity);
 
         return back()->with([
@@ -45,7 +53,14 @@ class CartController extends Controller
             ]);
         }
 
-        $this->cartService->updateQuantity($cartItem, $request->quantity);
+        try {
+            $this->cartService->updateQuantity($cartItem, $request->quantity);
+        } catch (\InvalidArgumentException $e) {
+            return back()->with([
+                'error' => $e->getMessage(),
+                'cart' => $this->cartService->getCartSummary()
+            ]);
+        }
 
         // Stay on the previous page (shop page)
         return back()->with([

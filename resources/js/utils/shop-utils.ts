@@ -3,6 +3,7 @@ import { createFilterChecker, type FilterState } from './filter-utils';
 import { RequestPayload } from '@inertiajs/inertia';
 import { clearSavedShopFilters } from './filter-persistence';
 import { useEffect } from 'react';
+import { ViewMode } from '@/components/view-switcher';
 
 export function createShopFilterChecker(
   filters: { years: number[]; categories: number[]; search?: string; price_min?: number; price_max?: number; available?: boolean; not_available?: boolean },
@@ -103,4 +104,52 @@ export function useBodyScrollLock(isLocked: boolean) {
       document.body.style.overflow = 'unset';
     };
   }, [isLocked]);
+}
+
+/**
+ * Hook to automatically switch to grid view on small screens
+ */
+export function useAutoSwitchViewMode(viewMode: ViewMode, setViewMode: (mode: ViewMode) => void) {
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth < 500 && viewMode === 'list') {
+        setViewMode('grid-3');
+        localStorage.setItem('shop-view-mode', 'grid-3');
+      }
+    };
+
+    // Check on mount
+    handleResize();
+
+    // Listen for resize events
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, [viewMode, setViewMode]);
+}
+
+/**
+ * Get grid classes based on view mode
+ */
+export function getGridClasses(viewMode: ViewMode): string {
+  const baseClasses = 'grid gap-4 sm:gap-6 w-full max-w-none';
+
+  switch (viewMode) {
+    case 'grid-3':
+      return `${baseClasses} grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3`;
+    case 'list':
+      return `${baseClasses} grid-cols-1`;
+    default:
+      return `${baseClasses} grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3`;
+  }
+}
+
+
+export function formatCartCount(count: number): string {
+  if (count > 99) {
+    return '99';
+  }
+  return count.toString();
 }

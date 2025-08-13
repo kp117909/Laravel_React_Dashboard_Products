@@ -79,8 +79,7 @@ class CartService
     public function updateQuantity(CartItem $item, int $quantity): CartItem
     {
         if ($quantity <= 0) {
-            $item->delete();
-            return $item;
+            throw new \InvalidArgumentException('Quantity must be greater than 0.');
         }
 
         $item->update(['quantity' => $quantity]);

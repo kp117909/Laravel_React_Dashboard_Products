@@ -1,5 +1,4 @@
-import { useState, useCallback } from 'react';
-import { Head } from '@inertiajs/react';
+import { useState, useCallback, useEffect } from 'react';
 import AppShopLayout from '@/layouts/app/app-navigation-layout';
 import { Category, type PaginatedResponse, Product } from '@/types';
 import { FilterSidebar } from '@/pages/shop/filter-sidebar';
@@ -8,7 +7,8 @@ import { ProductList } from '@/pages/shop/product-list';
 import { Pagination } from '@/pages/shop/pagination';
 import { MobileFilterToggle } from '@/components/mobile-filter-toggle';
 import { useShopState } from '@/hooks/use-shop-state';
-import { clearAllFilters, updateFilters, useBodyScrollLock } from '@/utils/shop-utils';
+import { clearAllFilters, updateFilters, useBodyScrollLock, getGridClasses, useAutoSwitchViewMode } from '@/utils/shop-utils';
+import { ViewSwitcher, type ViewMode } from '@/components/view-switcher';
 
 interface ShopFilters {
   years: number[];
@@ -39,75 +39,93 @@ interface ShopProps {
   counts: FilterCounts;
 }
 
-export default function Shop({ products, filters, filterOptions, counts }: ShopProps) {
+export default function Shop({ products, filters: initialFilters, filterOptions, counts }: ShopProps) {
   const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [viewMode, setViewMode] = useState<ViewMode>('grid-3');
+
+  // Load view mode from localStorage on mount
+  useEffect(() => {
+    const savedViewMode = localStorage.getItem('shop-view-mode') as ViewMode;
+    if (savedViewMode && ['grid-3', 'list'].includes(savedViewMode)) {
+      setViewMode(savedViewMode);
+    }
+  }, []);
+
+  // Save view mode to localStorage when it changes
+  const handleViewChange = useCallback((newViewMode: ViewMode) => {
+    setViewMode(newViewMode);
+    localStorage.setItem('shop-view-mode', newViewMode);
+  }, []);
+
+  // Auto-switch to grid view on small screens
+  useAutoSwitchViewMode(viewMode, setViewMode);
 
   const {
     selectedYears,
     selectedCategories,
     initialPriceRange,
     filterSummary
-  } = useShopState(filters, filterOptions, products);
+  } = useShopState(initialFilters, filterOptions, products);
 
   const onYearsChange = useCallback((next: Set<number>) => {
     updateFilters(
       Array.from(next),
       Array.from(selectedCategories),
-      filters.search,
-      filters.price_min,
-      filters.price_max,
-      filters.available ?? true,
-      filters.not_available ?? true
+      initialFilters.search,
+      initialFilters.price_min,
+      initialFilters.price_max,
+      initialFilters.available ?? true,
+      initialFilters.not_available ?? true
     );
-  }, [selectedCategories, filters.search, filters.price_min, filters.price_max, filters.available, filters.not_available]);
+  }, [selectedCategories, initialFilters.search, initialFilters.price_min, initialFilters.price_max, initialFilters.available, initialFilters.not_available]);
 
   const onCategoriesChange = useCallback((next: Set<number>) => {
     updateFilters(
       Array.from(selectedYears),
       Array.from(next),
-      filters.search,
-      filters.price_min,
-      filters.price_max,
-      filters.available ?? true,
-      filters.not_available ?? true
+      initialFilters.search,
+      initialFilters.price_min,
+      initialFilters.price_max,
+      initialFilters.available ?? true,
+      initialFilters.not_available ?? true
     );
-  }, [selectedYears, filters.search, filters.price_min, filters.price_max, filters.available, filters.not_available]);
+  }, [selectedYears, initialFilters.search, initialFilters.price_min, initialFilters.price_max, initialFilters.available, initialFilters.not_available]);
 
   const onPriceChange = useCallback((priceRange: [number, number]) => {
     updateFilters(
       Array.from(selectedYears),
       Array.from(selectedCategories),
-      filters.search,
+      initialFilters.search,
       priceRange[0],
       priceRange[1],
-      filters.available ?? true,
-      filters.not_available ?? true
+      initialFilters.available ?? true,
+      initialFilters.not_available ?? true
     );
-  }, [selectedYears, selectedCategories, filters.search, filters.available, filters.not_available]);
+  }, [selectedYears, selectedCategories, initialFilters.search, initialFilters.available, initialFilters.not_available]);
 
   const onAvailabilityChange = useCallback((available: boolean, notAvailable: boolean) => {
     updateFilters(
       Array.from(selectedYears),
       Array.from(selectedCategories),
-      filters.search,
-      filters.price_min,
-      filters.price_max,
+      initialFilters.search,
+      initialFilters.price_min,
+      initialFilters.price_max,
       available,
       notAvailable
     );
-  }, [selectedYears, selectedCategories, filters.search, filters.price_min, filters.price_max]);
+  }, [selectedYears, selectedCategories, initialFilters.search, initialFilters.price_min, initialFilters.price_max]);
 
   const onSearchChange = useCallback((search: string) => {
     updateFilters(
       Array.from(selectedYears),
       Array.from(selectedCategories),
       search,
-      filters.price_min,
-      filters.price_max,
-      filters.available ?? true,
-      filters.not_available ?? true
+      initialFilters.price_min,
+      initialFilters.price_max,
+      initialFilters.available ?? true,
+      initialFilters.not_available ?? true
     );
-  }, [selectedYears, selectedCategories, filters.price_min, filters.price_max, filters.available, filters.not_available]);
+  }, [selectedYears, selectedCategories, initialFilters.price_min, initialFilters.price_max, initialFilters.available, initialFilters.not_available]);
 
   const handleClearAllFilters = useCallback(() => {
     clearAllFilters();
@@ -127,7 +145,7 @@ export default function Shop({ products, filters, filterOptions, counts }: ShopP
           isFilterOpen={isFilterOpen}
           filterOptions={filterOptions}
           products={products.data}
-          filters={filters}
+          filters={initialFilters}
           counts={counts}
           selectedYears={selectedYears}
           selectedCategories={selectedCategories}
@@ -140,15 +158,20 @@ export default function Shop({ products, filters, filterOptions, counts }: ShopP
         />
 
         <main className="flex flex-col items-center w-full">
-          <h1 className="mb-6 text-2xl font-semibold">See products</h1>
+          <div className="flex items-center justify-between w-full mb-6">
+            <h1 className="text-2xl font-semibold">See products</h1>
+            <div className="hidden min-[500px]:block">
+              <ViewSwitcher currentView={viewMode} onViewChange={handleViewChange} />
+            </div>
+          </div>
 
           <ActiveFilters
             filterSummary={filterSummary}
             onClearAll={handleClearAllFilters}
           />
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 w-full max-w-none">
-            <ProductList products={products.data} searchTerm={filters.search} />
+          <div className={getGridClasses(viewMode)}>
+            <ProductList products={products.data} searchTerm={initialFilters.search} viewMode={viewMode} />
           </div>
 
           <Pagination products={products} />

@@ -13,6 +13,7 @@ import { Link, router } from '@inertiajs/react';
 import { CartSummary } from '@/types/cart';
 import { useState } from 'react';
 import { Page } from '@inertiajs/core';
+import { formatCartCount } from '@/utils/shop-utils';
 
 interface PageProps extends Record<string, unknown> {
     cart: CartSummary;
@@ -61,7 +62,7 @@ export function CartPreview({ cart: initialCart }: CartPreviewProps) {
                             variant="secondary"
                             className="absolute -top-2 -right-2 h-5 w-5 flex items-center justify-center p-0 text-xs"
                         >
-                            {cart.item_count}
+                            {formatCartCount(cart.item_count)}
                         </Badge>
                     )}
                 </Button>

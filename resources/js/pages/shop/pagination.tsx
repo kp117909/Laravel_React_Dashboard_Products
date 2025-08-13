@@ -1,5 +1,6 @@
 import { Link } from '@inertiajs/react';
 import { PaginatedResponse, Product } from '@/types';
+import { PerPageSelector } from './per-page-selector';
 
 interface PaginationProps {
   products: PaginatedResponse<Product>;
@@ -8,8 +9,12 @@ interface PaginationProps {
 export const Pagination = ({ products }: PaginationProps) => {
   return (
     <div className="flex flex-col items-center mt-8 gap-4 pb-16 lg:pb-8">
-      <div className="text-sm text-gray-600 dark:text-gray-400">
-        Showing {products.from || 0} to {products.to || 0} of {products.total || 0} products
+      <div className="flex flex-col sm:flex-row items-center gap-4">
+        <div className="text-sm text-gray-600 dark:text-gray-400">
+          Showing {products.from || 0} to {products.to || 0} of {products.total || 0} products
+        </div>
+
+        <PerPageSelector currentPerPage={products.per_page || 9} />
       </div>
 
       <div className="flex flex-wrap justify-center gap-2 px-4">

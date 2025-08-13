@@ -20,9 +20,10 @@ class ShopService
     public function getShopPageData(ProductIndexRequest $request): array
     {
         $filters = $this->filterService->withDefaults($request->filters());
+        $perPage = $this->getValidatedPerPage($request->input('per_page', 9));
 
         return [
-            'products' => $this->getProducts($filters),
+            'products' => $this->getProducts($filters, $perPage),
             'filters' => $filters,
             'filterOptions' => $this->getFilterOptions(),
             'counts' => $this->getCounts(),
@@ -32,9 +33,21 @@ class ShopService
     /**
      * Get paginated products with filters
      */
-    private function getProducts(array $filters): \Illuminate\Pagination\LengthAwarePaginator
+    private function getProducts(array $filters, int $perPage): \Illuminate\Pagination\LengthAwarePaginator
     {
-        return $this->productRepository->paginatePublished(['category'], 9, $filters);
+        return $this->productRepository->paginatePublished(['category'], $perPage, $filters);
+    }
+
+    /**
+     * Validate and return per_page parameter
+     */
+    private function getValidatedPerPage($perPage): int
+    {
+        $allowedPerPage = [6, 9, 12, 24, 48];
+        if (!in_array((int) $perPage, $allowedPerPage)) {
+            return 9;
+        }
+        return (int) $perPage;
     }
 
     /**

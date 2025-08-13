@@ -1,7 +1,6 @@
 import { Head } from '@inertiajs/react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { ShoppingBag } from 'lucide-react';
 import AppShopLayout from '@/layouts/app/app-navigation-layout';
 import { CartSummary } from '@/types/cart';
 import ReturnButton from '@/components/return-button';
