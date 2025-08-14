@@ -10,13 +10,12 @@ import { CartPreview } from "./cart-preview"
 import { NavigationMenuProps } from "@radix-ui/react-navigation-menu"
 import AppearanceTabs from "./appearance-tabs"
 import { getLinkClass } from "@/utils/navigation"
-import { useMobileNavigation } from "@/hooks/use-mobile-navigation"
 
 interface NavMenuProps extends NavigationMenuProps {
   navItems?: NavItemWithAuth[]
 }
 
-const NavMenuItem = ({ item, cleanup }: { item: NavItemWithAuth, cleanup: () => void }) => (
+const NavMenuItem = ({ item }: { item: NavItemWithAuth }) => (
   <NavigationMenuItem>
     <NavigationMenuLink asChild>
       <Link
@@ -24,7 +23,6 @@ const NavMenuItem = ({ item, cleanup }: { item: NavItemWithAuth, cleanup: () => 
         method={item.method || "get"}
         as={item.method === "post" ? "button" : "a"}
         className={getLinkClass(item.variant)}
-        onClick={() => item.onClick?.(cleanup)}
       >
         <span className="flex items-center gap-2">
           {item.icon && <item.icon className="w-4 h-4" />}
@@ -39,7 +37,6 @@ export const NavMenu = ({ navItems = [], ...props }: NavMenuProps) => {
   const page = usePage<SharedData>();
   const leftItems = navItems.filter(item => item.align !== "right")
   const rightItems = navItems.filter(item => item.align === "right")
-  const cleanup = useMobileNavigation();
 
   return (
     <NavigationMenu {...props} className="w-full">
@@ -48,14 +45,14 @@ export const NavMenu = ({ navItems = [], ...props }: NavMenuProps) => {
 
         <div className="flex items-center gap-4">
           {leftItems.map((item, idx) => (
-            <NavMenuItem key={`left-${idx}`} item={item} cleanup={cleanup} />
+            <NavMenuItem key={`left-${idx}`} item={item}/>
           ))}
         </div>
 
         <div className="flex items-center gap-4 ml-auto">
           <CartPreview cart={page.props.cart} />
           {rightItems.map((item, idx) => (
-            <NavMenuItem key={`right-${idx}`} item={item} cleanup={cleanup} />
+            <NavMenuItem key={`right-${idx}`} item={item} />
           ))}
         </div>
       </NavigationMenuList>

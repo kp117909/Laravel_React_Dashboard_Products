@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { router } from '@inertiajs/react';
 import { Page } from '@inertiajs/core';
 import { toast } from 'sonner';
@@ -11,6 +11,11 @@ interface PageProps extends Record<string, unknown> {
 export function useCartOperations(initialCart: CartSummary) {
     const [cart, setCart] = useState<CartSummary>(initialCart);
     const [isLoading, setIsLoading] = useState(false);
+
+    // Update local state when initialCart prop changes (e.g., after logout)
+    useEffect(() => {
+        setCart(initialCart);
+    }, [initialCart]);
 
     const updateQuantity = (itemId: number, quantity: number) => {
         if (quantity < 0) return;

@@ -8,50 +8,19 @@ import { ShoppingCart, Plus, Minus, Trash2 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
-import { Link, router } from '@inertiajs/react';
+import { Link } from '@inertiajs/react';
 
 import { CartSummary } from '@/types/cart';
-import { useState } from 'react';
-import { Page } from '@inertiajs/core';
+import { useCartOperations } from '@/utils/use-cart-operations';
 import { formatCartCount } from '@/utils/shop-utils';
-
-interface PageProps extends Record<string, unknown> {
-    cart: CartSummary;
-}
 
 interface CartPreviewProps {
     cart: CartSummary;
 }
 
 export function CartPreview({ cart: initialCart }: CartPreviewProps) {
-    const [cart, setCart] = useState(initialCart);
+    const { cart, isLoading, updateQuantity, removeItem } = useCartOperations(initialCart);
 
-    const updateQuantity = (itemId: number, quantity: number) => {
-        if (quantity < 0) return;
-
-        router.patch(route('cart.update', itemId),
-            { quantity },
-            {
-                preserveScroll: true,
-                preserveState: false,
-                onSuccess: (response) => {
-                    const { props } = response as Page<PageProps>;
-                    setCart(props.cart);
-                }
-            }
-        );
-    };
-
-    const removeItem = (itemId: number) => {
-        router.delete(route('cart.remove', itemId), {
-            preserveScroll: true,
-                            preserveState: false,
-            onSuccess: (response) => {
-                const { props } = response as Page<PageProps>;
-                setCart(props.cart);
-            }
-        });
-    };
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -98,7 +67,7 @@ export function CartPreview({ cart: initialCart }: CartPreviewProps) {
                                                             size="icon"
                                                             className="h-6 w-6"
                                                             onClick={() => updateQuantity(item.id, item.quantity - 1)}
-                                                            disabled={item.quantity <= 1}
+                                                            disabled={item.quantity <= 1 || isLoading}
                                                         >
                                                             <Minus className="h-3 w-3" />
                                                         </Button>
@@ -111,6 +80,7 @@ export function CartPreview({ cart: initialCart }: CartPreviewProps) {
                                                             size="icon"
                                                             className="h-6 w-6"
                                                             onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                                                            disabled={isLoading}
                                                         >
                                                             <Plus className="h-3 w-3" />
                                                         </Button>
@@ -120,6 +90,7 @@ export function CartPreview({ cart: initialCart }: CartPreviewProps) {
                                                         size="icon"
                                                         className="h-6 w-6"
                                                         onClick={() => removeItem(item.id)}
+                                                        disabled={isLoading}
                                                     >
                                                         <Trash2 className="h-3 w-3" />
                                                     </Button>

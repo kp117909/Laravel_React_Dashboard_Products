@@ -201,4 +201,75 @@ class CartTest extends TestCase
 
         $response->assertSessionHasErrors('quantity');
     }
+
+
+    public function test_cart_preview_shows_empty_after_logout()
+    {
+        // Login and add items to cart
+        $this->actingAs($this->user);
+
+        $this->post(route('cart.add', $this->product), [
+            'quantity' => 1
+        ]);
+
+        // Verify cart has items before logout
+        $response = $this->get(route('shop'));
+
+        $response->assertInertia(fn (Assert $page) => $page
+            ->component('shop')
+            ->has('cart', fn (Assert $cart) => $cart
+                ->where('item_count', 1)
+                ->has('items', 1)
+                ->has('total')
+            )
+        );
+
+        // Logout
+        $this->post(route('logout'));
+
+        // Verify cart is empty after logout
+        $response = $this->get(route('shop'));
+
+        $response->assertInertia(fn (Assert $page) => $page
+            ->component('shop')
+            ->has('cart', fn (Assert $cart) => $cart
+                ->where('item_count', 0)
+                ->where('total', 0)
+                ->has('items', 0)
+            )
+        );
+    }
+
+    public function test_cart_operations_disabled_after_logout()
+    {
+        // Login and add items to cart
+        $this->actingAs($this->user);
+
+        $cart = Cart::factory()->create(['user_id' => $this->user->id]);
+        $cartItem = CartItem::factory()->create([
+            'cart_id' => $cart->id,
+            'product_id' => $this->product->id,
+            'quantity' => 1
+        ]);
+
+        // Logout
+        $this->post(route('logout'));
+
+        // Try to update cart item (should redirect to login)
+        $response = $this->patch(route('cart.update', $cartItem), [
+            'quantity' => 2
+        ]);
+
+        // Verify quantity was not updated in database
+        $this->assertDatabaseMissing('cart_items', [
+            'id' => $cartItem->id,
+            'quantity' => 2
+        ]);
+
+        $response->assertStatus(302);
+
+
+    }
+
 }
+

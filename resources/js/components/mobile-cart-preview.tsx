@@ -1,15 +1,18 @@
 import { Button } from '@/components/ui/button';
-import { ShoppingCart } from 'lucide-react';
+import { ShoppingCart, Plus, Minus, Trash2 } from 'lucide-react';
 import { Link } from '@inertiajs/react';
 import { CartSummary } from '@/types/cart';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
+import { useCartOperations } from '@/utils/use-cart-operations';
 
 interface MobileCartPreviewProps {
     cart: CartSummary;
 }
 
-export function MobileCartPreview({ cart }: MobileCartPreviewProps) {
+export function MobileCartPreview({ cart: initialCart }: MobileCartPreviewProps) {
+    const { cart, isLoading, updateQuantity, removeItem } = useCartOperations(initialCart);
+
     if (cart.items.length === 0) {
         return (
             <div className="text-center py-4 px-2">
@@ -36,13 +39,46 @@ export function MobileCartPreview({ cart }: MobileCartPreviewProps) {
                                 alt={item.product.name}
                                 className="h-16 w-16 rounded object-cover"
                             />
-                            <div className="flex-1">
+                            <div className="flex-1 space-y-1">
                                 <h4 className="text-sm font-medium">
                                     {item.product.name}
                                 </h4>
-                                <p className="text-sm text-muted-foreground">
-                                    Qty: {item.quantity}
-                                </p>
+                                <div className="flex items-center gap-2">
+                                    <div className="flex items-center border rounded">
+                                        <Button
+                                            type="button"
+                                            variant="ghost"
+                                            size="icon"
+                                            className="h-6 w-6"
+                                            onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                                            disabled={item.quantity <= 1 || isLoading}
+                                        >
+                                            <Minus className="h-3 w-3" />
+                                        </Button>
+                                        <span className="w-8 text-center text-sm">
+                                            {item.quantity}
+                                        </span>
+                                        <Button
+                                            type="button"
+                                            variant="ghost"
+                                            size="icon"
+                                            className="h-6 w-6"
+                                            onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                                            disabled={isLoading}
+                                        >
+                                            <Plus className="h-3 w-3" />
+                                        </Button>
+                                    </div>
+                                    <Button
+                                        variant="ghost"
+                                        size="icon"
+                                        className="h-6 w-6"
+                                        onClick={() => removeItem(item.id)}
+                                        disabled={isLoading}
+                                    >
+                                        <Trash2 className="h-3 w-3" />
+                                    </Button>
+                                </div>
                                 <p className="text-sm font-medium">
                                     ${(item.product.price * item.quantity).toFixed(2)}
                                 </p>
