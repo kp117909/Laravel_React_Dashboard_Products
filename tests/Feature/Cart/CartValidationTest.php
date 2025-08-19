@@ -348,6 +348,10 @@ class CartValidationTest extends TestCase
                     ->has('items')
                     ->has('total')
                     ->has('item_count')
+                    ->has('subtotal')
+                    ->has('discount_amount')
+                    ->has('discount_code')
+                    ->has('discount_percentage')
                     ->where('total', 350) // Integer instead of float
                     ->where('item_count', 5) // 2 + 3
                 )
@@ -375,6 +379,10 @@ class CartValidationTest extends TestCase
                     ->has('items')
                     ->has('total')
                     ->has('item_count')
+                    ->has('subtotal')
+                    ->has('discount_amount')
+                    ->has('discount_code')
+                    ->has('discount_percentage')
                     ->where('total', 299.96999999999997) // Actual floating point precision
                 )
         );
@@ -440,6 +448,10 @@ class CartValidationTest extends TestCase
                 ->has('cart', fn (Assert $cart) => $cart
                     ->has('items')
                     ->has('total')
+                    ->has('subtotal')
+                    ->has('discount_amount')
+                    ->has('discount_code')
+                    ->has('discount_percentage')
                     ->has('item_count')
                     ->where('total', 300) // Integer instead of float
                 )

@@ -2,14 +2,7 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ShoppingCart, Plus, Minus } from 'lucide-react';
-import { router } from '@inertiajs/react';
-import { Page } from '@inertiajs/core';
-import { CartSummary } from '@/types/cart';
-import { toast } from 'sonner';
-
-interface PageProps extends Record<string, unknown> {
-    cart: CartSummary;
-}
+import { useCart } from '@/hooks/use-cart';
 
 interface AddToCartButtonProps {
     productId: number;
@@ -27,7 +20,7 @@ export function AddToCartButton({
     showQuantity = true
 }: AddToCartButtonProps) {
     const [quantity, setQuantity] = useState(1);
-    const [isLoading, setIsLoading] = useState(false);
+    const { isLoading, addToCart } = useCart();
 
     const handleQuantityChange = (value: number) => {
         if (value >= 1) {
@@ -35,31 +28,8 @@ export function AddToCartButton({
         }
     };
 
-    const addToCart = () => {
-        if (!isAvailable) {
-            toast.error('This product is currently not available');
-            return;
-        }
-
-        setIsLoading(true);
-        router.post(route('cart.add', productId),
-            { quantity },
-            {
-                preserveScroll: true,
-                preserveState: false,
-                onSuccess: (response) => {
-                    const { props } = response as Page<PageProps>;
-                    const itemName = props.cart.items[props.cart.items.length - 1].product.name
-                    toast.success('Added to cart "' + itemName + '"');
-                },
-                onError: () => {
-                    toast.error('Failed to add to cart');
-                },
-                onFinish: () => {
-                    setIsLoading(false);
-                }
-            }
-        );
+    const handleAddToCart = () => {
+        addToCart(productId, quantity, isAvailable);
     };
 
     if (!isAvailable) {
@@ -103,7 +73,7 @@ export function AddToCartButton({
                 </div>
             )}
             <Button
-                onClick={addToCart}
+                onClick={handleAddToCart}
                 disabled={isLoading}
                 className={className}
                 size="sm"
