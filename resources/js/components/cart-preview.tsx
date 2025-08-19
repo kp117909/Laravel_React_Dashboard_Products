@@ -104,11 +104,21 @@ export function CartPreview({ cart: initialCart }: CartPreviewProps) {
                                 </div>
                             </ScrollArea>
                             <Separator className="my-4" />
-                            <div className="flex items-center justify-between mb-4">
-                                <span className="font-semibold">Total:</span>
-                                <span className="font-semibold">
-                                    ${cart.total.toFixed(2)}
-                                </span>
+                            <div className="space-y-2 mb-4">
+                                <div className="flex items-center justify-between">
+                                    <span className="text-sm">Subtotal:</span>
+                                    <span className="text-sm">${cart.subtotal.toFixed(2)}</span>
+                                </div>
+                                {cart.discount_amount > 0 && (
+                                    <div className="flex items-center justify-between text-green-600 dark:text-green-400">
+                                        <span className="text-sm">Discount ({cart.discount_code}):</span>
+                                        <span className="text-sm">-${cart.discount_amount.toFixed(2)}</span>
+                                    </div>
+                                )}
+                                <div className="flex items-center justify-between font-semibold">
+                                    <span>Total:</span>
+                                    <span>${cart.total.toFixed(2)}</span>
+                                </div>
                             </div>
                             <Button asChild className="w-full">
                                 <Link href={route('cart.index')}>

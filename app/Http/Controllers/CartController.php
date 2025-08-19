@@ -8,6 +8,7 @@ use App\Services\CartService;
 use Inertia\Inertia;
 use App\Http\Requests\Cart\CartAddRequest;
 use App\Http\Requests\Cart\CartUpdateRequest;
+use App\Http\Requests\Cart\ApplyDiscountCodeRequest;
 
 class CartController extends Controller
 {
@@ -96,6 +97,33 @@ class CartController extends Controller
         // Stay on the previous page (shop page)
         return back()->with([
             'success' => 'Cart cleared',
+            'cart' => $this->cartService->getCartSummary()
+        ]);
+    }
+
+    public function applyDiscountCode(ApplyDiscountCodeRequest $request)
+    {
+        $result = $this->cartService->applyDiscountCode($request->code);
+
+        if ($result['success']) {
+            return back()->with([
+                'success' => $result['message'],
+                'cart' => $this->cartService->getCartSummary()
+            ]);
+        }
+
+        return back()->with([
+            'error' => $result['message'],
+            'cart' => $this->cartService->getCartSummary()
+        ]);
+    }
+
+    public function removeDiscountCode()
+    {
+        $result = $this->cartService->removeDiscountCode();
+
+        return back()->with([
+            'success' => $result['message'],
             'cart' => $this->cartService->getCartSummary()
         ]);
     }

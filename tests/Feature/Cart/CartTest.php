@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Models\Cart;
 use App\Models\Product;
 use App\Models\CartItem;
+use App\Models\DiscountCode;
 use App\Services\CartService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Inertia\Testing\AssertableInertia as Assert;
@@ -41,6 +42,12 @@ class CartTest extends TestCase
                 ->component('cart/index')
                 ->has('cart', fn (Assert $cart) => $cart
                     ->has('items')
+                    ->has('subtotal')
+                    ->has('discount_code')
+                    ->has('discount_amount')
+                    ->has('discount_percentage')
+                    ->has('total')
+                    ->has('item_count')
                     ->where('total', 0)
                     ->where('item_count', 0)
                 )
@@ -145,6 +152,12 @@ class CartTest extends TestCase
             ->component('cart/index')
             ->has('cart', fn (Assert $cart) => $cart
                 ->has('items', 2)
+                ->has('subtotal')
+                ->has('discount_code')
+                ->has('discount_amount')
+                ->has('discount_percentage')
+                ->has('total')
+                ->has('item_count')
                 ->where('total', 249.97) // (99.99 * 2) + 49.99
                 ->where('item_count', 3) // 2 + 1
             )
@@ -220,6 +233,10 @@ class CartTest extends TestCase
             ->has('cart', fn (Assert $cart) => $cart
                 ->where('item_count', 1)
                 ->has('items', 1)
+                ->has('subtotal')
+                ->has('discount_code')
+                ->has('discount_amount')
+                ->has('discount_percentage')
                 ->has('total')
             )
         );
@@ -236,6 +253,10 @@ class CartTest extends TestCase
                 ->where('item_count', 0)
                 ->where('total', 0)
                 ->has('items', 0)
+                ->has('subtotal')
+                ->has('discount_code')
+                ->has('discount_amount')
+                ->has('discount_percentage')
             )
         );
     }
@@ -267,8 +288,127 @@ class CartTest extends TestCase
         ]);
 
         $response->assertStatus(302);
+    }
 
+    public function test_user_can_apply_valid_discount_code()
+    {
+        // Create a discount code
+        $discountCode = DiscountCode::factory()->active()->create([
+            'code' => 'SAVE20',
+            'discount_percentage' => 20.00,
+            'minimum_amount' => 50.00
+        ]);
 
+        // Add items to cart to meet minimum amount
+        $this->actingAs($this->user);
+        $this->post(route('cart.add', $this->product), ['quantity' => 1]);
+
+        $response = $this->post(route('cart.apply-discount'), [
+            'code' => 'SAVE20'
+        ]);
+
+        $response->assertSessionHas('success', "Discount code 'SAVE20' applied successfully");
+
+        $this->assertDatabaseHas('carts', [
+            'user_id' => $this->user->id,
+            'discount_code' => 'SAVE20',
+        ]);
+
+        // Check that discount amount is approximately correct (allowing for rounding)
+        $cart = \App\Models\Cart::where('user_id', $this->user->id)->first();
+        $this->assertGreaterThan(19.5, $cart->discount_amount);
+        $this->assertLessThan(20.5, $cart->discount_amount);
+    }
+
+    public function test_user_cannot_apply_invalid_discount_code()
+    {
+        $this->actingAs($this->user);
+        $this->post(route('cart.add', $this->product), ['quantity' => 1]);
+
+        $response = $this->post(route('cart.apply-discount'), [
+            'code' => 'INVALID'
+        ]);
+
+        $response->assertSessionHas('error', 'Invalid discount code');
+    }
+
+    public function test_user_cannot_apply_discount_below_minimum_amount()
+    {
+        // Create a discount code with high minimum amount
+        $discountCode = DiscountCode::factory()->active()->create([
+            'code' => 'SAVE50',
+            'discount_percentage' => 50.00,
+            'minimum_amount' => 200.00
+        ]);
+
+        $this->actingAs($this->user);
+        $this->post(route('cart.add', $this->product), ['quantity' => 1]); // Only 99.99
+
+        $response = $this->post(route('cart.apply-discount'), [
+            'code' => 'SAVE50'
+        ]);
+
+        $response->assertSessionHas('error', 'Minimum order amount of $200.00 required');
+    }
+
+    public function test_user_can_remove_discount_code()
+    {
+        // Create a discount code and apply it
+        $discountCode = DiscountCode::factory()->active()->create([
+            'code' => 'SAVE10',
+            'discount_percentage' => 10.00
+        ]);
+
+        $this->actingAs($this->user);
+        $this->post(route('cart.add', $this->product), ['quantity' => 1]);
+        $this->post(route('cart.apply-discount'), ['code' => 'SAVE10']);
+
+        $response = $this->delete(route('cart.remove-discount'));
+
+        $response->assertSessionHas('success', 'Discount code removed');
+
+        $this->assertDatabaseHas('carts', [
+            'user_id' => $this->user->id,
+            'discount_code' => null,
+            'discount_amount' => 0
+        ]);
+    }
+
+    public function test_cart_shows_discount_information()
+    {
+        // Create and apply a discount code
+        $discountCode = DiscountCode::factory()->active()->create([
+            'code' => 'SAVE15',
+            'discount_percentage' => 15.00
+        ]);
+
+        $this->actingAs($this->user);
+        $this->post(route('cart.add', $this->product), ['quantity' => 1]);
+        $this->post(route('cart.apply-discount'), ['code' => 'SAVE15']);
+
+        $response = $this->get(route('cart.index'));
+
+        $response->assertInertia(fn (Assert $page) => $page
+            ->component('cart/index')
+            ->has('cart', fn (Assert $cart) => $cart
+                ->has('items')
+                ->has('subtotal')
+                ->has('discount_code')
+                ->has('discount_amount')
+                ->has('discount_percentage')
+                ->has('total')
+                ->has('item_count')
+                ->where('discount_code', 'SAVE15')
+                ->where('subtotal', 99.99)
+            )
+        );
+
+        // Check that discount and total are approximately correct (allowing for rounding)
+        $cartData = $response->viewData('page')['props']['cart'];
+        $this->assertGreaterThan(14.5, $cartData['discount_amount']);
+        $this->assertLessThan(15.5, $cartData['discount_amount']);
+        $this->assertGreaterThan(84.5, $cartData['total']);
+        $this->assertLessThan(85.5, $cartData['total']);
     }
 
 }

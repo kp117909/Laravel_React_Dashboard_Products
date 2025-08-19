@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\Cart;
 use App\Models\CartItem;
 use App\Models\Product;
+use App\Models\DiscountCode;
 use Illuminate\Support\Facades\Auth;
 
 class CartService
@@ -100,12 +101,102 @@ class CartService
     public function getCartSummary(): array
     {
         $cart = $this->getCurrentCart();
+        $this->updateCartTotals($cart);
 
         return [
             'items' => $cart->items()->with('product')->get(),
-            'total' => $cart->total,
-            'item_count' => $cart->items()->sum('quantity')
+            'subtotal' => (float) ($cart->subtotal ?? 0),
+            'discount_code' => $cart->discount_code,
+            'discount_amount' => (float) ($cart->discount_amount ?? 0),
+            'discount_percentage' => (float) ($cart->discount_percentage ?? 0),
+            'total' => (float) ($cart->total ?? 0),
+            'item_count' => (int) ($cart->items()->sum('quantity') ?? 0)
         ];
+    }
+
+    public function applyDiscountCode(string $code): array
+    {
+        $cart = $this->getCurrentCart();
+        $discountCode = DiscountCode::findByCode($code);
+
+        if (!$discountCode) {
+            return [
+                'success' => false,
+                'message' => 'Invalid discount code'
+            ];
+        }
+
+        if (!$discountCode->isValid()) {
+            return [
+                'success' => false,
+                'message' => 'Discount code is not valid'
+            ];
+        }
+
+        $subtotal = $cart->subtotal;
+        if (!$discountCode->canBeAppliedToCart($subtotal)) {
+            return [
+                'success' => false,
+                'message' => "Minimum order amount of $" . number_format($discountCode->minimum_amount, 2) . " required"
+            ];
+        }
+
+        $discountAmount = $discountCode->calculateDiscount($subtotal);
+
+        $cart->update([
+            'discount_code' => $discountCode->code,
+            'discount_amount' => $discountAmount,
+            'subtotal' => $subtotal
+        ]);
+
+        return [
+            'success' => true,
+            'message' => "Discount code '{$discountCode->code}' applied successfully",
+            'discount_amount' => $discountAmount,
+            'discount_percentage' => $discountCode->discount_percentage
+        ];
+    }
+
+    public function removeDiscountCode(): array
+    {
+        $cart = $this->getCurrentCart();
+
+        $cart->update([
+            'discount_code' => null,
+            'discount_amount' => 0
+        ]);
+
+        return [
+            'success' => true,
+            'message' => 'Discount code removed'
+        ];
+    }
+
+    private function updateCartTotals(Cart $cart): void
+    {
+        $subtotal = $cart->subtotal;
+
+        // If there's a discount code, recalculate the discount
+        if ($cart->discount_code) {
+            $discountCode = DiscountCode::findByCode($cart->discount_code);
+            if ($discountCode && $discountCode->canBeAppliedToCart($subtotal)) {
+                $discountAmount = $discountCode->calculateDiscount($subtotal);
+            } else {
+                // Remove invalid discount code
+                $cart->update([
+                    'discount_code' => null,
+                    'discount_amount' => 0
+                ]);
+                $discountAmount = 0;
+            }
+        } else {
+            $discountAmount = 0;
+        }
+
+        $cart->update([
+            'subtotal' => $subtotal,
+            'discount_amount' => $discountAmount
+        ]);
     }
 
     public function transferGuestCart(?string $sourceSessionId = null): void

@@ -19,6 +19,8 @@ Route::prefix('cart')->name('cart.')->group(function () {
     Route::patch('/update/{cartItem}', [CartController::class, 'update'])->name('update');
     Route::delete('/remove/{cartItem}', [CartController::class, 'remove'])->name('remove');
     Route::post('/clear', [CartController::class, 'clear'])->name('clear');
+    Route::post('/apply-discount', [CartController::class, 'applyDiscountCode'])->name('apply-discount');
+    Route::delete('/remove-discount', [CartController::class, 'removeDiscountCode'])->name('remove-discount');
 });
 Route::get('/shop/products/{product}', [ShopProductController::class, 'show'])->name('shop.products.show');
 

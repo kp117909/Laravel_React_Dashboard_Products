@@ -50,7 +50,7 @@ export function AddToCartButton({
                 onSuccess: (response) => {
                     const { props } = response as Page<PageProps>;
                     const itemName = props.cart.items[props.cart.items.length - 1].product.name
-                    toast.success('Added to cart successfully  ' + itemName);
+                    toast.success('Added to cart "' + itemName + '"');
                 },
                 onError: () => {
                     toast.error('Failed to add to cart');

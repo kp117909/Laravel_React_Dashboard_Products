@@ -11,6 +11,10 @@ export interface CartItem {
 
 export interface CartSummary {
     items: CartItem[];
+    subtotal: number;
+    discount_code?: string;
+    discount_amount: number;
+    discount_percentage: number;
     total: number;
     item_count: number;
 }

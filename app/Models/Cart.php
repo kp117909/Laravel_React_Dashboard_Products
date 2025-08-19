@@ -14,11 +14,16 @@ class Cart extends Model
         'user_id',
         'session_id',
         'status',
+        'discount_code',
+        'discount_amount',
+        'subtotal',
     ];
 
     protected $casts = [
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
+        'discount_amount' => 'decimal:2',
+        'subtotal' => 'decimal:2',
     ];
 
     public function user(): BelongsTo
@@ -31,10 +36,24 @@ class Cart extends Model
         return $this->hasMany(CartItem::class);
     }
 
-    public function getTotalAttribute(): float
+    public function getSubtotalAttribute(): float
     {
         return $this->items->sum(function ($item) {
             return $item->product->price * $item->quantity;
         });
+    }
+
+    public function getTotalAttribute(): float
+    {
+        return max(0, $this->subtotal - $this->discount_amount);
+    }
+
+    public function getDiscountPercentageAttribute(): float
+    {
+        if ($this->subtotal <= 0) {
+            return 0;
+        }
+
+        return round(($this->discount_amount / $this->subtotal) * 100, 2);
     }
 }
