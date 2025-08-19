@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { router } from '@inertiajs/react';
+import { router, usePage } from '@inertiajs/react';
 import { Page } from '@inertiajs/core';
 import { toast } from 'sonner';
 import { CartSummary } from '@/types/cart';
@@ -9,23 +9,19 @@ interface PageProps extends Record<string, unknown> {
 }
 
 export function useCart() {
-    const [itemCount, setItemCount] = useState(0);
+    const { props } = usePage<PageProps>();
+    const [itemCount, setItemCount] = useState(props.cart?.item_count || 0);
     const [isLoading, setIsLoading] = useState(false);
 
-    // Fetch initial cart count and listen for updates
+    // Update item count when cart data changes
     useEffect(() => {
-        // Initial cart count fetch
-        router.get(route('cart.index'), {}, {
-            preserveScroll: true,
-            preserveState: true,
-            only: ['cart'],
-            onSuccess: (response) => {
-                const { props } = response as Page<PageProps>;
-                setItemCount(props.cart.item_count);
-            }
-        });
+        if (props.cart) {
+            setItemCount(props.cart.item_count);
+        }
+    }, [props.cart?.item_count]);
 
-        // Listen for page updates
+    // Listen for page updates
+    useEffect(() => {
         const unsubscribe = router.on('success', (event) => {
             const { props } = event.detail.page as Page<PageProps>;
             if (props.cart) {
