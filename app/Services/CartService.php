@@ -7,14 +7,17 @@ use App\Models\CartItem;
 use App\Models\Product;
 use App\Models\DiscountCode;
 use Illuminate\Support\Facades\Auth;
+use App\Repositories\OrderRepository;
 
 class CartService
 {
     protected Cart $cartModel;
+    protected OrderRepository $orderRepository;
 
-    public function __construct(Cart $cartModel)
+    public function __construct(Cart $cartModel, OrderRepository $orderRepository)
     {
         $this->cartModel = $cartModel;
+        $this->orderRepository = $orderRepository;
     }
 
     public function getCurrentCart(): Cart
@@ -248,4 +251,5 @@ class CartService
         // Delete the guest cart
         $guestCart->delete();
     }
+
 }

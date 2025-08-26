@@ -13,7 +13,7 @@ use App\Http\Requests\Cart\ApplyDiscountCodeRequest;
 class CartController extends Controller
 {
     public function __construct(
-        private CartService $cartService
+        private CartService $cartService,
     ) {}
 
     public function index()
@@ -127,4 +127,6 @@ class CartController extends Controller
             'cart' => $this->cartService->getCartSummary()
         ]);
     }
+
+
 }

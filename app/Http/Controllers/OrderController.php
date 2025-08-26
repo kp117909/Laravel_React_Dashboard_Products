@@ -1,0 +1,77 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Services\CartService;
+use App\Services\OrderService;
+use App\Http\Requests\Order\OrderStoreRequest;
+use Illuminate\Support\Facades\Auth;
+use Inertia\Inertia;
+
+class OrderController extends Controller
+{
+    public function __construct(
+        private CartService $cartService,
+        private OrderService $orderService
+    ) {}
+
+    public function store(OrderStoreRequest $request)
+    {
+        $cart = $this->cartService->getCurrentCart();
+        if ($cart->items->isEmpty()) {
+            return back()->with([
+                'error' => 'Your cart is empty.',
+                'cart' => $this->cartService->getCartSummary()
+            ]);
+        }
+
+        if (!Auth::user()) {
+            return redirect()->route('login')->with([
+                'error' => 'You must be logged in to checkout.',
+                'cart' => $this->cartService->getCartSummary()
+            ]);
+        }
+
+        try {
+            $request->merge([
+                'cart_id' => $cart->id,
+                'user_id' => Auth::id(),
+                'total' => $cart->total,
+            ]);
+
+            $order = $this->orderService->createFromCart($cart);
+
+            return redirect()->route('orders.show', $order)->with([
+                'success' => 'Order placed successfully!',
+                'cart' => $this->cartService->getCartSummary()
+            ]);
+        } catch (\Exception $e) {
+            return back()->with([
+                'error' => 'Failed to place order. Please try again.',
+                'cart' => $this->cartService->getCartSummary()
+            ]);
+        }
+    }
+
+    public function index()
+    {
+        $orders = $this->orderService->getUserOrders(Auth::id());
+
+        return Inertia::render('orders/index', [
+            'orders' => $orders
+        ]);
+    }
+
+    public function show(int $orderId)
+    {
+        $order = $this->orderService->getUserOrder($orderId, Auth::id());
+
+        if (!$order) {
+            abort(404);
+        }
+
+        return Inertia::render('orders/show', [
+            'order' => $order
+        ]);
+    }
+}

@@ -32,7 +32,7 @@ type FormData = {
 }
 
 type Props = {
-    categories: Category
+    categories: Category[]
 }
 
 export default function CreateProduct({categories}: Props) {

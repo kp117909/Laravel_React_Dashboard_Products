@@ -1,4 +1,4 @@
-import { Head } from '@inertiajs/react';
+import { Head, Link } from '@inertiajs/react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import AppShopLayout from '@/layouts/app/app-navigation-layout';
@@ -21,11 +21,17 @@ export default function Cart({ cart: initialCart }: Props) {
             <Head title="Shopping Cart" />
 
             <div className="container mx-auto px-4 lg:px-6">
-                <ReturnButton
-                    className='mb-2'
-                    label="Back to Shop"
-                    useSavedFilters={true}
-                />
+                <div className="flex items-center justify-between mb-4">
+                    <ReturnButton
+                        label="Back to Shop"
+                        useSavedFilters={true}
+                    />
+                    <Link href={route('orders.index')}>
+                        <Button variant="outline">
+                            My Orders
+                        </Button>
+                    </Link>
+                </div>
                 <div className="flex flex-col sm:flex-row items-start sm:items-center justify-center gap-4 mb-2 mt-2 align-middle">
                     <h1 className="text-3xl font-bold">Shopping Cart</h1>
                 </div>

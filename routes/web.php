@@ -9,6 +9,7 @@ use App\Http\Controllers\Shop\ProductController as ShopProductController;
 use App\Helpers\CrudRouteHelper;
 use App\Http\Controllers\ShopController;
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\OrderController;
 
 Route::get('/', [ShopController::class, 'index'])->name('shop');
 
@@ -21,7 +22,17 @@ Route::prefix('cart')->name('cart.')->group(function () {
     Route::post('/clear', [CartController::class, 'clear'])->name('clear');
     Route::post('/apply-discount', [CartController::class, 'applyDiscountCode'])->name('apply-discount');
     Route::delete('/remove-discount', [CartController::class, 'removeDiscountCode'])->name('remove-discount');
+
 });
+
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::prefix('orders')->name('orders.')->group(function () {
+        Route::get('/', [OrderController::class, 'index'])->name('index');
+        Route::get('/{order}', [OrderController::class, 'show'])->name('show');
+        Route::post('/store', [OrderController::class, 'store'])->name('store');
+    });
+});
+
 Route::get('/shop/products/{product}', [ShopProductController::class, 'show'])->name('shop.products.show');
 
 Route::middleware(['auth', 'verified'])->group(function () {
