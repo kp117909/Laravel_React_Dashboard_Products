@@ -2,7 +2,7 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { CartSummary as CartSummaryType } from '@/types/cart';
 import { DiscountCodeInput } from '@/components/discount-code-input';
-import { router, useForm } from '@inertiajs/react';
+import { useForm } from '@inertiajs/react';
 
 interface CartSummaryProps {
     cart: CartSummaryType;
@@ -53,5 +53,3 @@ export function CartSummary({ cart }: CartSummaryProps) {
         </div>
     );
 }
-
-

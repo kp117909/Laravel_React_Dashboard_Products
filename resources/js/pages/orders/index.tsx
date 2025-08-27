@@ -1,72 +1,53 @@
 import { Head, Link } from '@inertiajs/react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
+import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Package, Eye } from 'lucide-react';
-import AppShopLayout from '@/layouts/app/app-navigation-layout';
-
-interface OrderItem {
-    id: number;
-    product_id: number;
-    quantity: number;
-    price: number;
-    product: {
-        id: number;
-        name: string;
-        price: number;
-        image: string;
-    };
-}
-
-interface Order {
-    id: number;
-    user_id: number;
-    cart_id: number;
-    total: number;
-    status: string;
-    created_at: string;
-    items: OrderItem[];
-}
+import { Pagination } from '@/components/ui/pagination';
+import { Search } from '@/components/ui/search';
+import { OrderItem } from '@/components/orders/order-item';
+import { Package } from 'lucide-react';
+import { Order } from '@/types/order';
+import AppLayout from '@/layouts/app-layout';
+import { BreadcrumbItem, PaginatedResponse } from '@/types';
+import { useQueryParams } from '@/utils/data-table';
 
 interface Props {
-    orders: Order[];
+    orders: PaginatedResponse<Order>;
 }
 
-export default function OrdersIndex({ orders }: Props) {
-    const formatDate = (dateString: string) => {
-        return new Date(dateString).toLocaleDateString('en-US', {
-            year: 'numeric',
-            month: 'short',
-            day: 'numeric',
-        });
-    };
+export default function Index({ orders }: Props) {
+    const filterParams = useQueryParams();
 
-    const getStatusColor = (status: string) => {
-        switch (status) {
-            case 'pending':
-                return 'bg-yellow-100 text-yellow-800';
-            case 'processing':
-                return 'bg-blue-100 text-blue-800';
-            case 'completed':
-                return 'bg-green-100 text-green-800';
-            case 'cancelled':
-                return 'bg-red-100 text-red-800';
-            default:
-                return 'bg-gray-100 text-gray-800';
-        }
-    };
+    const breadcrumbs: BreadcrumbItem[] = [
+        {
+            title: 'Orders',
+            href: '/orders',
+        },
+    ];
 
     return (
-        <AppShopLayout>
+        <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="My Orders" />
 
             <div className="container mx-auto py-8 px-4">
                 <div className="mb-6">
-                    <h1 className="text-3xl font-bold">My Orders</h1>
-                    <p className="text-gray-600 mt-2">View and track your order history</p>
+                    <div className="flex items-center justify-between">
+                        <div>
+                            <h1 className="text-3xl font-bold">My Orders</h1>
+                            <p className="text-gray-600 mt-2">View and track your order history</p>
+                        </div>
+                    </div>
+
+                    <div className="flex items-center space-x-2 mt-4">
+                        <Search
+                            placeholder="Search by product name..."
+                            className="w-64"
+                            initialValue={filterParams.search || ''}
+                        />
+                    </div>
+
                 </div>
 
-                {orders.length === 0 ? (
+                {orders.data.length === 0 ? (
                     <Card>
                         <CardContent className="text-center py-12">
                             <Package className="w-16 h-16 mx-auto text-gray-400 mb-4" />
@@ -79,67 +60,22 @@ export default function OrdersIndex({ orders }: Props) {
                     </Card>
                 ) : (
                     <div className="space-y-6">
-                        {orders.map((order) => (
-                            <Card key={order.id} className="hover:shadow-md transition-shadow">
-                                <CardHeader>
-                                    <div className="flex items-center justify-between">
-                                        <div className="flex items-center space-x-4">
-                                            <div>
-                                                <CardTitle className="text-lg">
-                                                    Order #{order.id}
-                                                </CardTitle>
-                                                <p className="text-sm text-gray-600">
-                                                    {formatDate(order.created_at)}
-                                                </p>
-                                            </div>
-                                            <Badge className={getStatusColor(order.status)}>
-                                                {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
-                                            </Badge>
-                                        </div>
-                                        <div className="flex items-center space-x-2">
-                                            <span className="text-lg font-semibold">
-                                                ${order.total.toFixed(2)}
-                                            </span>
-                                            <Link href={route('orders.show', order.id)}>
-                                                <Button variant="outline" size="sm">
-                                                    <Eye className="w-4 h-4 mr-2" />
-                                                    View
-                                                </Button>
-                                            </Link>
-                                        </div>
-                                    </div>
-                                </CardHeader>
-                                <CardContent>
-                                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                                        {order.items.slice(0, 3).map((item) => (
-                                            <div key={item.id} className="flex items-center space-x-3">
-                                                <img
-                                                    src={item.product.image}
-                                                    alt={item.product.name}
-                                                    className="w-12 h-12 object-cover rounded-md"
-                                                />
-                                                <div className="flex-1 min-w-0">
-                                                    <p className="font-medium text-sm truncate">
-                                                        {item.product.name}
-                                                    </p>
-                                                    <p className="text-xs text-gray-600">
-                                                        Qty: {item.quantity}
-                                                    </p>
-                                                </div>
-                                            </div>
-                                        ))}
-                                        {order.items.length > 3 && (
-                                            <div className="flex items-center text-sm text-gray-600">
-                                                +{order.items.length - 3} more items
-                                            </div>
-                                        )}
-                                    </div>
-                                </CardContent>
-                            </Card>
+                        {orders.data.map((order: Order) => (
+                            <OrderItem key={order.id} order={order} />
                         ))}
                     </div>
                 )}
+
+
+                <Pagination
+                    current_page={orders.current_page}
+                    last_page={orders.last_page}
+                    per_page={orders.per_page}
+                    total={orders.total}
+                    from={orders.from}
+                    to={orders.to}
+                />
             </div>
-        </AppShopLayout>
+        </AppLayout>
     );
 }

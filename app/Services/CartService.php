@@ -104,22 +104,29 @@ class CartService
     public function getCartSummary(): array
     {
         $cart = $this->getCurrentCart();
+
+        $cart->load('items.product');
+
         $this->updateCartTotals($cart);
 
         return [
-            'items' => $cart->items()->with('product')->get(),
+            'items' => $cart->items,
             'subtotal' => (float) ($cart->subtotal ?? 0),
             'discount_code' => $cart->discount_code,
             'discount_amount' => (float) ($cart->discount_amount ?? 0),
             'discount_percentage' => (float) ($cart->discount_percentage ?? 0),
             'total' => (float) ($cart->total ?? 0),
-            'item_count' => (int) ($cart->items()->sum('quantity') ?? 0)
+            'item_count' => (int) ($cart->items->sum('quantity') ?? 0)
         ];
     }
 
     public function applyDiscountCode(string $code): array
     {
         $cart = $this->getCurrentCart();
+
+        // Load items to ensure subtotal calculation works
+        $cart->load('items.product');
+
         $discountCode = DiscountCode::findByCode($code);
 
         if (!$discountCode) {
@@ -177,6 +184,10 @@ class CartService
 
     private function updateCartTotals(Cart $cart): void
     {
+        if (!$cart->relationLoaded('items')) {
+            $cart->load('items.product');
+        }
+
         $subtotal = $cart->subtotal;
 
         // If there's a discount code, recalculate the discount

@@ -4,13 +4,13 @@ import { useMemo, useState } from "react";
 import {Table, TableBody, TableCell, TableHead, TableHeader,TableRow
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { Search } from "@/components/ui/search";
+import { Pagination } from "@/components/ui/pagination";
 import {DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuLabel, DropdownMenuCheckboxItem, DropdownMenuSeparator
 } from "@/components/ui/dropdown-menu";
-import { Columns2, X } from "lucide-react";
-import {getColumnId,  formatShowingRange, handlePageChange, createHandleSearch, useQueryParams} from "@/utils/data-table";
+import { Columns2 } from "lucide-react";
+import {getColumnId, createHandleSearch, useQueryParams} from "@/utils/data-table";
 import CategorySelect from "../category-select";
-import { Link } from "@inertiajs/react";
 import { Category } from "@/types";
 
 
@@ -43,7 +43,6 @@ export function DataTable<TData extends object>({
 
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
-  const [gotoPage, setGotoPage] = useState("");
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>(() =>
     columns.reduce((acc, col) => {
       const colId = getColumnId(col);
@@ -70,15 +69,14 @@ export function DataTable<TData extends object>({
   return (
     <div>
       <div className="mb-4 flex items-center gap-4">
-        <Input
+        <Search
             placeholder="Search..."
-            value={searchQuery}
-            onChange={(e) => {
-                setSearchQuery(e.target.value);
-                    handleSearch(e.target.value, { category_id: filterParams.category_id });
-            }}
             className="max-w-sm"
-            type="search"
+            initialValue={searchQuery}
+            onSearch={(value) => {
+                setSearchQuery(value);
+                handleSearch(value, { category_id: filterParams.category_id });
+            }}
         />
         {meta.categories && (
             <CategorySelect
@@ -87,18 +85,6 @@ export function DataTable<TData extends object>({
             onChange={(val) => handleSearch(searchQuery, { ...filterParams, category_id: val })}
             />
         )}
-        {Object.keys(filterParams).length > 0 && !Object.keys(filterParams).every((key) => key === "page") && (
-        <div className="flex items-center gap-2">
-            <Link
-                href={route("roles.index", { ...{}, page: 1 })}
-                className="flex items-center gap-1 text-sm text-primary hover:text-primary/90 dark:text-gray-300 dark:hover:text-gray-300"
-            >
-                <X className="h-4 w-4" />
-                Clear filters
-            </Link>
-        </div>
-        )}
-
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" size="sm">
@@ -174,53 +160,15 @@ export function DataTable<TData extends object>({
           </TableBody>
         </Table>
 
-        <div className="flex flex-wrap items-center justify-end gap-2 p-4">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => handlePageChange(meta.current_page - 1, filterParams)}
-            disabled={meta.current_page <= 1}
-            >
-            Previous Page
-            </Button>
-
-            <Button
-            variant="outline"
-            size="sm"
-            onClick={() => handlePageChange(meta.current_page + 1, filterParams)}
-            disabled={meta.current_page >= meta.last_page}
-            >
-            Next Page
-        </Button>
-
-          <div className="flex items-center space-x-2">
-            <span>Go to page:</span>
-            <Input
-                type="number"
-                min={1}
-                max={meta.last_page}
-                value={gotoPage}
-                onChange={(e) => setGotoPage(e.target.value)}
-                className="w-20"
-            />
-            <Button
-                variant="outline"
-                size="sm"
-                onClick={() => {
-                const page = Number(gotoPage);
-                if (!isNaN(page)) {
-                    handlePageChange(page, filterParams);
-                }
-                }}
-            >
-                Go
-            </Button>
-           </div>
-
-
-        <div className="ml-4 text-sm text-muted-foreground">
-            {formatShowingRange(meta.current_page, meta.per_page, meta.total)}
-        </div>
+        <div className="p-4">
+          <Pagination
+            current_page={meta.current_page}
+            last_page={meta.last_page}
+            per_page={meta.per_page}
+            total={meta.total}
+            from={(meta.current_page - 1) * meta.per_page + 1}
+            to={Math.min(meta.current_page * meta.per_page, meta.total)}
+          />
         </div>
       </div>
     </div>

@@ -3,6 +3,8 @@
 namespace App\Repositories;
 
 use App\Models\Order;
+use Illuminate\Pagination\LengthAwarePaginator;
+
 
 class OrderRepository
 {
@@ -33,13 +35,26 @@ class OrderRepository
         return $this->model->find($id)->update($data);
     }
 
-    public function findByUserId(int $userId): \Illuminate\Database\Eloquent\Collection
+    public function findByUserId(int $userId, int $perPage = 10, ?string $search = null, array $options = []): LengthAwarePaginator
     {
-        return $this->model
+        $query = $this->model
             ->where('user_id', $userId)
-            ->with('items.product')
-            ->orderBy('created_at', 'desc')
-            ->get();
+            ->with(['items.product', 'cart']);
+
+        if ($search) {
+            $query->whereHas('items.product', function ($productQuery) use ($search) {
+                $productQuery->where('name', 'like', "%{$search}%");
+            });
+        }
+
+        if (!empty($options['sort'])) {
+            $direction = $options['direction'] ?? 'desc';
+            $query->orderBy($options['sort'], $direction);
+        } else {
+            $query->orderBy('created_at', 'desc');
+        }
+
+        return $query->paginate($perPage)->withQueryString();
     }
 
     public function findByIdAndUserId(int $orderId, int $userId): ?Order
@@ -47,7 +62,7 @@ class OrderRepository
         return $this->model
             ->where('id', $orderId)
             ->where('user_id', $userId)
-            ->with('items.product')
+            ->with(['items.product', 'cart'])
             ->first();
     }
 }

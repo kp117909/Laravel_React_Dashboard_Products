@@ -36,11 +36,17 @@ class Cart extends Model
         return $this->hasMany(CartItem::class);
     }
 
-    public function getSubtotalAttribute(): float
+    public function getSubtotalAttribute($value): float
     {
-        return $this->items->sum(function ($item) {
-            return $item->product->price * $item->quantity;
-        });
+        if ($value === null || (float) $value === 0.0) {
+            $this->load('items.product');
+
+            return $this->items->sum(function ($item) {
+                return $item->product->price * $item->quantity;
+            });
+        }
+
+        return (float) $value;
     }
 
     public function getTotalAttribute(): float
@@ -55,5 +61,10 @@ class Cart extends Model
         }
 
         return round(($this->discount_amount / $this->subtotal) * 100, 2);
+    }
+
+    public function getDiscountAmountAttribute($value): float
+    {
+        return (float) $value;
     }
 }

@@ -21,7 +21,6 @@ export default function ProductFilters({
   categoryCounts,
   yearCounts,
   availabilityCounts,
-  products,
   onYearsChange,
   selectedYears,
   years,

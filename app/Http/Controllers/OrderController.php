@@ -7,7 +7,7 @@ use App\Services\OrderService;
 use App\Http\Requests\Order\OrderStoreRequest;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
-
+use Illuminate\Http\Request;
 class OrderController extends Controller
 {
     public function __construct(
@@ -53,9 +53,14 @@ class OrderController extends Controller
         }
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        $orders = $this->orderService->getUserOrders(Auth::id());
+        $orders = $this->orderService->getUserOrders(
+            userId: Auth::id(),
+            perPage: $request->input('per_page', 3),
+            search: $request->input('search'),
+            options: $request->only(['sort', 'direction'])
+        );
 
         return Inertia::render('orders/index', [
             'orders' => $orders

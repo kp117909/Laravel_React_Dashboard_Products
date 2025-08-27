@@ -48,6 +48,33 @@ export function createHandleSearch<T extends Record<string, FormDataConvertible>
   }, delay);
 }
 
+export function handleChange(
+  value: string,
+  setSearchQuery: (value: string) => void,
+  onSearch?: (value: string) => void,
+  handleSearch?: (value: string) => void
+) {
+  setSearchQuery(value);
+  if (onSearch) {
+    onSearch(value);
+  } else if (handleSearch) {
+    handleSearch(value);
+  }
+}
+
+export function handleClear(
+  setSearchQuery: (value: string) => void,
+  onSearch?: (value: string) => void,
+  handleSearch?: (value: string) => void
+) {
+  setSearchQuery('');
+  if (onSearch) {
+    onSearch('');
+  } else if (handleSearch) {
+    handleSearch('');
+  }
+}
+
 
 export function handleSort(
   column: string,

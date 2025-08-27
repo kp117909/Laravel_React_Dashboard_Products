@@ -14,12 +14,6 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         User::factory(100)->create();
-        $this->call(CategorySeeder::class);
-        $this->call(ProductSeeder::class);
-        $this->call(PermissionSeeder::class);
-        $this->call(RoleSeeder::class);
-        $this->call(DiscountCodeSeeder::class);
-
         $admin = User::factory()->create([
             'name' => 'kpolak491',
             'email' => 'kpolak491@gmail.com',
@@ -27,5 +21,12 @@ class DatabaseSeeder extends Seeder
         ]);
 
         $admin->assignRole('Admin');
+        $this->call(CategorySeeder::class);
+        $this->call(ProductSeeder::class);
+        $this->call(PermissionSeeder::class);
+        $this->call(RoleSeeder::class);
+        $this->call(DiscountCodeSeeder::class);
+        $this->call(OrderSeeder::class);
+
     }
 }

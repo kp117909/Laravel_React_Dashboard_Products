@@ -19,4 +19,9 @@ export interface Order {
     status: string;
     created_at: string;
     items: OrderItem[];
+    cart?: {
+        discount_code?: string;
+        discount_amount?: number;
+        subtotal?: number;
+    };
 }

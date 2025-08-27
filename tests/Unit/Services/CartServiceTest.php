@@ -161,6 +161,9 @@ class CartServiceTest extends TestCase
             'quantity' => 1
         ]);
 
+        // Refresh the cart to ensure it has the latest data
+        $cart->refresh();
+
         $summary = $this->cartService->getCartSummary();
 
         $this->assertCount(2, $summary['items']);

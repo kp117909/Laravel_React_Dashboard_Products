@@ -5,9 +5,9 @@ import AppShopLayout from '@/layouts/app/app-navigation-layout';
 import { CartSummary } from '@/types/cart';
 import ReturnButton from '@/components/return-button';
 import { useCartOperations } from '@/utils/use-cart-operations';
-import { CartItem } from '@/pages/cart/cart-item';
-import { CartSummary as CartSummaryComponent } from '@/pages/cart/cart-summary';
-import { EmptyCart } from '@/pages/cart/empty-cart';
+import { CartItem } from '@/components/cart/cart-item';
+import { CartSummary as CartSummaryComponent } from '@/components/cart/cart-summary';
+import { EmptyCart } from '@/components/cart/empty-cart';
 
 interface Props {
     cart: CartSummary;

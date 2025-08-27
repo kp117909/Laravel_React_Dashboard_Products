@@ -383,7 +383,7 @@ class CartValidationTest extends TestCase
                     ->has('discount_amount')
                     ->has('discount_code')
                     ->has('discount_percentage')
-                    ->where('total', 299.96999999999997) // Actual floating point precision
+                    ->where('total', 299.97) // Rounded to 2 decimal places
                 )
         );
     }

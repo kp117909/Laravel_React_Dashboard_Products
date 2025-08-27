@@ -19,9 +19,9 @@ class OrderService
         $this->cartService = $cartService;
     }
 
-    public function getUserOrders(int $userId): \Illuminate\Database\Eloquent\Collection
+    public function getUserOrders(int $userId, int $perPage = 10, string $search = null, array $options = []): \Illuminate\Pagination\LengthAwarePaginator
     {
-        return $this->orderRepository->findByUserId($userId);
+        return $this->orderRepository->findByUserId($userId, $perPage, $search, $options);
     }
 
     public function getUserOrder(int $orderId, int $userId): ?Order
