@@ -1,13 +1,10 @@
 import AppShopLayout from '@/layouts/app/app-navigation-layout';
-import { FooterShop } from '@/components/footer2';
 import { Product } from '@/types';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Separator } from '@/components/ui/separator';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { CheckCircle, Clock, DollarSign, Star, Tag } from 'lucide-react';
+import { CheckCircle, Clock, Tag } from 'lucide-react';
 import { AddToCartButton } from '@/components/add-to-cart-button';
 import ReturnButton from '@/components/return-button';
+import { ProductReviews } from '@/components/reviews/product-reviews';
 
 interface Props {
   product: Product;
@@ -16,86 +13,108 @@ interface Props {
 export default function ProductPage({ product }: Props) {
   return (
     <AppShopLayout>
-      <div className="w-full px-4 py-8 text-[#1b1b18] dark:text-[#EDEDEC]">
-        <ReturnButton
-          className='mb-2'
-          label="Back to Shop"
-          useSavedFilters={true}
-        />
-        <Card className="overflow-hidden">
-          <div className="flex flex-col lg:flex-row">
+      <div className="min-h-screen bg-gradient-to-br dark:bg-dark">
+        <div className="container mx-auto px-4 py-8">
+          <ReturnButton
+            className='mb-6'
+            label="Back to Shop"
+            useSavedFilters={true}
+          />
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
             {/* Product Image */}
-            <div className="lg:w-1/2 w-full">
+            <div className="relative group">
+              <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
                 <img
-                src={`${product.image}`}
-                alt={product.name}
-                className="object-cover w-full h-96 lg:h-full"
-              />
-            </div>
+                  src={`${product.image}`}
+                  alt={product.name}
+                  className="w-full h-[500px] object-cover rounded-2xl shadow-2xl border-1 border-gray-800 dark:border-secondary transition-transform group-hover:scale-[1.02]"
+                />
+              </div>
 
             {/* Product Info */}
-            <div className="flex flex-col justify-between lg:w-1/2 w-full">
-              <CardHeader>
-                <div className="flex items-center justify-between">
-                  <Badge variant="secondary" className="flex items-center gap-1">
-                    <Tag className="w-4 h-4" />
+            <div className="space-y-6">
+              {/* Header */}
+              <div className="space-y-4">
+                <div className="flex items-center gap-3">
+                 <Badge variant="secondary" className="flex items-center gap-1">
+                    <Tag className="w-4 h-4 mr-1" />
                     {product.category.name || 'Category'}
                   </Badge>
-                  <span className={`flex items-center gap-1 text-sm font-medium ${product.is_available ? 'text-green-600' : 'text-red-500'}`}>
+                  <Badge variant="secondary" className="flex items-center gap-1">
                     <CheckCircle className="w-4 h-4" />
                     {product.is_available ? 'In Stock' : 'Out of Stock'}
-                  </span>
+                  </Badge>
                 </div>
-                <CardTitle className="text-3xl font-bold mt-4 flex items-center gap-2">
+
+                <h1 className="text-4xl font-bold text-gray-900 dark:text-white">
                   {product.name}
-                </CardTitle>
-                <CardDescription className="text-sm flex items-center gap-1">
-                  <Clock className="w-4 h-4" />
-                  Added on {new Date(product.created_at).toLocaleDateString()}
-                </CardDescription>
-              </CardHeader>
+                </h1>
 
-              <CardContent className="flex-1">
-                <div className="flex items-center mb-2">
-                  <div className="flex text-yellow-400 text-lg">
-                    {'★'.repeat(Math.floor(product.average_rating || 0))}
-                    {'☆'.repeat(5 - Math.floor(product.average_rating || 0))}
+                {/* Rating */}
+                <div className="flex items-center gap-4">
+                  <div className="flex items-center gap-2">
+                    <div className="flex text-yellow-400 text-xl">
+                      {'★'.repeat(Math.floor(product.average_rating || 0))}
+                      {'☆'.repeat(5 - Math.floor(product.average_rating || 0))}
+                    </div>
+                    <span className="text-lg font-semibold text-gray-700 dark:text-gray-300">
+                      {product.average_rating?.toFixed(1) || '0.0'}
+                    </span>
                   </div>
-                  <span className="ml-2 text-sm text-muted-foreground">
-                    ({product.average_rating?.toFixed(1) || '0.0'})
+                  <span className="text-gray-500 dark:text-gray-400">
+                    ({product.reviews_count || 0} reviews)
                   </span>
                 </div>
 
-                <p className="text-sm text-muted-foreground mb-2 flex items-center gap-1">
-                  <Star className="w-4 h-4" />
-                  {product.reviews_count || 0} reviews
-                </p>
+                {/* Price */}
+                <div className="flex items-baseline gap-2">
+                   <span className="text-4xl font-bold text-gray-900 dark:text-gray-100">
+                     ${product.price.toFixed(2)}
+                   </span>
+                 </div>
+              </div>
 
-                <Separator className="my-4" />
-
-                <ScrollArea className="h-64 pr-4">
-                  <p className="text-muted-foreground whitespace-pre-line">
+              {/* Description */}
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Description</h3>
+                <div className="bg-white dark:bg-secondary rounded-xl p-6 shadow-sm">
+                  <p className="text-gray-700 dark:text-gray-300 whitespace-pre-line">
                     {product.description}
                   </p>
-                </ScrollArea>
-              </CardContent>
+                </div>
+              </div>
 
-              <CardFooter className="flex items-center justify-between">
-                <span className="lg:text-2xl font-bold flex items-center">
-                 {product.price.toFixed(2)} <DollarSign className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 text-green-600 dark:text-green-400" />
-
-                </span>
-               <AddToCartButton
+              {/* Add to Cart */}
+              <div className="pt-4">
+                <AddToCartButton
                   productId={product.id}
                   isAvailable={product.is_available}
-                  className="px-3 py-2 text-sm sm:px-4 sm:py-2 sm:text-base"
+                  className="w-full py-4 text-lg font-semibold bg-gradient-to-r bg-primary text-primary-foreground
+                   text-white dark:text-secondary rounded-xl shadow-lg hover:shadow-xl transition-all hover:scale-[1.02]"
                 />
-              </CardFooter>
+              </div>
+
+              {/* Product Meta */}
+              <div className="flex items-center gap-4 text-sm text-gray-500 dark:text-gray-400">
+                <div className="flex items-center gap-1">
+                  <Clock className="w-4 h-4" />
+                  Added {new Date(product.created_at).toLocaleDateString()}
+                </div>
+              </div>
             </div>
           </div>
-        </Card>
+
+          {/* Reviews */}
+          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl border border-gray-200 dark:border-secondary overflow-hidden">
+            <ProductReviews
+              reviews={product.reviews || []}
+              averageRating={product.average_rating || 0}
+              reviewsCount={product.reviews_count || 0}
+            />
+          </div>
+        </div>
       </div>
-      <FooterShop />
     </AppShopLayout>
   );
 }

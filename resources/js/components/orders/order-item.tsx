@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Eye } from 'lucide-react';
 import { Link } from '@inertiajs/react';
 import { Order } from '@/types/order';
+import { CartItem } from '@/types/cart';
 import { formatDate, getStatusColor } from '@/utils/order-utils';
 
 interface OrderItemProps {
@@ -43,7 +44,7 @@ export function OrderItem({ order }: OrderItemProps) {
             </CardHeader>
             <CardContent>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {order.items.slice(0, 3).map((item: any) => (
+                    {order.items.slice(0, 3).map((item: CartItem) => (
                         <div key={item.id} className="flex items-center space-x-3">
                             <img
                                 src={item.product.image}

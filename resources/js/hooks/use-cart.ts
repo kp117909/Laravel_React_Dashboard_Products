@@ -18,7 +18,7 @@ export function useCart() {
         if (props.cart) {
             setItemCount(props.cart.item_count);
         }
-    }, [props.cart?.item_count]);
+    }, [props.cart]);
 
     // Listen for page updates
     useEffect(() => {

@@ -10,9 +10,11 @@ use App\Helpers\CrudRouteHelper;
 use App\Http\Controllers\ShopController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\ReviewController;
 
 Route::get('/', [ShopController::class, 'index'])->name('shop');
 
+Route::get('/shop/products/{product}', [ShopProductController::class, 'show'])->name('shop.products.show');
 
 Route::prefix('cart')->name('cart.')->group(function () {
     Route::get('/', [CartController::class, 'index'])->name('index');
@@ -26,19 +28,18 @@ Route::prefix('cart')->name('cart.')->group(function () {
 });
 
 Route::middleware(['auth', 'verified'])->group(function () {
+
+    Route::get('dashboard', function () {
+        return Inertia::render('dashboard');
+    })->name('dashboard');
+
     Route::prefix('orders')->name('orders.')->group(function () {
         Route::get('/', [OrderController::class, 'index'])->name('index');
         Route::get('/{order}', [OrderController::class, 'show'])->name('show');
         Route::post('/store', [OrderController::class, 'store'])->name('store');
     });
-});
 
-Route::get('/shop/products/{product}', [ShopProductController::class, 'show'])->name('shop.products.show');
-
-Route::middleware(['auth', 'verified'])->group(function () {
-    Route::get('dashboard', function () {
-        return Inertia::render('dashboard');
-    })->name('dashboard');
+    Route::post('/reviews', [ReviewController::class, 'store'])->name('reviews.store');
 
     CrudRouteHelper::routes('users', UserController::class, 'users', 'user');
     CrudRouteHelper::routes('roles', RoleController::class, 'roles', 'role');

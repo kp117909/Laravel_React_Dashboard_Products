@@ -2,8 +2,8 @@
 
 namespace Database\Seeders;
 
+use App\Models\Review;
 use App\Models\User;
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -27,6 +27,6 @@ class DatabaseSeeder extends Seeder
         $this->call(RoleSeeder::class);
         $this->call(DiscountCodeSeeder::class);
         $this->call(OrderSeeder::class);
-
+        Review::factory(100)->create();
     }
 }

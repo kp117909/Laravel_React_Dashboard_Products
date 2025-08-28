@@ -19,6 +19,7 @@ export interface Order {
     status: string;
     created_at: string;
     items: OrderItem[];
+    reviewed_products?: number[];
     cart?: {
         discount_code?: string;
         discount_amount?: number;

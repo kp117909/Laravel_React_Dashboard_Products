@@ -16,6 +16,11 @@ class Product extends Model
         return $this->belongsTo(Category::class);
     }
 
+    public function reviews()
+    {
+        return $this->hasMany(Review::class);
+    }
+
     public function getImageAttribute($value)
     {
         if ($value && Storage::disk('public')->exists($value)) {
@@ -74,7 +79,7 @@ class Product extends Model
 
     protected $casts = [
         'price' => 'decimal:2',
-        'avarage_rating' => 'float',
+        'average_rating' => 'float',
         'reviews_count' => 'integer',
         'is_available' => 'boolean',
         'is_published' => 'boolean',

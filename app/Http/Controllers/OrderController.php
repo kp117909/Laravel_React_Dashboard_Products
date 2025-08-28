@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Services\CartService;
 use App\Services\OrderService;
+use App\Services\ReviewService;
 use App\Http\Requests\Order\OrderStoreRequest;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
@@ -12,7 +13,8 @@ class OrderController extends Controller
 {
     public function __construct(
         private CartService $cartService,
-        private OrderService $orderService
+        private OrderService $orderService,
+        private ReviewService $reviewService
     ) {}
 
     public function store(OrderStoreRequest $request)
@@ -74,6 +76,9 @@ class OrderController extends Controller
         if (!$order) {
             abort(404);
         }
+
+        $reviewedProducts = $this->reviewService->getReviewedProductsForOrder($orderId, Auth::id());
+        $order->reviewed_products = $reviewedProducts;
 
         return Inertia::render('orders/show', [
             'order' => $order

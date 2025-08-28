@@ -86,6 +86,17 @@ export interface Link{
     url:string
 }
 
+export interface Review {
+    id: number;
+    rating: number;
+    comment: string | null;
+    created_at: string;
+    user: {
+        id: number;
+        name: string;
+    };
+}
+
 export interface Product {
     id : number;
     name: string;
@@ -94,6 +105,7 @@ export interface Product {
     price: number;
     average_rating?: number;
     reviews_count?: number;
+    reviews?: Review[];
     is_available: boolean;
     is_published: boolean;
     image?: File;
