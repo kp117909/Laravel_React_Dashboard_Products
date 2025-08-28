@@ -12,12 +12,7 @@ class StoreReviewRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        // Check if user owns the order
-        $order = Order::where('id', $this->input('order_id'))
-            ->where('user_id', $this->user()->id)
-            ->first();
-
-        return $order !== null;
+        return true;
     }
 
     /**
@@ -66,15 +61,5 @@ class StoreReviewRequest extends FormRequest
         ];
     }
 
-    /**
-     * Configure the validator instance.
-     */
-    public function withValidator($validator): void
-    {
-        $validator->after(function ($validator) {
-            if (!$this->authorize()) {
-                $validator->errors()->add('order_id', 'You can only review products from your own orders.');
-            }
-        });
-    }
+
 }

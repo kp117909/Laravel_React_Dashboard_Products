@@ -49,3 +49,16 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
 require __DIR__.'/settings.php';
 require __DIR__.'/auth.php';
+
+Route::fallback(function () {
+
+    if (app()->environment('testing')) {
+        abort(404);
+    }
+
+    return Inertia::render('errors/404', [
+        'status' => 404,
+        'title' => 'Page Not Found',
+        'message' => 'The page you are looking for could not be found.'
+    ], 404);
+});

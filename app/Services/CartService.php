@@ -188,7 +188,10 @@ class CartService
             $cart->load('items.product');
         }
 
-        $subtotal = $cart->subtotal;
+        // Calculate subtotal directly without using the accessor
+        $subtotal = round($cart->items->sum(function ($item) {
+            return $item->product->price * $item->quantity;
+        }), 2);
 
         // If there's a discount code, recalculate the discount
         if ($cart->discount_code) {

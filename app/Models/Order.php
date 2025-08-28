@@ -42,4 +42,21 @@ class Order extends Model
     {
         return (float) $value;
     }
+
+    /**
+     * Check if the given user owns this order
+     */
+    protected function isOwnedBy(int $userId): bool
+    {
+        return $this->user_id === $userId;
+    }
+
+    /**
+     * Find an order by ID and check if it's owned by the given user
+     */
+    public static function findOwnedBy(int $orderId, int $userId): ?self
+    {
+        $order = self::find($orderId);
+        return $order && $order->isOwnedBy($userId) ? $order : null;
+    }
 }

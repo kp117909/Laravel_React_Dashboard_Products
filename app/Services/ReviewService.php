@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Repositories\ReviewRepository;
 use Illuminate\Support\Facades\Auth;
+use App\Models\Order;
 
 class ReviewService
 {
@@ -13,6 +14,13 @@ class ReviewService
 
     public function createReview(array $data): bool
     {
+        // Check if user owns the order using the model's protected method
+        $order = Order::findOwnedBy($data['order_id'], Auth::id());
+
+        if (!$order) {
+            throw new \Exception('Order not found.');
+        }
+
         // Check if user has already reviewed this product for this order
         $existingReview = $this->reviewRepository->findByUserProductAndOrder(
             Auth::id(),
