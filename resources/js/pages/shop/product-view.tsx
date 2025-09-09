@@ -70,7 +70,7 @@ export default function ProductPage({ product }: Props) {
                 {/* Price */}
                 <div className="flex items-baseline gap-2">
                    <span className="text-4xl font-bold text-gray-900 dark:text-gray-100">
-                     ${product.price.toFixed(2)}
+                     {product.price.toFixed(2)} zł
                    </span>
                  </div>
               </div>

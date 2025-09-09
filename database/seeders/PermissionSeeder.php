@@ -34,9 +34,9 @@ class PermissionSeeder extends Seeder
             Permission::firstOrCreate(['name' => $value]);
         }
 
-        $admin = Role::firstOrCreate(['name' => 'Admin']);
-        $moderator = Role::firstOrCreate(['name' => 'Moderator']);
-        $user = Role::firstOrCreate(['name' => 'User']);
+        $admin = Role::firstOrCreate(['name' => 'admin']);
+        $moderator = Role::firstOrCreate(['name' => 'moderator']);
+        $user = Role::firstOrCreate(['name' => 'user']);
 
 
         $admin->givePermissionTo($permissions);

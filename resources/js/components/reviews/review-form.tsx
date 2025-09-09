@@ -37,8 +37,8 @@ export function ReviewForm({ productId, orderId, productName, productImage, hasR
 
     if (hasReviewed) {
         return (
-            <Card className="border-green-200 bg-green-50">
-                <CardContent className="pt-6">
+            <Card className="border-green-200 bg-green-50 dark:border-green-900 dark:bg-green-900/20">
+                <CardContent>
                     <div className="flex items-center space-x-2 text-green-700">
                         <Star className="w-5 h-5 fill-current" />
                         <span className="font-medium">You have already reviewed this product</span>

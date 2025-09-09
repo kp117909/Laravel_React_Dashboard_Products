@@ -41,7 +41,7 @@ function ProductImageList({ product }: { product: Product }) {
     <img
       src={imageUrl}
       alt={product.name}
-      className="w-32 h-32 object-cover"
+      className="w-32 h-32 object-cover ml-2"
     />
   );
 }
@@ -82,8 +82,7 @@ function ProductRating({ product }: { product: Product }) {
 function ProductPrice({ product }: { product: Product }) {
   return (
     <span className="text-xl font-bold flex items-center gap-1">
-      <DollarSign className="w-4 h-4" />
-      {product.price.toFixed(2)}
+      {product.price.toFixed(2)} zł
     </span>
   );
 }
@@ -165,7 +164,7 @@ function ProductCardList({ product }: { product: Product }) {
           <p className="text-sm text-muted-foreground line-clamp-2">{product.description}</p>
         </CardContent>
 
-        <CardFooter className="p-4 flex flex-row items-center justify-between gap-4">
+        <CardFooter className="flex flex-row items-center justify-between gap-4">
           <ProductPrice product={product} />
           <ProductActionsList product={product} />
         </CardFooter>
