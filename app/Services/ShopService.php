@@ -24,7 +24,7 @@ class ShopService
 
         return [
             'products' => $this->getProducts($filters, $perPage),
-            'filters' => $filters,
+            'filters' => $this->formatFilters($filters),
             'filterOptions' => $this->getFilterOptions(),
             'counts' => $this->getCounts(),
         ];
@@ -51,7 +51,7 @@ class ShopService
     }
 
     /**
-     * Get all filter options (years, categories, price range)
+     * Get all filter options (years, categories, price range, rating range)
      */
     private function getFilterOptions(): array
     {
@@ -59,6 +59,7 @@ class ShopService
             'years' => $this->productRepository->distinctYears(),
             'categories' => $this->categoryRepository->all(),
             'priceRange' => $this->productRepository->getPriceRange(),
+            'ratingRange' => $this->productRepository->getRatingRange(),
         ];
     }
 
@@ -70,7 +71,25 @@ class ShopService
         return [
             'categoryCounts' => $this->categoryRepository->getProductCounts(),
             'yearCounts' => $this->productRepository->getYearCounts(),
+            'ratingCounts' => $this->productRepository->getRatingCounts(),
             'availabilityCounts' => $this->productRepository->getAvailabilityCounts(),
+        ];
+    }
+
+    /**
+     * Format filters for frontend consumption
+     */
+    private function formatFilters(array $filters): array
+    {
+        return [
+            'years' => $filters['years'] ?? [],
+            'categories' => $filters['categories'] ?? [],
+            'ratings' => $filters['ratings'] ?? [],
+            'price_min' => $filters['price_min'] ?? null,
+            'price_max' => $filters['price_max'] ?? null,
+            'available' => $filters['available'] ?? true,
+            'not_available' => $filters['not_available'] ?? true,
+            'search' => $filters['search'] ?? null,
         ];
     }
 }

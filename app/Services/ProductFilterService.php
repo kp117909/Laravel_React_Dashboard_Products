@@ -22,6 +22,9 @@ class ProductFilterService
                 ->all()
                 ->pluck('id');
         }
+        if (empty($filters['ratings'])) {
+            $filters['ratings'] = [0, 1, 2, 3, 4, 5];
+        }
 
         return $filters;
     }

@@ -66,6 +66,7 @@ test('withDefaults preserves existing filters', function () {
         'search' => 'test',
         'price_min' => 10,
         'price_max' => 100,
+        'ratings' => [0, 1, 2, 3, 4, 5],
         'available' => true,
         'not_available' => false
     ];

@@ -6,7 +6,7 @@ import { useEffect } from 'react';
 import { ViewMode } from '@/components/view-switcher';
 
 export function createShopFilterChecker(
-  filters: { years: number[]; categories: number[]; search?: string; price_min?: number; price_max?: number; available?: boolean; not_available?: boolean },
+  filters: { years: number[]; categories: number[]; search?: string; price_min?: number; price_max?: number; ratings?: number[]; available?: boolean; not_available?: boolean },
   years: number[],
   allCategoryIds: number[],
   priceRange?: { min: number; max: number }
@@ -17,6 +17,7 @@ export function createShopFilterChecker(
     search: filters.search,
     price_min: filters.price_min,
     price_max: filters.price_max,
+    ratings: filters.ratings || [],
     available: filters.available,
     not_available: filters.not_available
   };
@@ -52,6 +53,7 @@ export function updateFilters(
   search?: string,
   price_min?: number,
   price_max?: number,
+  ratings?: number[],
   available?: boolean,
   not_available?: boolean
 ) {
@@ -71,6 +73,10 @@ export function updateFilters(
 
   if (price_max !== undefined) {
     params.price_max = price_max;
+  }
+
+  if (ratings !== undefined && ratings.length > 0) {
+    params.ratings = ratings;
   }
 
   if (available !== undefined) {

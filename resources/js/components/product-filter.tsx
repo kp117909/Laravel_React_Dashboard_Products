@@ -20,6 +20,7 @@ export default function ProductFilters({
   categories,
   categoryCounts,
   yearCounts,
+  ratingCounts,
   availabilityCounts,
   onYearsChange,
   selectedYears,
@@ -28,16 +29,20 @@ export default function ProductFilters({
   selectedCategories,
   onSearchChange,
   onPriceChange,
+  onRatingChange,
   onAvailabilityChange,
   initialSearch = "",
   initialPriceRange,
   priceRange = { min: 0, max: 1000 },
+  ratingRange = { min: 0, max: 5 },
   initialAvailable = true,
-  initialNotAvailable = true
+  initialNotAvailable = true,
+  filters
 }: ProductFiltersProps) {
   const { state, setState } = useFilterState(
     { initialSearch, initialPriceRange, initialAvailable, initialNotAvailable },
-    priceRange
+    priceRange,
+    ratingRange
   );
 
   const debouncedSearch = useDebouncedSearch(onSearchChange);
@@ -123,7 +128,11 @@ export default function ProductFilters({
         </AccordionItemSheet>
 
         <AccordionItemSheet value="rating" title={<span className="text-sm font-medium">Rating</span>}>
-          <RatingFilter />
+          <RatingFilter
+            selectedRatings={filters?.ratings ? new Set(filters.ratings) : new Set()}
+            onRatingChange={onRatingChange}
+            ratingCounts={ratingCounts}
+          />
         </AccordionItemSheet>
       </Accordion>
     </div>

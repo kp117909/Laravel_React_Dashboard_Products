@@ -5,10 +5,9 @@ export interface FilterState {
   search?: string;
   price_min?: number;
   price_max?: number;
+  ratings?: number[];
   available?: boolean;
   not_available?: boolean;
-  // Easy to extend with more filters
-  // rating?: number;
 }
 
 export interface FilterOptions {
@@ -70,6 +69,15 @@ export class FilterChecker {
   }
 
   /**
+   * Check if rating filter is active
+   */
+  private isRatingFilterActive(): boolean {
+    const { ratings } = this.filterState;
+
+    return ratings !== undefined && ratings.length > 0 && ratings.length < 6;
+  }
+
+  /**
    * Check if availability filter is active
    */
   private isAvailabilityFilterActive(): boolean {
@@ -91,6 +99,7 @@ export class FilterChecker {
       this.isYearsFilterActive(),
       this.isCategoriesFilterActive(),
       this.isPriceFilterActive(),
+      this.isRatingFilterActive(),
       this.isAvailabilityFilterActive(),
     ];
   }
@@ -107,7 +116,7 @@ export class FilterChecker {
    */
   public getActiveFilterTypes(): string[] {
     const checks = this.getActiveFilterChecks();
-    const types = ['search', 'years', 'categories', 'price', 'availability'];
+    const types = ['search', 'years', 'categories', 'price', 'rating', 'availability'];
     return types.filter((_, index) => checks[index]);
   }
 
@@ -157,6 +166,18 @@ export class FilterChecker {
         type: 'price',
         label: 'Price',
         value: priceText
+      });
+    }
+
+    if (this.isRatingFilterActive()) {
+      const { ratings } = this.filterState;
+      const sortedRatings = ratings?.sort((a, b) => b - a) || [];
+      const ratingText = sortedRatings.map(rating => rating === 0 ? 'No Rating' : `${rating}★`).join(', ');
+
+      summary.push({
+        type: 'rating',
+        label: 'Rating',
+        value: ratingText
       });
     }
 

@@ -4,8 +4,8 @@ namespace App\Repositories;
 
 use App\Models\User;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use App\Queries\SortableUsersQuery;
-use App\Queries\SearchUsersQuery;
+use App\Queries\Users\SortableUsersQuery    ;
+use App\Queries\Users\SearchUsersQuery;
 
 class UserRepository
 {

@@ -16,6 +16,7 @@ interface ShopFilters {
   search?: string;
   price_min?: number;
   price_max?: number;
+  ratings?: number[];
   available?: boolean;
   not_available?: boolean;
 }
@@ -24,11 +25,13 @@ interface FilterOptions {
   years: number[];
   categories: Category[];
   priceRange: { min: number; max: number };
+  ratingRange: { min: number; max: number };
 }
 
 interface FilterCounts {
   categoryCounts: Record<number, number>;
   yearCounts: Record<number, number>;
+  ratingCounts: Record<number, number>;
   availabilityCounts: Record<string, number>;
 }
 
@@ -74,10 +77,11 @@ export default function Shop({ products, filters: initialFilters, filterOptions,
       initialFilters.search,
       initialFilters.price_min,
       initialFilters.price_max,
+      initialFilters.ratings,
       initialFilters.available ?? true,
       initialFilters.not_available ?? true
     );
-  }, [selectedCategories, initialFilters.search, initialFilters.price_min, initialFilters.price_max, initialFilters.available, initialFilters.not_available]);
+  }, [selectedCategories, initialFilters.search, initialFilters.price_min, initialFilters.price_max, initialFilters.ratings, initialFilters.available, initialFilters.not_available]);
 
   const onCategoriesChange = useCallback((next: Set<number>) => {
     updateFilters(
@@ -86,10 +90,11 @@ export default function Shop({ products, filters: initialFilters, filterOptions,
       initialFilters.search,
       initialFilters.price_min,
       initialFilters.price_max,
+      initialFilters.ratings,
       initialFilters.available ?? true,
       initialFilters.not_available ?? true
     );
-  }, [selectedYears, initialFilters.search, initialFilters.price_min, initialFilters.price_max, initialFilters.available, initialFilters.not_available]);
+  }, [selectedYears, initialFilters.search, initialFilters.price_min, initialFilters.price_max, initialFilters.ratings, initialFilters.available, initialFilters.not_available]);
 
   const onPriceChange = useCallback((priceRange: [number, number]) => {
     updateFilters(
@@ -98,10 +103,11 @@ export default function Shop({ products, filters: initialFilters, filterOptions,
       initialFilters.search,
       priceRange[0],
       priceRange[1],
+      initialFilters.ratings,
       initialFilters.available ?? true,
       initialFilters.not_available ?? true
     );
-  }, [selectedYears, selectedCategories, initialFilters.search, initialFilters.available, initialFilters.not_available]);
+  }, [selectedYears, selectedCategories, initialFilters.search, initialFilters.ratings, initialFilters.available, initialFilters.not_available]);
 
   const onAvailabilityChange = useCallback((available: boolean, notAvailable: boolean) => {
     updateFilters(
@@ -110,10 +116,24 @@ export default function Shop({ products, filters: initialFilters, filterOptions,
       initialFilters.search,
       initialFilters.price_min,
       initialFilters.price_max,
+      initialFilters.ratings,
       available,
       notAvailable
     );
-  }, [selectedYears, selectedCategories, initialFilters.search, initialFilters.price_min, initialFilters.price_max]);
+  }, [selectedYears, selectedCategories, initialFilters.search, initialFilters.price_min, initialFilters.price_max, initialFilters.ratings]);
+
+  const onRatingChange = useCallback((ratings: Set<number>) => {
+    updateFilters(
+      Array.from(selectedYears),
+      Array.from(selectedCategories),
+      initialFilters.search,
+      initialFilters.price_min,
+      initialFilters.price_max,
+      Array.from(ratings),
+      initialFilters.available ?? true,
+      initialFilters.not_available ?? true
+    );
+  }, [selectedYears, selectedCategories, initialFilters.search, initialFilters.price_min, initialFilters.price_max, initialFilters.available, initialFilters.not_available]);
 
   const onSearchChange = useCallback((search: string) => {
     updateFilters(
@@ -122,10 +142,11 @@ export default function Shop({ products, filters: initialFilters, filterOptions,
       search,
       initialFilters.price_min,
       initialFilters.price_max,
+      initialFilters.ratings,
       initialFilters.available ?? true,
       initialFilters.not_available ?? true
     );
-  }, [selectedYears, selectedCategories, initialFilters.price_min, initialFilters.price_max, initialFilters.available, initialFilters.not_available]);
+  }, [selectedYears, selectedCategories, initialFilters.price_min, initialFilters.price_max, initialFilters.ratings, initialFilters.available, initialFilters.not_available]);
 
   const handleClearAllFilters = useCallback(() => {
     clearAllFilters();
@@ -154,6 +175,7 @@ export default function Shop({ products, filters: initialFilters, filterOptions,
           onCategoriesChange={onCategoriesChange}
           onSearchChange={onSearchChange}
           onPriceChange={onPriceChange}
+          onRatingChange={onRatingChange}
           onAvailabilityChange={onAvailabilityChange}
         />
 

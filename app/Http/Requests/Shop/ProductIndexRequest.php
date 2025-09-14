@@ -16,6 +16,8 @@ class ProductIndexRequest extends FormRequest
             'search' => ['nullable', 'string', 'max:255'],
             'price_min' => ['nullable', 'numeric', 'min:0'],
             'price_max' => ['nullable', 'numeric', 'min:0', 'gte:price_min'],
+            'ratings' => ['array'],
+            'ratings.*' => ['integer', 'min:0', 'max:5'],
             'available' => ['nullable', 'boolean'],
             'not_available' => ['nullable', 'boolean'],
         ];
@@ -26,6 +28,7 @@ class ProductIndexRequest extends FormRequest
         $this->merge([
             'years'      => array_map('intval', $this->input('years', [])),
             'categories' => array_map('intval', Arr::flatten($this->input('categories', []))),
+            'ratings'    => array_unique(array_map('intval', $this->input('ratings', []))),
             'available'  => filter_var($this->input('available', true), FILTER_VALIDATE_BOOLEAN),
             'not_available' => filter_var($this->input('not_available', true), FILTER_VALIDATE_BOOLEAN),
         ]);
@@ -40,6 +43,7 @@ class ProductIndexRequest extends FormRequest
             'search'     => $this->input('search'),
             'price_min'  => $this->input('price_min'),
             'price_max'  => $this->input('price_max'),
+            'ratings' => $this->input('ratings', []),
             'available'  => $this->input('available', true),
             'not_available' => $this->input('not_available', true),
         ];

@@ -32,8 +32,10 @@ test('getShopPageData returns correct structure', function () {
     $categories = collect([new Category(), new Category()]);
     $years = [2023, 2024];
     $priceRange = ['min' => 10, 'max' => 100];
+    $ratingRange = ['min' => 1.0, 'max' => 5.0];
     $categoryCounts = [1 => 5, 2 => 3];
     $yearCounts = [2023 => 5, 2024 => 3];
+    $ratingCounts = [0 => 2, 1 => 1, 2 => 1, 3 => 2, 4 => 3, 5 => 1];
     $availabilityCounts = ['available' => 8, 'not_available' => 2];
 
     $request->shouldReceive('filters')->once()->andReturn($filters);
@@ -43,16 +45,18 @@ test('getShopPageData returns correct structure', function () {
     $this->productRepository->shouldReceive('distinctYears')->once()->andReturn($years);
     $this->categoryRepository->shouldReceive('all')->once()->andReturn($categories);
     $this->productRepository->shouldReceive('getPriceRange')->once()->andReturn($priceRange);
+    $this->productRepository->shouldReceive('getRatingRange')->once()->andReturn($ratingRange);
     $this->categoryRepository->shouldReceive('getProductCounts')->once()->andReturn($categoryCounts);
     $this->productRepository->shouldReceive('getYearCounts')->once()->andReturn($yearCounts);
+    $this->productRepository->shouldReceive('getRatingCounts')->once()->andReturn($ratingCounts);
     $this->productRepository->shouldReceive('getAvailabilityCounts')->once()->andReturn($availabilityCounts);
 
     $result = $this->shopService->getShopPageData($request);
 
     expect($result)->toHaveKeys(['products', 'filters', 'filterOptions', 'counts']);
-    expect($result['filters'])->toBe($filters);
-    expect($result['filterOptions'])->toHaveKeys(['years', 'categories', 'priceRange']);
-    expect($result['counts'])->toHaveKeys(['categoryCounts', 'yearCounts', 'availabilityCounts']);
+    expect($result['filters'])->toHaveKeys(['years', 'categories', 'ratings', 'price_min', 'price_max', 'available', 'not_available', 'search']);
+    expect($result['filterOptions'])->toHaveKeys(['years', 'categories', 'priceRange', 'ratingRange']);
+    expect($result['counts'])->toHaveKeys(['categoryCounts', 'yearCounts', 'ratingCounts', 'availabilityCounts']);
 });
 
 test('getProducts calls repository with correct parameters', function () {
@@ -62,8 +66,10 @@ test('getProducts calls repository with correct parameters', function () {
     $categories = collect([new Category(), new Category()]);
     $years = [2023, 2024];
     $priceRange = ['min' => 10, 'max' => 100];
+    $ratingRange = ['min' => 1.0, 'max' => 5.0];
     $categoryCounts = [1 => 5, 2 => 3];
     $yearCounts = [2023 => 5, 2024 => 3];
+    $ratingCounts = [0 => 2, 1 => 1, 2 => 1, 3 => 2, 4 => 3, 5 => 1];
     $availabilityCounts = ['available' => 8, 'not_available' => 2];
 
     $request->shouldReceive('filters')->once()->andReturn($filters);
@@ -76,8 +82,10 @@ test('getProducts calls repository with correct parameters', function () {
     $this->productRepository->shouldReceive('distinctYears')->once()->andReturn($years);
     $this->categoryRepository->shouldReceive('all')->once()->andReturn($categories);
     $this->productRepository->shouldReceive('getPriceRange')->once()->andReturn($priceRange);
+    $this->productRepository->shouldReceive('getRatingRange')->once()->andReturn($ratingRange);
     $this->categoryRepository->shouldReceive('getProductCounts')->once()->andReturn($categoryCounts);
     $this->productRepository->shouldReceive('getYearCounts')->once()->andReturn($yearCounts);
+    $this->productRepository->shouldReceive('getRatingCounts')->once()->andReturn($ratingCounts);
     $this->productRepository->shouldReceive('getAvailabilityCounts')->once()->andReturn($availabilityCounts);
 
     $result = $this->shopService->getShopPageData($request);
@@ -89,10 +97,12 @@ test('getFilterOptions returns all required data', function () {
     $years = [2023, 2024];
     $categories = collect([new Category(), new Category()]);
     $priceRange = ['min' => 10, 'max' => 100];
+    $ratingRange = ['min' => 1.0, 'max' => 5.0];
 
     $this->productRepository->shouldReceive('distinctYears')->once()->andReturn($years);
     $this->categoryRepository->shouldReceive('all')->once()->andReturn($categories);
     $this->productRepository->shouldReceive('getPriceRange')->once()->andReturn($priceRange);
+    $this->productRepository->shouldReceive('getRatingRange')->once()->andReturn($ratingRange);
 
     // Call the private method getFilterOptions using reflection
     $reflection = new ReflectionClass($this->shopService);
@@ -101,10 +111,11 @@ test('getFilterOptions returns all required data', function () {
 
     $result = $method->invoke($this->shopService);
 
-    expect($result)->toHaveKeys(['years', 'categories', 'priceRange']);
+    expect($result)->toHaveKeys(['years', 'categories', 'priceRange', 'ratingRange']);
     expect($result['years'])->toBe($years);
     expect($result['categories'])->toBe($categories);
     expect($result['priceRange'])->toBe($priceRange);
+    expect($result['ratingRange'])->toBe($ratingRange);
 });
 
 test('getShopPageData includes counts', function () {
@@ -116,8 +127,10 @@ test('getShopPageData includes counts', function () {
     $categories = collect([new Category(), new Category()]);
     $years = [2023, 2024];
     $priceRange = ['min' => 10, 'max' => 100];
+    $ratingRange = ['min' => 1.0, 'max' => 5.0];
     $categoryCounts = [1 => 5, 2 => 3];
     $yearCounts = [2023 => 5, 2024 => 3];
+    $ratingCounts = [0 => 2, 1 => 1, 2 => 1, 3 => 2, 4 => 3, 5 => 1];
     $availabilityCounts = ['available' => 8, 'not_available' => 2];
 
     $request->shouldReceive('filters')->once()->andReturn($filters);
@@ -127,14 +140,17 @@ test('getShopPageData includes counts', function () {
     $this->productRepository->shouldReceive('distinctYears')->once()->andReturn($years);
     $this->categoryRepository->shouldReceive('all')->once()->andReturn($categories);
     $this->productRepository->shouldReceive('getPriceRange')->once()->andReturn($priceRange);
+    $this->productRepository->shouldReceive('getRatingRange')->once()->andReturn($ratingRange);
     $this->categoryRepository->shouldReceive('getProductCounts')->once()->andReturn($categoryCounts);
     $this->productRepository->shouldReceive('getYearCounts')->once()->andReturn($yearCounts);
+    $this->productRepository->shouldReceive('getRatingCounts')->once()->andReturn($ratingCounts);
     $this->productRepository->shouldReceive('getAvailabilityCounts')->once()->andReturn($availabilityCounts);
 
     $result = $this->shopService->getShopPageData($request);
 
     expect($result['counts']['categoryCounts'])->toBe($categoryCounts);
     expect($result['counts']['yearCounts'])->toBe($yearCounts);
+    expect($result['counts']['ratingCounts'])->toBe($ratingCounts);
     expect($result['counts']['availabilityCounts'])->toBe($availabilityCounts);
 });
 
@@ -147,8 +163,10 @@ test('getShopPageData handles custom per_page parameter', function () {
     $categories = collect([new Category(), new Category()]);
     $years = [2023, 2024];
     $priceRange = ['min' => 10, 'max' => 100];
+    $ratingRange = ['min' => 1.0, 'max' => 5.0];
     $categoryCounts = [1 => 5, 2 => 3];
     $yearCounts = [2023 => 5, 2024 => 3];
+    $ratingCounts = [0 => 2, 1 => 1, 2 => 1, 3 => 2, 4 => 3, 5 => 1];
     $availabilityCounts = ['available' => 8, 'not_available' => 2];
 
     $request->shouldReceive('filters')->once()->andReturn($filters);
@@ -158,8 +176,10 @@ test('getShopPageData handles custom per_page parameter', function () {
     $this->productRepository->shouldReceive('distinctYears')->once()->andReturn($years);
     $this->categoryRepository->shouldReceive('all')->once()->andReturn($categories);
     $this->productRepository->shouldReceive('getPriceRange')->once()->andReturn($priceRange);
+    $this->productRepository->shouldReceive('getRatingRange')->once()->andReturn($ratingRange);
     $this->categoryRepository->shouldReceive('getProductCounts')->once()->andReturn($categoryCounts);
     $this->productRepository->shouldReceive('getYearCounts')->once()->andReturn($yearCounts);
+    $this->productRepository->shouldReceive('getRatingCounts')->once()->andReturn($ratingCounts);
     $this->productRepository->shouldReceive('getAvailabilityCounts')->once()->andReturn($availabilityCounts);
 
     $result = $this->shopService->getShopPageData($request);

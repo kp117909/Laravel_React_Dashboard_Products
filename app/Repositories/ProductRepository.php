@@ -4,8 +4,8 @@ namespace App\Repositories;
 
 use App\Models\Product;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use App\Queries\SearchProductsQuery;
-use App\Queries\SortableProductsQuery;
+use App\Queries\Products\SearchProductsQuery;
+use App\Queries\Products\SortableProductsQuery;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Pagination\LengthAwarePaginator;
 
@@ -136,6 +136,35 @@ class ProductRepository
                 $query->where('price', '<=', $filters['price_max']);
             }
         }
+        // Apply rating filter - only filter if not all ratings are selected
+        if (!empty($filters['ratings']) && count($filters['ratings']) < 6) {
+            $ratings = $filters['ratings'];
+            $hasZero = in_array(0, $ratings, true);
+            $numericRatings = array_filter($ratings, fn($rating) => $rating !== 0);
+
+            if ($hasZero && !empty($numericRatings)) {
+                $query->where(function($q) use ($numericRatings) {
+                    foreach ($numericRatings as $rating) {
+                        $q->orWhere(function($subQ) use ($rating) {
+                            $subQ->where('average_rating', '>=', $rating)
+                                 ->where('average_rating', '<', $rating + 1);
+                        });
+                    }
+                    $q->orWhereNull('average_rating');
+                });
+            } elseif ($hasZero) {
+                $query->whereNull('average_rating');
+            } else {
+                $query->where(function($q) use ($numericRatings) {
+                    foreach ($numericRatings as $rating) {
+                        $q->orWhere(function($subQ) use ($rating) {
+                            $subQ->where('average_rating', '>=', $rating)
+                                 ->where('average_rating', '<', $rating + 1);
+                        });
+                    }
+                });
+            }
+        }
 
         // Apply availability filter
         if (isset($filters['available']) || isset($filters['not_available'])) {
@@ -175,6 +204,20 @@ class ProductRepository
     }
 
     /**
+     * Get rating range from all published products
+     */
+    public function getRatingRange(): array
+    {
+        $minRating = $this->model->where('is_published', true)->min('average_rating') ?? 0;
+        $maxRating = $this->model->where('is_published', true)->max('average_rating') ?? 5;
+
+        return [
+            'min' => (float) floor($minRating * 10) / 10, // Round down to 1 decimal
+            'max' => (float) ceil($maxRating * 10) / 10   // Round up to 1 decimal
+        ];
+    }
+
+    /**
      * Get product counts for each year
      */
     public function getYearCounts(): array
@@ -186,6 +229,29 @@ class ProductRepository
             ->orderByDesc('year')
             ->pluck('count', 'year')
             ->toArray();
+    }
+
+    /**
+     * Get product counts for each rating group
+     */
+    public function getRatingCounts(): array
+    {
+        $counts = [];
+
+        $counts[0] = $this->model
+            ->where('is_published', true)
+            ->whereNull('average_rating')
+            ->count();
+
+        for ($rating = 1; $rating <= 5; $rating++) {
+            $counts[$rating] = $this->model
+                ->where('is_published', true)
+                ->where('average_rating', '>=', $rating)
+                ->where('average_rating', '<', $rating + 1)
+                ->count();
+        }
+
+        return $counts;
     }
 
     /**

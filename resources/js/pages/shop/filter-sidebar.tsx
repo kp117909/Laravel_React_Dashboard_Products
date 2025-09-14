@@ -7,6 +7,7 @@ interface FilterSidebarProps {
     years: number[];
     categories: Category[];
     priceRange: { min: number; max: number };
+    ratingRange: { min: number; max: number };
   };
   products: Product[];
   filters: {
@@ -15,12 +16,14 @@ interface FilterSidebarProps {
     search?: string;
     price_min?: number;
     price_max?: number;
+    ratings?: number[];
     available?: boolean;
     not_available?: boolean;
   };
   counts: {
     categoryCounts: Record<number, number>;
     yearCounts: Record<number, number>;
+    ratingCounts: Record<number, number>;
     availabilityCounts: Record<string, number>;
   };
   selectedYears: Set<number>;
@@ -30,6 +33,7 @@ interface FilterSidebarProps {
   onCategoriesChange: (categories: Set<number>) => void;
   onSearchChange: (search: string) => void;
   onPriceChange: (priceRange: [number, number]) => void;
+  onRatingChange: (ratings: Set<number>) => void;
   onAvailabilityChange: (available: boolean, notAvailable: boolean) => void;
 }
 
@@ -46,6 +50,7 @@ export const FilterSidebar = ({
   onCategoriesChange,
   onSearchChange,
   onPriceChange,
+  onRatingChange,
   onAvailabilityChange
 }: FilterSidebarProps) => {
   return (
@@ -60,15 +65,19 @@ export const FilterSidebar = ({
         selectedCategories={selectedCategories}
         onSearchChange={onSearchChange}
         onPriceChange={onPriceChange}
+        onRatingChange={onRatingChange}
         onAvailabilityChange={onAvailabilityChange}
         initialSearch={filters.search || ""}
         initialPriceRange={initialPriceRange}
         priceRange={filterOptions.priceRange}
+        ratingRange={filterOptions.ratingRange}
         initialAvailable={filters.available ?? true}
         initialNotAvailable={filters.not_available ?? true}
         categoryCounts={counts.categoryCounts}
         yearCounts={counts.yearCounts}
+        ratingCounts={counts.ratingCounts}
         availabilityCounts={counts.availabilityCounts}
+        filters={filters}
       />
     </div>
   );

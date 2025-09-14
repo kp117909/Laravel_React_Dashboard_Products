@@ -129,6 +129,7 @@ export interface Category {
 export interface FilterCallbacks {
     onSearchChange: (search: string) => void;
     onPriceChange?: (priceRange: [number, number]) => void;
+    onRatingChange?: (ratings: Set<number>) => void;
     onAvailabilityChange?: (available: boolean, notAvailable: boolean) => void;
     onYearsChange: (years: Set<number>) => void;
     onCategoriesChange: (categories: Set<number>) => void;
@@ -138,10 +139,22 @@ export interface FilterData {
     categories: Category[];
     categoryCounts: Record<number, number>;
     yearCounts: Record<number, number>;
+    ratingCounts: Record<number, number>;
     availabilityCounts: Record<string, number>;
     years: number[];
     selectedYears: Set<number>;
     selectedCategories: Set<number>;
     priceRange: { min: number; max: number };
+    ratingRange: { min: number; max: number };
+    filters?: {
+        years: number[];
+        categories: number[];
+        search?: string;
+        price_min?: number;
+        price_max?: number;
+        ratings?: number[];
+        available?: boolean;
+        not_available?: boolean;
+    };
 }
 

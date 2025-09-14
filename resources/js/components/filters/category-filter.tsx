@@ -20,7 +20,6 @@ export function CategoryFilter({
   search = "",
   onSearchChange,
 }: CategoryFilterProps) {
-  // If search is provided, filter categories by name
   const filteredCategories = search
     ? categories.filter((category) =>
         category.name.toLowerCase().includes(search.toLowerCase())
