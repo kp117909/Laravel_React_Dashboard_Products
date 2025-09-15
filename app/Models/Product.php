@@ -21,6 +21,37 @@ class Product extends Model
         return $this->hasMany(Review::class);
     }
 
+    public function orderItems()
+    {
+        return $this->hasMany(OrderItem::class);
+    }
+
+    /**
+     * Scope to get products with their total sales count
+     */
+    public function scopeWithSalesCount(Builder $query): Builder
+    {
+        return $query->withCount([
+            'orderItems as total_sold' => function (Builder $query) {
+                $query->selectRaw('SUM(quantity)');
+            }
+        ]);
+    }
+
+    /**
+     * Scope to get best-selling products
+     */
+    public function scopeBestSelling(Builder $query, int $limit = 6): Builder
+    {
+        return $query
+            ->withSalesCount()
+            ->published()
+            ->where('is_available', true)
+            ->orderByDesc('total_sold')
+            ->orderByDesc('average_rating')
+            ->limit($limit);
+    }
+
     public function getImageAttribute($value)
     {
         if ($value && Storage::disk('public')->exists($value)) {

@@ -50,10 +50,11 @@ test('getShopPageData returns correct structure', function () {
     $this->productRepository->shouldReceive('getYearCounts')->once()->andReturn($yearCounts);
     $this->productRepository->shouldReceive('getRatingCounts')->once()->andReturn($ratingCounts);
     $this->productRepository->shouldReceive('getAvailabilityCounts')->once()->andReturn($availabilityCounts);
+    $this->productRepository->shouldReceive('getBestSellingProducts')->once()->with(6, ['category'])->andReturn(new \Illuminate\Database\Eloquent\Collection([]));
 
     $result = $this->shopService->getShopPageData($request);
 
-    expect($result)->toHaveKeys(['products', 'filters', 'filterOptions', 'counts']);
+    expect($result)->toHaveKeys(['products', 'filters', 'filterOptions', 'counts', 'bestSellingProducts']);
     expect($result['filters'])->toHaveKeys(['years', 'categories', 'ratings', 'price_min', 'price_max', 'available', 'not_available', 'search']);
     expect($result['filterOptions'])->toHaveKeys(['years', 'categories', 'priceRange', 'ratingRange']);
     expect($result['counts'])->toHaveKeys(['categoryCounts', 'yearCounts', 'ratingCounts', 'availabilityCounts']);
@@ -87,6 +88,7 @@ test('getProducts calls repository with correct parameters', function () {
     $this->productRepository->shouldReceive('getYearCounts')->once()->andReturn($yearCounts);
     $this->productRepository->shouldReceive('getRatingCounts')->once()->andReturn($ratingCounts);
     $this->productRepository->shouldReceive('getAvailabilityCounts')->once()->andReturn($availabilityCounts);
+    $this->productRepository->shouldReceive('getBestSellingProducts')->once()->with(6, ['category'])->andReturn(new \Illuminate\Database\Eloquent\Collection([]));
 
     $result = $this->shopService->getShopPageData($request);
 
@@ -145,6 +147,7 @@ test('getShopPageData includes counts', function () {
     $this->productRepository->shouldReceive('getYearCounts')->once()->andReturn($yearCounts);
     $this->productRepository->shouldReceive('getRatingCounts')->once()->andReturn($ratingCounts);
     $this->productRepository->shouldReceive('getAvailabilityCounts')->once()->andReturn($availabilityCounts);
+    $this->productRepository->shouldReceive('getBestSellingProducts')->once()->with(6, ['category'])->andReturn(new \Illuminate\Database\Eloquent\Collection([]));
 
     $result = $this->shopService->getShopPageData($request);
 
@@ -181,6 +184,7 @@ test('getShopPageData handles custom per_page parameter', function () {
     $this->productRepository->shouldReceive('getYearCounts')->once()->andReturn($yearCounts);
     $this->productRepository->shouldReceive('getRatingCounts')->once()->andReturn($ratingCounts);
     $this->productRepository->shouldReceive('getAvailabilityCounts')->once()->andReturn($availabilityCounts);
+    $this->productRepository->shouldReceive('getBestSellingProducts')->once()->with(6, ['category'])->andReturn(new \Illuminate\Database\Eloquent\Collection([]));
 
     $result = $this->shopService->getShopPageData($request);
 

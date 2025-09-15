@@ -12,7 +12,7 @@ export function AppContent({ variant = 'header', children, ...props }: AppConten
 
     if (variant === 'navigation') {
         return (
-        <main className="flex-1 pt-32 w-full flex flex-col" {...props}>
+        <main className="flex-1 pt-26 w-full flex flex-col" {...props}>
             {children}
         </main>
         );

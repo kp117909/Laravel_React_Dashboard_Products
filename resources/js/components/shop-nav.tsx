@@ -2,9 +2,16 @@ import { usePage } from "@inertiajs/react"
 import { NavItemWithAuth, type SharedData } from "@/types"
 import { NavMenu } from "./nav-menu"
 import { NavigationSheet } from "./navigation-sheet"
+import { NavSearch } from "./nav-search"
 import AppLogo from "./app-logo"
 
-export default function ShopNav({ navItems = [] }: { navItems?: NavItemWithAuth[] }) {
+interface ShopNavProps {
+  navItems?: NavItemWithAuth[];
+  onSearch?: (searchTerm: string) => void;
+  initialSearch?: string;
+}
+
+export default function ShopNav({ navItems = [], onSearch, initialSearch }: ShopNavProps) {
   const { auth } = usePage<SharedData>().props
 
   const filteredItems = navItems.filter((item) => {
@@ -19,6 +26,13 @@ export default function ShopNav({ navItems = [] }: { navItems?: NavItemWithAuth[
     <div className="flex items-center mr-4">
       <AppLogo/>
     </div>
+
+    {/* Search - Desktop */}
+    {onSearch && (
+      <div className="hidden md:flex flex-1 justify-center max-w-md">
+        <NavSearch onSearch={onSearch} initialSearch={initialSearch} />
+      </div>
+    )}
 
     {/* Desktop menu */}
     <div className="hidden md:flex flex-1 justify-end">

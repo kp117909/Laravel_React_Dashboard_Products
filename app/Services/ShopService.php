@@ -27,6 +27,7 @@ class ShopService
             'filters' => $this->formatFilters($filters),
             'filterOptions' => $this->getFilterOptions(),
             'counts' => $this->getCounts(),
+            'bestSellingProducts' => $this->getBestSellingProducts(),
         ];
     }
 
@@ -74,6 +75,22 @@ class ShopService
             'ratingCounts' => $this->productRepository->getRatingCounts(),
             'availabilityCounts' => $this->productRepository->getAvailabilityCounts(),
         ];
+    }
+
+    /**
+     * Get best-selling products for carousel
+     */
+    private function getBestSellingProducts(): \Illuminate\Database\Eloquent\Collection
+    {
+        return $this->productRepository->getBestSellingProducts(6, ['category']);
+    }
+
+    /**
+     * Get featured products for homepage carousel
+     */
+    public function getFeaturedProducts(int $limit = 6): \Illuminate\Database\Eloquent\Collection
+    {
+        return $this->productRepository->getBestSellingProducts($limit, ['category']);
     }
 
     /**

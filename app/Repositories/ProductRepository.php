@@ -268,5 +268,15 @@ class ProductRepository
         ];
     }
 
+    /**
+     * Get best-selling products based on order items
+     */
+    public function getBestSellingProducts(int $limit = 6, array $relations = []): \Illuminate\Database\Eloquent\Collection
+    {
+        return $this->model
+            ->bestSelling($limit)
+            ->with($relations)
+            ->get();
+    }
 
 }

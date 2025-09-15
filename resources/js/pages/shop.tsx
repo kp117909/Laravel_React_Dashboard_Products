@@ -9,6 +9,7 @@ import { MobileFilterToggle } from '@/components/mobile-filter-toggle';
 import { useShopState } from '@/hooks/use-shop-state';
 import { clearAllFilters, updateFilters, useBodyScrollLock, getGridClasses, useAutoSwitchViewMode } from '@/utils/shop-utils';
 import { ViewSwitcher, type ViewMode } from '@/components/view-switcher';
+import { BestsellersCarousel } from '@/components/bestsellers-carousel-embla';
 
 interface ShopFilters {
   years: number[];
@@ -40,9 +41,10 @@ interface ShopProps {
   filters: ShopFilters;
   filterOptions: FilterOptions;
   counts: FilterCounts;
+  bestSellingProducts: Product[];
 }
 
-export default function Shop({ products, filters: initialFilters, filterOptions, counts }: ShopProps) {
+export default function Shop({ products, filters: initialFilters, filterOptions, counts, bestSellingProducts }: ShopProps) {
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [viewMode, setViewMode] = useState<ViewMode>('grid-3');
 
@@ -69,6 +71,10 @@ export default function Shop({ products, filters: initialFilters, filterOptions,
     initialPriceRange,
     filterSummary
   } = useShopState(initialFilters, filterOptions, products);
+
+  const hasActiveFilters = useCallback(() => {
+    return filterSummary.length > 0;
+  }, [filterSummary]);
 
   const onYearsChange = useCallback((next: Set<number>) => {
     updateFilters(
@@ -158,9 +164,20 @@ export default function Shop({ products, filters: initialFilters, filterOptions,
 
   // Prevent body scrolling when filter is open on mobile
   useBodyScrollLock(isFilterOpen);
-
   return (
-    <AppShopLayout>
+    <AppShopLayout
+      onSearch={(searchTerm) => {
+        onSearchChange(searchTerm);
+      }}
+      initialSearch={initialFilters.search || ''}
+    >
+      {/* Best Sellers Carousel - Only show when no filters are active */}
+      {!hasActiveFilters() && (
+        <div className="w-full mb-8 px-2 sm:px-4 lg:px-6">
+          <BestsellersCarousel products={bestSellingProducts} />
+        </div>
+      )}
+
       <div className="container mx-auto flex flex-col lg:flex-row w-full gap-4 lg:gap-6 text-[#1b1b18] dark:text-[#EDEDEC] px-2 sm:px-4 lg:px-6">
         <FilterSidebar
           isFilterOpen={isFilterOpen}
