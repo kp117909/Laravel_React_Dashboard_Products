@@ -9,6 +9,11 @@ class DiscountCodeSeeder extends Seeder
 {
     public function run(): void
     {
+        // Only seed if no discount codes exist
+        if (DiscountCode::count() > 0) {
+            return;
+        }
+
         // Create some sample discount codes
         DiscountCode::create([
             'code' => 'SAVE10',

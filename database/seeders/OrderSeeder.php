@@ -15,6 +15,11 @@ class OrderSeeder extends Seeder
 {
     public function run(): void
     {
+        // Only seed if no orders exist
+        if (Order::count() > 0) {
+            return;
+        }
+
         // Find the kpolak491 user
         $user = User::where('email', 'kpolak491@gmail.com')->first();
 

@@ -112,21 +112,24 @@ class ProductSeeder extends Seeder
         ];
 
 
-        foreach ($productsData as $data) {
-            $category = $categories->random();
+        // Only seed if no products exist
+        if (Product::count() == 0) {
+            foreach ($productsData as $data) {
+                $category = $categories->random();
 
-            Product::create([
-                'name' => $data['name'],
-                'description' => $data['description'],
-                'price' => $data['price'],
-                'average_rating' => $data['average_rating'],
-                'reviews_count' => $data['reviews_count'],
-                'is_available' => $data['is_available'],
-                'image' => null,
-                'category_id' => $category->id,
-            ]);
+                Product::create([
+                    'name' => $data['name'],
+                    'description' => $data['description'],
+                    'price' => $data['price'],
+                    'average_rating' => $data['average_rating'],
+                    'reviews_count' => $data['reviews_count'],
+                    'is_available' => $data['is_available'],
+                    'image' => null,
+                    'category_id' => $category->id,
+                ]);
+            }
+            Product::factory(20)->create();
         }
-        Product::factory(20)->create();
 
     }
 }

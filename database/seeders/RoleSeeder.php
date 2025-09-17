@@ -54,16 +54,19 @@ class RoleSeeder extends Seeder
         ];
 
         foreach ($roles as $role) {
-            $roleModel = Role::create(['name' => $role, 'guard_name' => 'web']);
+            $roleModel = Role::firstOrCreate(['name' => $role, 'guard_name' => 'web']);
 
-            $randomPermissions = array_rand($permissions, rand(2, 5));
+            // Only assign permissions if role was just created (doesn't have permissions yet)
+            if ($roleModel->permissions->isEmpty()) {
+                $randomPermissions = array_rand($permissions, rand(2, 5));
 
-            if (is_array($randomPermissions)) {
-                foreach ($randomPermissions as $permission) {
-                    $roleModel->givePermissionTo($permissions[$permission]);
+                if (is_array($randomPermissions)) {
+                    foreach ($randomPermissions as $permission) {
+                        $roleModel->givePermissionTo($permissions[$permission]);
+                    }
+                } else {
+                    $roleModel->givePermissionTo($permissions[$randomPermissions]);
                 }
-            } else {
-                $roleModel->givePermissionTo($permissions[$randomPermissions]);
             }
         }
 
