@@ -111,6 +111,7 @@ export default function PriceRangeSlider({
             onBlur={handleMinBlur}
             min={min}
             max={localValue[1]}
+            aria-label="Minimum price"
             className="w-16 sm:w-18 h-6 text-xs"
             disabled={disabled}
           />
@@ -123,6 +124,7 @@ export default function PriceRangeSlider({
             onBlur={handleMaxBlur}
             min={localValue[0]}
             max={max}
+            aria-label="Maximum price"
             className="w-16 sm:w-18 h-6 text-xs"
             disabled={disabled}
           />

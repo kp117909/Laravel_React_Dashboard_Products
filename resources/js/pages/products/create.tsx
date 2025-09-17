@@ -71,9 +71,10 @@ export default function CreateProduct({categories}: Props) {
               type="text"
               value={data.name}
               onChange={(e) => setData('name', e.target.value)}
+              aria-describedby={errors.name ? "name-error" : undefined}
               className="w-full rounded border px-3 py-2"
             />
-            {errors.name && <div className="text-sm text-red-600 mt-1">{errors.name}</div>}
+            {errors.name && <div id="name-error" className="text-sm text-red-600 mt-1">{errors.name}</div>}
           </div>
 
           <div>
@@ -82,9 +83,10 @@ export default function CreateProduct({categories}: Props) {
               id="description"
               value={data.description}
               onChange={(e) => setData('description', e.target.value)}
+              aria-describedby={errors.description ? "description-error" : undefined}
               className="w-full rounded border px-3 py-2"
             />
-            {errors.description && <div className="text-sm text-red-600 mt-1">{errors.description}</div>}
+            {errors.description && <div id="description-error" className="text-sm text-red-600 mt-1">{errors.description}</div>}
           </div>
 
           <div>
@@ -95,9 +97,10 @@ export default function CreateProduct({categories}: Props) {
               step="0.01"
               value={data.price}
               onChange={(e) => setData('price', e.target.value)}
+              aria-describedby={errors.price ? "price-error" : undefined}
               className="w-full rounded border px-3 py-2"
             />
-            {errors.price && <div className="text-sm text-red-600 mt-1">{errors.price}</div>}
+            {errors.price && <div id="price-error" className="text-sm text-red-600 mt-1">{errors.price}</div>}
           </div>
 
            <div>

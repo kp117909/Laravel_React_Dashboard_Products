@@ -21,7 +21,10 @@ export default function CategorySelect({ categories, value, onChange, error }: P
         value={String(value)}
         onValueChange={(val) => onChange(Number(val))}
       >
-        <SelectTrigger className={error ? "border border-red-500" : ""}>
+        <SelectTrigger 
+          className={error ? "border border-red-500" : ""}
+          aria-describedby={error ? "category-error" : undefined}
+        >
           <SelectValue placeholder="Select Category" />
         </SelectTrigger>
         <SelectContent>
@@ -32,7 +35,7 @@ export default function CategorySelect({ categories, value, onChange, error }: P
           ))}
         </SelectContent>
       </Select>
-      {error && <div className="text-sm text-red-600 mt-1">{error}</div>}
+      {error && <div id="category-error" className="text-sm text-red-600 mt-1">{error}</div>}
     </div>
   )
 }
