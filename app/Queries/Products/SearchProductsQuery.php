@@ -12,6 +12,7 @@ class SearchProductsQuery
         if ($search) {
             $query->where(function (Builder $q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
+                    ->orWhere('description', 'like', "%{$search}%")
                     ->orWhereHas('category', function (Builder $q) use ($search) {
                         $q->where('name', 'like', "%{$search}%");
                     });

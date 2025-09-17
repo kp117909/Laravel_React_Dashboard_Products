@@ -162,6 +162,25 @@
   min-width: 0;
 }
 
+/* Custom breakpoint for navbar search at 1128px */
+@media (min-width: 1128px) {
+    .search-inline-1128 {
+        display: flex !important;
+    }
+    .search-second-row-1128 {
+        display: none !important;
+    }
+}
+
+@media (max-width: 1127px) and (min-width: 768px) {
+    .search-inline-1128 {
+        display: none !important;
+    }
+    .search-second-row-1128 {
+        display: block !important;
+    }
+}
+
 @layer base {
     * {
         @apply border-border;

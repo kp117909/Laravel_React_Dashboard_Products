@@ -171,7 +171,6 @@ export default function Shop({ products, filters: initialFilters, filterOptions,
       }}
       initialSearch={initialFilters.search || ''}
     >
-      {/* Best Sellers Carousel - Only show when no filters are active */}
       {!hasActiveFilters() && (
         <div className="w-full mb-8 px-2 sm:px-4 lg:px-6">
           <BestsellersCarousel products={bestSellingProducts} />

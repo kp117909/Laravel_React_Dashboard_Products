@@ -34,5 +34,28 @@ class CategoryRepository
     {
         return $this->model->select('id', 'name')->orderBy('name')->get();
     }
+
+    /**
+     * Search categories by name
+     */
+    public function searchCategories(string $search, int $limit = 4): array
+    {
+        return $this->model
+            ->where('name', 'like', "%{$search}%")
+            ->withCount(['products' => function ($query) {
+                $query->where('is_published', true);
+            }])
+            ->limit($limit)
+            ->get(['id', 'name'])
+            ->map(function ($category) {
+                return [
+                    'id' => $category->id,
+                    'name' => $category->name,
+                    'products_count' => $category->products_count,
+                    'url' => '/?categories[]=' . $category->id
+                ];
+            })
+            ->toArray();
+    }
 }
 

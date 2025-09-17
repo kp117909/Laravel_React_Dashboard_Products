@@ -158,3 +158,20 @@ export interface FilterData {
     };
 }
 
+export interface SearchProduct {
+    id: number;
+    name: string;
+    description: string;
+    price: number;
+    image_url: string | null;
+    category: string | null;
+    url: string;
+}
+
+export interface SearchCategory {
+    id: number;
+    name: string;
+    products_count: number;
+    url: string;
+}
+

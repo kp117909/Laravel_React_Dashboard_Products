@@ -17,7 +17,11 @@ export default function Cart({ cart: initialCart }: Props) {
     const { cart, isLoading, updateQuantity, removeItem, clearCart } = useCartOperations(initialCart);
 
     return (
-        <AppShopLayout>
+        <AppShopLayout
+            onSearch={(searchTerm) => {
+                window.location.href = `/?search=${encodeURIComponent(searchTerm)}`;
+            }}
+        >
             <Head title="Shopping Cart" />
 
             <div className="container mx-auto px-4 lg:px-6">
