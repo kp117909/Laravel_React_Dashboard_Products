@@ -13,21 +13,36 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        User::factory(100)->create();
+        // Only create users if none exist
+        if (User::count() == 0) {
+            User::factory(100)->create();
+        }
+
         $this->call(PermissionSeeder::class);
         $this->call(RoleSeeder::class);
 
-        $admin = User::factory()->create([
-            'name' => 'kpolak491',
-            'email' => 'kpolak491@gmail.com',
-            'password' => bcrypt('test1234'),
-        ]);
+        // Create admin user only if it doesn't exist
+        $admin = User::firstOrCreate(
+            ['email' => 'kpolak491@gmail.com'],
+            [
+                'name' => 'kpolak491',
+                'password' => bcrypt('test1234'),
+            ]
+        );
 
-        $admin->assignRole('admin');
+        // Assign admin role only if user doesn't have it
+        if (!$admin->hasRole('admin')) {
+            $admin->assignRole('admin');
+        }
+
         $this->call(CategorySeeder::class);
         $this->call(ProductSeeder::class);
         $this->call(DiscountCodeSeeder::class);
         $this->call(OrderSeeder::class);
-        Review::factory(100)->create();
+        
+        // Only create reviews if none exist
+        if (Review::count() == 0) {
+            Review::factory(100)->create();
+        }
     }
 }
