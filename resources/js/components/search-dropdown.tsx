@@ -1,6 +1,6 @@
-import { useState, useRef, useEffect } from 'react';
+
 import { Link } from '@inertiajs/react';
-import { Search, X, ArrowRight, Tag } from 'lucide-react';
+import { Search, ArrowRight, Tag } from 'lucide-react';
 import { SearchProduct, SearchCategory } from '@/types';
 
 interface SearchDropdownProps {

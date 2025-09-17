@@ -21,7 +21,7 @@ export default function CategorySelect({ categories, value, onChange, error }: P
         value={String(value)}
         onValueChange={(val) => onChange(Number(val))}
       >
-        <SelectTrigger 
+        <SelectTrigger
           className={error ? "border border-red-500" : ""}
           aria-describedby={error ? "category-error" : undefined}
         >

@@ -9,7 +9,7 @@ interface NavSearchProps {
   initialSearch?: string;
 }
 
-export function NavSearch({ onSearch, initialSearch = '' }: NavSearchProps) {
+export function NavSearch({ onSearch }: NavSearchProps) {
   const {
     searchTerm,
     products,
