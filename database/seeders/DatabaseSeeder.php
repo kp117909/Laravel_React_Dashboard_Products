@@ -13,7 +13,6 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // Only create users if none exist
         if (User::count() == 0) {
             User::factory(100)->create();
         }
@@ -21,7 +20,7 @@ class DatabaseSeeder extends Seeder
         $this->call(PermissionSeeder::class);
         $this->call(RoleSeeder::class);
 
-        // Create admin user only if it doesn't exist
+
         $admin = User::firstOrCreate(
             ['email' => 'kpolak491@gmail.com'],
             [
@@ -30,7 +29,7 @@ class DatabaseSeeder extends Seeder
             ]
         );
 
-        // Assign admin role only if user doesn't have it
+
         if (!$admin->hasRole('admin')) {
             $admin->assignRole('admin');
         }
@@ -39,7 +38,7 @@ class DatabaseSeeder extends Seeder
         $this->call(ProductSeeder::class);
         $this->call(DiscountCodeSeeder::class);
         $this->call(OrderSeeder::class);
-        
+
         // Only create reviews if none exist
         if (Review::count() == 0) {
             Review::factory(100)->create();

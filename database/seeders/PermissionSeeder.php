@@ -39,7 +39,10 @@ class PermissionSeeder extends Seeder
         $user = Role::firstOrCreate(['name' => 'user']);
 
 
-        $admin->givePermissionTo($permissions);
+        // Only assign permissions if role doesn't have them
+        if ($admin->permissions->isEmpty()) {
+            $admin->givePermissionTo($permissions);
+        }
 
         $moderatorPermissions = [
             "users.view",
@@ -48,15 +51,22 @@ class PermissionSeeder extends Seeder
             "products.create",
             "products.delete",
         ];
-        $moderator->givePermissionTo($moderatorPermissions);
+        
+        if ($moderator->permissions->isEmpty()) {
+            $moderator->givePermissionTo($moderatorPermissions);
+        }
 
         $userPermissions = [
             "products.view",
         ];
-        $user->givePermissionTo($userPermissions);
+        
+        if ($user->permissions->isEmpty()) {
+            $user->givePermissionTo($userPermissions);
+        }
 
+        // Assign admin role to first user if they don't have it
         $adminUser = User::find(1);
-        if ($adminUser) {
+        if ($adminUser && !$adminUser->hasRole('admin')) {
             $adminUser->assignRole($admin);
         }
 
