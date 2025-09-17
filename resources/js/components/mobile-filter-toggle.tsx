@@ -12,6 +12,7 @@ export function MobileFilterToggle({ onClick, isOpen }: MobileFilterToggleProps)
       variant="outline"
       size="sm"
       onClick={onClick}
+      aria-label={isOpen ? "Hide product filters" : "Show product filters"}
       className="fixed bottom-4 left-4 z-50 lg:hidden flex items-center gap-2 shadow-lg bg-white dark:bg-[#18181b]"
     >
       <Filter className="h-4 w-4" />

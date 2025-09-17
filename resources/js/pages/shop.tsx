@@ -195,7 +195,7 @@ export default function Shop({ products, filters: initialFilters, filterOptions,
           onAvailabilityChange={onAvailabilityChange}
         />
 
-        <main className="flex flex-col items-center w-full">
+        <div className="flex flex-col items-center w-full">
           <div className="flex items-center justify-between w-full mb-6">
             <h1 className="text-2xl font-semibold">See products</h1>
             <div className="hidden min-[500px]:block">
@@ -213,7 +213,7 @@ export default function Shop({ products, filters: initialFilters, filterOptions,
           </div>
 
           <Pagination products={products} />
-        </main>
+        </div>
       </div>
 
       <MobileFilterToggle onClick={toggleFilterOpen} isOpen={isFilterOpen} />

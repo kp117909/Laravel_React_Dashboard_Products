@@ -21,7 +21,7 @@ export default function ShopNav({ navItems = [], onSearch, initialSearch }: Shop
   })
 
   return (
-    <nav className="fixed top-0 inset-x-0 z-50 bg-background border-b shadow-sm">
+    <nav className="fixed top-0 inset-x-0 z-50 bg-background border-b shadow-sm" aria-label="Main navigation">
       <div className="mx-auto max-w-screen-xl">
         {/* First Row - Logo and Menu */}
         <div className="flex items-center justify-between px-4 py-3">

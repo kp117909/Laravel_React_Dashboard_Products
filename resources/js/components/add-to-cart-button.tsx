@@ -51,6 +51,7 @@ export function AddToCartButton({
                         className="h-8 w-8"
                         onClick={() => handleQuantityChange(quantity - 1)}
                         disabled={quantity <= 1}
+                        aria-label="Decrease quantity"
                     >
                         <Minus className="h-4 w-4" />
                     </Button>
@@ -59,6 +60,7 @@ export function AddToCartButton({
                         min="1"
                         value={quantity}
                         onChange={(e) => handleQuantityChange(parseInt(e.target.value) || 1)}
+                        aria-label="Product quantity"
                         className="w-16 h-8 text-center border-0"
                     />
                     <Button
@@ -67,6 +69,7 @@ export function AddToCartButton({
                         size="icon"
                         className="h-8 w-8"
                         onClick={() => handleQuantityChange(quantity + 1)}
+                        aria-label="Increase quantity"
                     >
                         <Plus className="h-4 w-4" />
                     </Button>

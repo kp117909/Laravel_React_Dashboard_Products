@@ -24,7 +24,6 @@ Route::prefix('cart')->name('cart.')->group(function () {
     Route::post('/clear', [CartController::class, 'clear'])->name('clear');
     Route::post('/apply-discount', [CartController::class, 'applyDiscountCode'])->name('apply-discount');
     Route::delete('/remove-discount', [CartController::class, 'removeDiscountCode'])->name('remove-discount');
-
 });
 
 Route::middleware(['auth', 'verified'])->group(function () {

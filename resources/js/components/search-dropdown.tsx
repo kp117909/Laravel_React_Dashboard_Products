@@ -16,7 +16,7 @@ export function SearchDropdown({ isOpen, products, categories, isLoading, onClos
   if (!isOpen) return null;
 
   return (
-    <div className="absolute top-full left-0 right-0 mt-1 bg-white dark:bg-[#18181b] border border-gray-200 dark:border-[#232323]  rounded-lg shadow-lg z-50 max-h-128 overflow-hidden">
+    <div className="absolute top-full left-0 right-0 mt-1 bg-white dark:bg-[#18181b] border border-gray-200 dark:border-[#232323]  rounded-lg shadow-lg z-50 max-h-128 overflow-hidden" role="listbox" aria-label="Search results">
       {isLoading ? (
         <div className="p-4 text-center text-gray-500 dark:text-gray-400">
           <div className="animate-spin w-5 h-5 border-2 border-gray-300 border-t-gray-600 rounded-full mx-auto"></div>
