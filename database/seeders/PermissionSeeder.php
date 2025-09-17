@@ -51,7 +51,7 @@ class PermissionSeeder extends Seeder
             "products.create",
             "products.delete",
         ];
-        
+
         if ($moderator->permissions->isEmpty()) {
             $moderator->givePermissionTo($moderatorPermissions);
         }
@@ -59,7 +59,7 @@ class PermissionSeeder extends Seeder
         $userPermissions = [
             "products.view",
         ];
-        
+
         if ($user->permissions->isEmpty()) {
             $user->givePermissionTo($userPermissions);
         }

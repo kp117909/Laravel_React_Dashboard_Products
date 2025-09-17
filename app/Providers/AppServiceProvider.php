@@ -34,6 +34,11 @@ class AppServiceProvider extends ServiceProvider
         // Force HTTPS in production
         if (config('app.env') === 'production') {
             URL::forceScheme('https');
+            
+            // Force root URL to custom domain if set
+            if (config('app.url')) {
+                URL::forceRootUrl(config('app.url'));
+            }
         }
 
         Route::aliasMiddleware('can.redirect', HandlePermissionRedirect::class);
