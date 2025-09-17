@@ -1,0 +1,30 @@
+{
+  "name": "Laravel React Dashboard",
+  "description": "A Laravel React dashboard application",
+  "keywords": ["laravel", "react", "inertiajs"],
+  "buildpacks": [
+    {
+      "url": "heroku/nodejs"
+    },
+    {
+      "url": "heroku/php"
+    }
+  ],
+  "env": {
+    "APP_ENV": {
+      "value": "production"
+    },
+    "APP_DEBUG": {
+      "value": "false"
+    },
+    "APP_KEY": {
+      "generator": "secret"
+    }
+  },
+  "addons": [
+    "heroku-postgresql:mini"
+  ],
+  "scripts": {
+    "postdeploy": "php artisan migrate --force"
+  }
+}
