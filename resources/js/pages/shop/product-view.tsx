@@ -33,11 +33,11 @@ export default function ProductPage({ product }: Props) {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
             {/* Product Image */}
             <div className="relative group">
-              <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
+              <div className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
                 <img
                   src={`${product.image}`}
                   alt={product.name}
-                  className="w-full h-[500px] object-cover rounded-2xl shadow-2xl border-1 border-gray-800 dark:border-secondary transition-transform group-hover:scale-[1.02]"
+                  className="w-full h-[650px] object-cover rounded-2xl shadow-2xl border-1 border-gray-800 dark:border-secondary transition-transform group-hover:scale-[1.02]"
                 />
               </div>
 
@@ -87,7 +87,7 @@ export default function ProductPage({ product }: Props) {
               {/* Description */}
               <div className="space-y-4">
                 <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Description</h3>
-                <div className="bg-white dark:bg-secondary rounded-xl p-6 shadow-sm">
+                <div className="bg-white dark:bg-secondary rounded-xl p-6 shadow-sm max-h-64 overflow-y-auto">
                   <p className="text-gray-700 dark:text-gray-300 whitespace-pre-line">
                     {product.description}
                   </p>

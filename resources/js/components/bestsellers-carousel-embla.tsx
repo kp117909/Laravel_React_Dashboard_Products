@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState, useRef } from 'react';
 import { Link } from '@inertiajs/react';
 import { type Product } from '@/types';
 import { Badge } from '@/components/ui/badge';
-import { Star, StarIcon, TrendingUp } from 'lucide-react';
+import { Star, StarIcon, TrendingUp, Truck, Zap, Award, RotateCcw } from 'lucide-react';
 import useEmblaCarousel from 'embla-carousel-react';
 import Autoplay from 'embla-carousel-autoplay';
 import { useGsapAnimation } from '@/hooks/use-gsap-animations';
@@ -90,18 +90,21 @@ export function BestsellersCarousel({ products }: BestsellersCarouselProps) {
                   <div className="flex flex-col lg:flex-row items-center gap-8 p-8">
                     {/* Product Image */}
                     <div className="flex-shrink-0">
-                      <div className="w-168 h-96 overflow-hidden rounded-lg bg-gray-100 dark:bg-background">
-                        {product.image ? (
-                          <img
-                            src={product.image}
-                            alt={product.name}
-                            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-                          />
-                        ) : (
-                          <div className="w-full h-full flex items-center justify-center text-gray-400">
-                            No Image
-                          </div>
-                        )}
+                      <div className="relative group-image">
+                        <div className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                        <div className="w-96 h-96 overflow-hidden rounded-2xl bg-gray-100 dark:bg-background shadow-2xl border-1 border-gray-200 dark:border-gray-700">
+                          {product.image ? (
+                            <img
+                              src={product.image}
+                              alt={product.name}
+                              className="w-full h-full object-contain object-center group-hover:scale-[1.02] transition-transform duration-300"
+                            />
+                          ) : (
+                            <div className="w-full h-full flex items-center justify-center text-gray-400">
+                              No Image
+                            </div>
+                          )}
+                        </div>
                       </div>
                     </div>
 
@@ -146,6 +149,36 @@ export function BestsellersCarousel({ products }: BestsellersCarouselProps) {
                         </Badge>
                       )}
                     </div>
+
+                     {/* Product Features */}
+                     <div className="w-full lg:flex-1 space-y-4 lg:space-y-4">
+                       <div className="grid grid-cols-2 lg:grid-cols-1 gap-4">
+                         <div className="bg-white dark:bg-secondary rounded-lg p-4 text-center">
+                           <div className="flex justify-center mb-2">
+                             <Truck className="w-8 h-8" />
+                           </div>
+                           <div className="text-sm font-medium">Free Shipping</div>
+                         </div>
+                         <div className="bg-white dark:bg-secondary rounded-lg p-4 text-center">
+                           <div className="flex justify-center mb-2">
+                             <Zap className="w-8 h-8" />
+                           </div>
+                           <div className="text-sm font-medium">Fast Delivery</div>
+                         </div>
+                         <div className="bg-white dark:bg-secondary rounded-lg p-4 text-center">
+                           <div className="flex justify-center mb-2">
+                             <Award className="w-8 h-8" />
+                           </div>
+                           <div className="text-sm font-medium">Best Seller</div>
+                         </div>
+                         <div className="bg-white dark:bg-secondary rounded-lg p-4 text-center">
+                           <div className="flex justify-center mb-2">
+                             <RotateCcw className="w-8 h-8" />
+                           </div>
+                           <div className="text-sm font-medium">Easy Returns</div>
+                         </div>
+                       </div>
+                     </div>
                   </div>
                 </div>
               </Link>

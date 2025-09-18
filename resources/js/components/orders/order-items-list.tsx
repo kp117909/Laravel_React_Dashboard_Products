@@ -28,11 +28,13 @@ export function OrderItemsList({ items, orderId, reviewedProducts = [] }: OrderI
                                 className="block hover:opacity-80 transition-opacity cursor-pointer"
                             >
                                 <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
-                                    <img
-                                        src={item.product.image}
-                                        alt={item.product.name}
-                                        className="w-full h-32 sm:w-16 sm:h-16 object-cover rounded flex-shrink-0"
-                                    />
+                                    <div className="w-full h-32 sm:w-16 sm:h-16 bg-gray-100 dark:bg-primary rounded flex-shrink-0 overflow-hidden">
+                                        <img
+                                            src={item.product.image}
+                                            alt={item.product.name}
+                                            className="w-full h-full object-cover"
+                                        />
+                                    </div>
                                     <div className="flex-1 min-w-0 space-y-1">
                                         <h3 className="font-semibold flex items-center gap-2 text-gray-900 dark:text-gray-100">
                                             <span className="truncate">{item.product.name}</span>

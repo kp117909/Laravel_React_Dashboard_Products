@@ -21,11 +21,15 @@ function ProductImage({ product }: { product: Product }) {
     : URL.createObjectURL(product.image);
 
   return (
-    <img
-      src={imageUrl}
-      alt={product.name}
-      className="w-full h-48 object-cover"
-    />
+    <div className="flex justify-center py-4">
+      <div className="w-60 h-70 rounded-xl overflow-hidden border-4 border-gray-200 dark:border-gray-700">
+        <img
+          src={imageUrl}
+          alt={product.name}
+          className="w-full h-full object-cover"
+        />
+      </div>
+    </div>
   );
 }
 
@@ -38,11 +42,15 @@ function ProductImageList({ product }: { product: Product }) {
     : URL.createObjectURL(product.image);
 
   return (
-    <img
-      src={imageUrl}
-      alt={product.name}
-      className="w-32 h-32 object-cover ml-2"
-    />
+    <div className="flex items-center justify-center p-4">
+      <div className="w-60 h-70 rounded-xl overflow-hidden border-4 border-gray-200 dark:border-gray-700">
+        <img
+          src={imageUrl}
+          alt={product.name}
+          className="w-full h-full object-cover"
+        />
+      </div>
+    </div>
   );
 }
 
@@ -81,19 +89,21 @@ function ProductRating({ product }: { product: Product }) {
 // Product Price Component
 function ProductPrice({ product }: { product: Product }) {
   return (
-    <span className="text-xl font-bold flex items-center gap-1">
-      {product.price.toFixed(2)} zł
-    </span>
+    <div className="flex justify-center">
+      <span className="text-xl font-bold flex items-center gap-1">
+        {product.price.toFixed(2)} zł
+      </span>
+    </div>
   );
 }
 
 // Product Actions Component
 function ProductActions({ product }: { product: Product }) {
   return (
-    <div className="flex w-full 2xl:w-auto gap-2 justify-end lg:flex-col xl:flex-row">
-      <Button size="sm" variant="outline" asChild className="flex-1 2xl:flex-none flex items-center justify-center">
+    <div className="flex w-full 2xl:w-auto gap-3 justify-center lg:flex-col xl:flex-row">
+      <Button size="lg" variant="outline" asChild className="flex-1 2xl:flex-none flex items-center justify-center px-6 py-3">
         <Link href={route('shop.products.show', product.id)}>
-          <Eye className="w-4 h-4" />
+          <Eye className="w-5 h-5 mr-2" />
           View
         </Link>
       </Button>
@@ -102,7 +112,7 @@ function ProductActions({ product }: { product: Product }) {
         isAvailable={product.is_available}
         showQuantity={false}
         variant="default"
-        className="flex-1 2xl:flex-none flex items-center justify-center gap-2"
+        className="flex-1 2xl:flex-none flex items-center justify-center gap-2 px-6 py-3 text-base"
       />
     </div>
   );
@@ -111,10 +121,10 @@ function ProductActions({ product }: { product: Product }) {
 // Product Actions for List View
 function ProductActionsList({ product }: { product: Product }) {
   return (
-    <div className="flex gap-2">
-      <Button size="sm" variant="outline" asChild>
+    <div className="flex gap-3">
+      <Button size="lg" variant="outline" asChild className="px-5 py-2">
         <Link href={route('shop.products.show', product.id)}>
-          <Eye className="w-4 h-4" />
+          <Eye className="w-5 h-5 mr-2" />
           View
         </Link>
       </Button>
@@ -123,7 +133,7 @@ function ProductActionsList({ product }: { product: Product }) {
         isAvailable={product.is_available}
         showQuantity={false}
         variant="default"
-        className="flex items-center justify-center gap-2"
+        className="flex items-center justify-center gap-2 px-5 py-2 text-base"
       />
     </div>
   );
@@ -132,18 +142,22 @@ function ProductActionsList({ product }: { product: Product }) {
 // Grid View Layout
 function ProductCardGrid({ product }: { product: Product }) {
   return (
-    <Card className="flex flex-col overflow-hidden hover:shadow-lg transition hover:scale-[1.02]">
+    <Card className="flex flex-col overflow-hidden hover:shadow-lg transition hover:scale-[1.02] text-center">
       <ProductImage product={product} />
 
-      <CardContent className="p-4 flex flex-col gap-2 flex-1">
-        <ProductHeader product={product} />
-        <h2 className="text-lg font-semibold text-[#1b1b18] dark:text-[#EDEDEC]">{product.name}</h2>
-        <ProductRating product={product} />
-        <p className="text-sm text-muted-foreground line-clamp-3">{product.description}</p>
+      <CardContent className="p-6 flex flex-col gap-3 flex-1">
+        <div className="flex justify-center">
+          <ProductHeader product={product} />
+        </div>
+        <h2 className="text-xl font-semibold text-[#1b1b18] dark:text-[#EDEDEC] line-clamp-2">{product.name}</h2>
+        <div className="flex justify-center">
+          <ProductRating product={product} />
+        </div>
+        <ProductPrice product={product} />
+        <p className="text-sm text-muted-foreground line-clamp-3 text-center">{product.description}</p>
       </CardContent>
 
-      <CardFooter className="p-4 flex flex-col 2xl:flex-row items-start 2xl:items-center gap-4 2xl:gap-2">
-        <ProductPrice product={product} />
+      <CardFooter className="p-6 pt-0 flex justify-center">
         <ProductActions product={product} />
       </CardFooter>
     </Card>
@@ -153,21 +167,24 @@ function ProductCardGrid({ product }: { product: Product }) {
 // List View Layout
 function ProductCardList({ product }: { product: Product }) {
   return (
-    <Card className="flex flex-row overflow-hidden hover:shadow-lg transition hover:scale-[1.01]">
+    <Card className="flex flex-row overflow-hidden hover:shadow-lg transition hover:scale-[1.01] items-center">
       <ProductImageList product={product} />
 
-      <div className="flex flex-1 flex-col">
-        <CardContent className="p-4 flex flex-col gap-2 flex-1">
-          <ProductHeader product={product} />
-          <h2 className="text-lg font-semibold text-[#1b1b18] dark:text-[#EDEDEC]">{product.name}</h2>
-          <ProductRating product={product} />
+      <div className="flex flex-1 flex-col py-4">
+        <CardContent className="p-4 flex flex-col gap-3 flex-1">
+          <div className="flex items-center justify-between">
+            <h2 className="text-lg font-semibold text-[#1b1b18] dark:text-[#EDEDEC] flex-1">{product.name}</h2>
+            <ProductPrice product={product} />
+          </div>
+          <div className="flex items-center gap-4">
+            <ProductHeader product={product} />
+            <ProductRating product={product} />
+          </div>
           <p className="text-sm text-muted-foreground line-clamp-2">{product.description}</p>
+          <div className="flex justify-end mt-2">
+            <ProductActionsList product={product} />
+          </div>
         </CardContent>
-
-        <CardFooter className="flex flex-row items-center justify-between gap-4">
-          <ProductPrice product={product} />
-          <ProductActionsList product={product} />
-        </CardFooter>
       </div>
     </Card>
   );
