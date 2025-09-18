@@ -12,7 +12,7 @@ export function InputFile({ onFileSelect }: Props) {
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
-    if (file && file.type === "image/png") {
+    if (file && file.type.startsWith("image/")) {
       setPreview(URL.createObjectURL(file))
       onFileSelect(file)
     } else {
@@ -23,8 +23,8 @@ export function InputFile({ onFileSelect }: Props) {
 
   return (
     <div className="grid w-full max-w-sm items-center gap-3">
-      <Label htmlFor="picture">Picture (PNG only)</Label>
-      <Input id="picture" type="file" accept="image/png" onChange={handleFileChange} />
+      <Label htmlFor="picture">Picture (JPEG, PNG, GIF, WebP)</Label>
+      <Input id="picture" type="file" accept="image/jpeg,image/jpg,image/png,image/gif,image/webp" onChange={handleFileChange} />
       {preview && (
         <div className="mt-2 w-40 h-40 rounded-md border border-gray-300 overflow-hidden">
           <img

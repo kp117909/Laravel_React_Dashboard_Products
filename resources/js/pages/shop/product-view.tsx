@@ -1,16 +1,21 @@
 import AppShopLayout from '@/layouts/app/app-navigation-layout';
 import { Product } from '@/types';
 import { Badge } from '@/components/ui/badge';
-import { CheckCircle, Clock, Tag } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { CheckCircle, Clock, Tag, Edit } from 'lucide-react';
 import { AddToCartButton } from '@/components/add-to-cart-button';
-import ReturnButton from '@/components/return-button';
+import  ReturnButton from '@/components/return-button';
 import { ProductReviews } from '@/components/reviews/product-reviews';
+import { useCan } from '@/lib/can';
+import { Link } from '@inertiajs/react';
 
 interface Props {
   product: Product;
 }
 
 export default function ProductPage({ product }: Props) {
+  const canEditProducts = useCan('products.edit');
+
   return (
     <AppShopLayout
       onSearch={(searchTerm) => {
@@ -90,13 +95,26 @@ export default function ProductPage({ product }: Props) {
               </div>
 
               {/* Add to Cart */}
-              <div className="pt-4">
+              <div className="pt-4 space-y-3">
                 <AddToCartButton
                   productId={product.id}
                   isAvailable={product.is_available}
                   className="w-full py-4 text-lg font-semibold bg-gradient-to-r bg-primary text-primary-foreground
                    text-white dark:text-secondary rounded-xl shadow-lg hover:shadow-xl transition-all hover:scale-[1.02]"
                 />
+
+                {/* Edit Button - Only show if user has edit permission */}
+                {canEditProducts && (
+                  <Link href={`/products/${product.id}/edit`}>
+                    <Button
+                      variant="outline"
+                      className="w-full py-4 text-lg font-semibold border-2 border-gray-300 dark:border-gray-600 hover:border-black dark:hover:border-white transition-all"
+                    >
+                      <Edit className="w-5 h-5 mr-2" />
+                      Edit Product
+                    </Button>
+                  </Link>
+                )}
               </div>
 
               {/* Product Meta */}

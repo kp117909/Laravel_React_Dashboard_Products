@@ -62,10 +62,9 @@ class ProductController extends Controller
 
     public function store(StoreProductRequest $request)
     {
+        $product = $this->productService->createProduct($request->validated(), $request->file('image'));
 
-        $this->productService->createProduct($request->validated(), $request->file('image'));
-
-        return redirect()->route('products.index');
+        return redirect()->route('shop.products.show', $product->id);
     }
 
     public function edit(int $id)
@@ -88,10 +87,10 @@ class ProductController extends Controller
         try {
             $this->productService->updateProduct($id, $request->validated(), $request->file('image'));
         } catch (ModelNotFoundException $e) {
-            return redirect()->route('products.index');
+            return redirect()->route('shop');
         }
 
-        return Inertia::location(route('products.index'));
+        return redirect()->route('shop.products.show', $id);
     }
 
 
