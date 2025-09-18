@@ -5,6 +5,7 @@ import { Badge } from '@/components/ui/badge';
 import { Star, TrendingUp } from 'lucide-react';
 import useEmblaCarousel from 'embla-carousel-react';
 import Autoplay from 'embla-carousel-autoplay';
+import { gsap } from 'gsap';
 
 interface BestsellersCarouselProps {
   products: Product[];
@@ -12,6 +13,9 @@ interface BestsellersCarouselProps {
 
 export function BestsellersCarousel({ products }: BestsellersCarouselProps) {
   const autoplayRef = useRef(Autoplay({ delay: 5000 }));
+  const headerRef = useRef<HTMLDivElement>(null);
+  const carouselRef = useRef<HTMLDivElement>(null);
+  const dotsRef = useRef<HTMLDivElement>(null);
 
   const [emblaRef, emblaApi] = useEmblaCarousel(
     {
@@ -51,6 +55,59 @@ export function BestsellersCarousel({ products }: BestsellersCarouselProps) {
     };
   }, [emblaApi, onSelect]);
 
+  // GSAP Animation on mount
+  useEffect(() => {
+    const tl = gsap.timeline();
+    
+    // Animate header
+    if (headerRef.current) {
+      tl.fromTo(headerRef.current, 
+        { opacity: 0, y: -30 },
+        { opacity: 1, y: 0, duration: 0.8, ease: "power2.out" }
+      );
+    }
+    
+    // Animate carousel
+    if (carouselRef.current) {
+      tl.fromTo(carouselRef.current,
+        { opacity: 0, scale: 0.95 },
+        { opacity: 1, scale: 1, duration: 0.8, ease: "power2.out" },
+        "-=0.4"
+      );
+    }
+    
+    // Animate dots
+    if (dotsRef.current) {
+      tl.fromTo(dotsRef.current,
+        { opacity: 0, y: 20 },
+        { opacity: 1, y: 0, duration: 0.6, ease: "power2.out" },
+        "-=0.3"
+      );
+    }
+  }, []);
+
+  // GSAP Animation on slide change
+  useEffect(() => {
+    const slides = document.querySelectorAll('.embla__slide');
+    slides.forEach((slide, index) => {
+      if (index === selectedIndex) {
+        gsap.to(slide.querySelector('.product-card'), {
+          scale: 1,
+          opacity: 1,
+          duration: 0.5,
+          ease: "power2.out"
+        });
+      } else {
+        gsap.to(slide.querySelector('.product-card'), {
+          scale: 0.95,
+          opacity: 0.7,
+          duration: 0.5,
+          ease: "power2.out"
+        });
+      }
+    });
+  }, [selectedIndex]);
+
   if (!products.length) {
     return null;
   }
@@ -58,7 +115,7 @@ export function BestsellersCarousel({ products }: BestsellersCarouselProps) {
   return (
     <div className="w-full">
       {/* Header */}
-      <div className="flex items-center justify-center mb-6">
+      <div ref={headerRef} className="flex items-center justify-center mb-6">
         <div className="flex items-center gap-2">
           <TrendingUp className="h-6 w-6 text-black dark:text-white" />
           <h2 className="text-2xl font-bold text-[#1b1b18] dark:text-[#EDEDEC]">
@@ -68,12 +125,30 @@ export function BestsellersCarousel({ products }: BestsellersCarouselProps) {
       </div>
 
       {/* Embla Carousel */}
-      <div className="embla overflow-hidden" ref={emblaRef}>
+      <div ref={(el) => { carouselRef.current = el; emblaRef(el); }} className="embla overflow-hidden">
         <div className="embla__container flex">
           {products.map((product) => (
             <div key={product.id} className="embla__slide flex-[0_0_100%] min-w-0">
               <Link href={`/shop/products/${product.id}`}>
-                <div className="group cursor-pointer transition-all duration-300 hover:opacity-90 bg-gray-50 dark:bg-[#18181b] rounded-lg overflow-hidden mx-4">
+                <div 
+                  className="product-card group cursor-pointer transition-all duration-300 hover:opacity-90 bg-gray-50 dark:bg-[#18181b] rounded-lg overflow-hidden mx-4"
+                  onMouseEnter={(e) => {
+                    gsap.to(e.currentTarget, {
+                      y: -5,
+                      boxShadow: "0 20px 40px rgba(0,0,0,0.1)",
+                      duration: 0.3,
+                      ease: "power2.out"
+                    });
+                  }}
+                  onMouseLeave={(e) => {
+                    gsap.to(e.currentTarget, {
+                      y: 0,
+                      boxShadow: "0 4px 8px rgba(0,0,0,0.05)",
+                      duration: 0.3,
+                      ease: "power2.out"
+                    });
+                  }}
+                >
                   <div className="flex flex-col lg:flex-row items-center gap-8 p-8">
                     {/* Product Image */}
                     <div className="flex-shrink-0">
@@ -118,7 +193,7 @@ export function BestsellersCarousel({ products }: BestsellersCarouselProps) {
 
                       <div className="space-y-3">
                         <div className="text-4xl font-bold text-black dark:text-white">
-                          ${product.price.toFixed(2)}
+                          {product.price.toFixed(2)} zł
                         </div>
                         {product.reviews_count > 0 && (
                           <div className="text-lg text-gray-500">
@@ -143,7 +218,7 @@ export function BestsellersCarousel({ products }: BestsellersCarouselProps) {
 
       {/* Navigation Dots */}
       {products.length > 1 && (
-        <div className="flex justify-center gap-2 mt-6">
+        <div ref={dotsRef} className="flex justify-center gap-2 mt-6">
           {products.map((_, index) => (
             <button
               key={index}
