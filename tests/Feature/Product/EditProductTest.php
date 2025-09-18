@@ -62,7 +62,7 @@ test('authorized users can update product', function () {
         'is_published' => true,
         'category_id' => 1,
     ]);
-    $response->assertRedirect(route('products.index'));
+    $response->assertRedirect(route('shop.products.show', $product->id));
     $this->assertDatabaseHas('products', [
         'id' => $product->id,
         'name' => 'Updated Product',

@@ -13,7 +13,7 @@ interface ReviewFormProps {
     hasReviewed: boolean;
 }
 
-export function ReviewForm({ productId, orderId, productName, productImage, hasReviewed }: ReviewFormProps) {
+export function ReviewForm({ productId, orderId, hasReviewed }: ReviewFormProps) {
     const [rating, setRating] = useState(0);
     const [comment, setComment] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -55,8 +55,6 @@ export function ReviewForm({ productId, orderId, productName, productImage, hasR
             </CardHeader>
             <CardContent>
                 <form onSubmit={handleSubmit} className="space-y-4">
-
-
                     <div>
                         <label className="block text-sm font-medium mb-2">Rating</label>
                         <div className="flex space-x-1">

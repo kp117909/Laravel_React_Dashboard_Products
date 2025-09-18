@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\Category;
+use App\Models\Product;
 use App\Models\User;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
@@ -26,7 +27,9 @@ test('admin can create product', function () {
         'category_id' => 1,
     ]);
 
-    $response->assertRedirect('/products');
+    $product = Product::where('name', 'Test Product')->first();
+
+    $response->assertRedirect(route('shop.products.show', $product->id));
     $this->assertDatabaseHas('products', ['name' => 'Test Product']);
 });
 
