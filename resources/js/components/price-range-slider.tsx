@@ -99,11 +99,11 @@ export default function PriceRangeSlider({
 
   return (
     <div className="space-y-3">
-                <Label className="text-sm font-medium">Price Range</Label>
+    <Label className="text-sm font-medium">Price Range</Label>
       <div className="flex justify-between items-center">
 
         <div className="flex items-center gap-1 sm:gap-2 text-sm text-gray-600 dark:text-gray-400">
-          <span>$</span>
+          <span>zł</span>
           <Input
             type="number"
             value={minInput}
@@ -112,11 +112,11 @@ export default function PriceRangeSlider({
             min={min}
             max={localValue[1]}
             aria-label="Minimum price"
-            className="w-16 sm:w-18 h-6 text-xs"
+            className="w-20 sm:w-20 h-6 text-xs"
             disabled={disabled}
           />
           <span>-</span>
-          <span>$</span>
+          <span>zł</span>
           <Input
             type="number"
             value={maxInput}
@@ -125,7 +125,7 @@ export default function PriceRangeSlider({
             min={localValue[0]}
             max={max}
             aria-label="Maximum price"
-            className="w-16 sm:w-18 h-6 text-xs"
+            className="w-20 sm:w-20 h-6 text-xs"
             disabled={disabled}
           />
         </div>

@@ -53,7 +53,7 @@ export function OrderItem({ order }: OrderItemProps) {
                             />
                             <div className="flex-1 min-w-0">
                                 <p className="font-medium text-sm truncate">
-                                    {item.product.name}
+                                     {item.product.name}
                                 </p>
                                 <p className="text-xs text-gray-600">
                                     Qty: {item.quantity}

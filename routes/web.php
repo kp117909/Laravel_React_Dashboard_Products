@@ -13,6 +13,7 @@ use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ReviewController;
 
 Route::get('/', [ShopController::class, 'index'])->name('shop');
+
 Route::get('/shop/products/{product}', [ShopProductController::class, 'show'])->name('shop.products.show');
 
 Route::prefix('cart')->name('cart.')->group(function () {

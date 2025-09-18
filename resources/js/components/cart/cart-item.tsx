@@ -21,7 +21,7 @@ export function CartItem({ item, isLoading, onUpdateQuantity, onRemove }: CartIt
             <div className="flex-1">
                 <h3 className="font-semibold">{item.product.name}</h3>
                 <p className="text-gray-500">
-                    ${item.product.price.toFixed(2)}
+                    {item.product.price.toFixed(2)} zł
                 </p>
             </div>
             <div className="flex items-center gap-2 w-full sm:w-auto justify-end">
@@ -41,7 +41,7 @@ export function CartItem({ item, isLoading, onUpdateQuantity, onRemove }: CartIt
                         min="1"
                         value={item.quantity}
                         onChange={(e) => onUpdateQuantity(item.id, parseInt(e.target.value) || 1)}
-                        className="w-16 h-8 text-center border-0"
+                        className="w-20 h-8 text-center border-0"
                         disabled={isLoading}
                     />
                     <Button

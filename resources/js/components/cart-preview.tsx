@@ -96,7 +96,7 @@ export function CartPreview({ cart: initialCart }: CartPreviewProps) {
                                                     </Button>
                                                 </div>
                                                 <p className="text-sm font-medium">
-                                                    ${(item.product.price * item.quantity).toFixed(2)}
+                                                        {(item.product.price * item.quantity).toFixed(2)} zł
                                                 </p>
                                             </div>
                                         </div>
@@ -107,17 +107,17 @@ export function CartPreview({ cart: initialCart }: CartPreviewProps) {
                             <div className="space-y-2 mb-4">
                                 <div className="flex items-center justify-between">
                                     <span className="text-sm">Subtotal:</span>
-                                    <span className="text-sm">${cart.subtotal.toFixed(2)}</span>
+                                    <span className="text-sm">{cart.subtotal.toFixed(2)} zł</span>
                                 </div>
                                 {cart.discount_amount > 0 && (
                                     <div className="flex items-center justify-between text-green-600 dark:text-green-400">
                                         <span className="text-sm">Discount ({cart.discount_code}):</span>
-                                        <span className="text-sm">-${cart.discount_amount.toFixed(2)}</span>
+                                        <span className="text-sm">-{cart.discount_amount.toFixed(2)} zł</span>
                                     </div>
                                 )}
                                 <div className="flex items-center justify-between font-semibold">
                                     <span>Total:</span>
-                                    <span>${cart.total.toFixed(2)}</span>
+                                        <span>{cart.total.toFixed(2)} zł</span>
                                 </div>
                             </div>
                             <Button asChild className="w-full">

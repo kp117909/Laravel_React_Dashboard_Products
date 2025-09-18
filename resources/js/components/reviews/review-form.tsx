@@ -55,16 +55,7 @@ export function ReviewForm({ productId, orderId, productName, productImage, hasR
             </CardHeader>
             <CardContent>
                 <form onSubmit={handleSubmit} className="space-y-4">
-                    <div className="flex items-center space-x-4">
-                        <img
-                            src={productImage}
-                            alt={productName}
-                            className="w-12 h-12 object-cover rounded"
-                        />
-                        <div>
-                            <h4 className="font-medium">{productName}</h4>
-                        </div>
-                    </div>
+
 
                     <div>
                         <label className="block text-sm font-medium mb-2">Rating</label>
