@@ -81,7 +81,7 @@ export function BestsellersCarousel({ products }: BestsellersCarouselProps) {
       </div>
 
       {/* Embla Carousel */}
-        <div ref={emblaAnimRef} className="embla overflow-hidden">
+       <div ref={(el) => { emblaAnimRef.current = el; emblaRef(el); }} className="embla overflow-hidden">
         <div className="embla__container flex">
           {products.map((product) => (
             <div key={product.id} className="embla__slide flex-[0_0_100%] min-w-0">

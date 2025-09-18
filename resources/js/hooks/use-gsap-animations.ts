@@ -15,37 +15,43 @@ export const animationPresets = {
     duration: 0.8,
     ease: "power2.out",
     from: { opacity: 0, y: 30 },
-    to: { opacity: 1, y: 0 }
+    to: { opacity: 1, y: 0 },
+    delay: 0
   },
   fadeInDown: {
     duration: 0.8,
     ease: "power2.out",
     from: { opacity: 0, y: -30 },
-    to: { opacity: 1, y: 0 }
+    to: { opacity: 1, y: 0 },
+    delay: 0
   },
   scaleIn: {
     duration: 1,
     ease: "power2.out",
     from: { opacity: 0, scale: 0.9, y: -20 },
-    to: { opacity: 1, scale: 1, y: 0 }
+    to: { opacity: 1, scale: 1, y: 0 },
+    delay: 0
   },
   slideInLeft: {
     duration: 0.8,
     ease: "power2.out",
     from: { opacity: 0, x: -50 },
-    to: { opacity: 1, x: 0 }
+    to: { opacity: 1, x: 0 },
+    delay: 0
   },
   slideInRight: {
     duration: 0.8,
     ease: "power2.out",
     from: { opacity: 0, x: 50 },
-    to: { opacity: 1, x: 0 }
+    to: { opacity: 1, x: 0 },
+    delay: 0
   },
   bounce: {
     duration: 1.2,
     ease: "bounce.out",
     from: { opacity: 0, y: -100 },
-    to: { opacity: 1, y: 0 }
+    to: { opacity: 1, y: 0 },
+    delay: 0
   }
 };
 
@@ -54,7 +60,7 @@ export const animationPresets = {
  */
 export function useGsapAnimation<T extends HTMLElement>(
   preset: keyof typeof animationPresets | AnimationConfig,
-  dependencies: any[] = []
+  dependencies: unknown[] = []
 ) {
   const ref = useRef<T>(null);
 
@@ -73,6 +79,7 @@ export function useGsapAnimation<T extends HTMLElement>(
         delay: config.delay || 0
       }
     );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, dependencies);
 
   return ref;
@@ -84,7 +91,7 @@ export function useGsapAnimation<T extends HTMLElement>(
 export function useGsapStagger<T extends HTMLElement>(
   preset: keyof typeof animationPresets | AnimationConfig,
   staggerDelay: number = 0.1,
-  dependencies: any[] = []
+  dependencies: unknown[] = []
 ) {
   const containerRef = useRef<T>(null);
 
@@ -105,6 +112,7 @@ export function useGsapStagger<T extends HTMLElement>(
         stagger: staggerDelay
       }
     );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, dependencies);
 
   return containerRef;
