@@ -45,9 +45,9 @@ export function OrderItemAdmin({ order }: OrderItemAdminProps) {
             <CardContent>
                 {/* Customer Information */}
                 {order.user && (
-                    <div className="mb-4 p-3 bg-gray-50 rounded-lg">
+                    <div className="mb-4 p-3 bg-gray-50 rounded-lg dark:bg-secondary">
                         <h4 className="font-medium text-sm mb-2">Customer</h4>
-                        <div className="flex items-center space-x-4 text-sm text-gray-600">
+                        <div className="flex items-center space-x-4 text-sm text-gray-600 dark:text-gray-400">
                             <div className="flex items-center space-x-1">
                                 <User className="w-4 h-4" />
                                 <span>{order.user.name}</span>

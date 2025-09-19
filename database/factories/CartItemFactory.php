@@ -20,6 +20,28 @@ class CartItemFactory extends Factory
         ];
     }
 
+    /**
+     * Create multiple unique cart items for a cart
+     */
+    public function uniqueForCart(Cart $cart, int $count = 3): array
+    {
+        $products = Product::inRandomOrder()->limit($count)->get();
+
+        if ($products->count() < $count) {
+            // Create additional products if not enough exist
+            $needed = $count - $products->count();
+            $additionalProducts = Product::factory()->count($needed)->create();
+            $products = $products->merge($additionalProducts);
+        }
+
+        $cartItems = [];
+        foreach ($products->take($count) as $product) {
+            $cartItems[] = $this->forCart($cart)->forProduct($product)->create();
+        }
+
+        return $cartItems;
+    }
+
     public function forCart(Cart $cart): self
     {
         return $this->state(function (array $attributes) use ($cart) {

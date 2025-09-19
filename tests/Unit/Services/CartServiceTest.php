@@ -131,9 +131,9 @@ class CartServiceTest extends TestCase
         Auth::login($this->user);
 
         $cart = $this->cartService->getCurrentCart();
-        CartItem::factory()->count(3)->create([
-            'cart_id' => $cart->id
-        ]);
+
+        // Create 3 unique cart items using the factory helper method
+        CartItem::factory()->uniqueForCart($cart, 3);
 
         $result = $this->cartService->clearCart();
 

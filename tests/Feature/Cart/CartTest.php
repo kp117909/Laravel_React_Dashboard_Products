@@ -115,9 +115,9 @@ class CartTest extends TestCase
     {
         // First add multiple items to cart
         $cart = Cart::factory()->create(['user_id' => $this->user->id]);
-        CartItem::factory()->count(3)->create([
-            'cart_id' => $cart->id
-        ]);
+
+        // Create 3 unique cart items using the factory helper method
+        CartItem::factory()->uniqueForCart($cart, 3);
 
         $response = $this->actingAs($this->user)
             ->post(route('cart.clear'));
