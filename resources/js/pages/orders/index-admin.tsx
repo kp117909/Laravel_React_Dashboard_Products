@@ -39,7 +39,7 @@ export default function IndexAdmin({ orders }: Props) {
                     <div className="flex items-center space-x-2 mt-4">
                         <Search
                             placeholder="Search by order id, user, product..."
-                            className="w-128"
+                            className="w-72"
                             initialValue={filterParams.search || ''}
                         />
                     </div>
