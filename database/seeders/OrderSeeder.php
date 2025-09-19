@@ -20,11 +20,11 @@ class OrderSeeder extends Seeder
             return;
         }
 
-        // Find the kpolak491 user
-        $user = User::where('email', 'kpolak491@gmail.com')->first();
+        // Find users to create orders for
+        $users = User::whereIn('email', ['kpolak491@gmail.com', 'admin@gmail.com'])->get();
 
-        if (!$user) {
-            $this->command->error('User kpolak491@gmail.com not found. Please run the database seeder first.');
+        if ($users->isEmpty()) {
+            $this->command->error('Required users not found. Please run the database seeder first.');
             return;
         }
 
@@ -39,12 +39,14 @@ class OrderSeeder extends Seeder
         // Get available discount codes
         $discountCodes = DiscountCode::where('is_active', true)->get();
 
-        // Create 15-25 random orders
-        $orderCount = rand(15, 25);
+        // Create orders for each user
+        foreach ($users as $user) {
+            // Create 10-15 random orders per user
+            $orderCount = rand(10, 15);
 
-        for ($i = 0; $i < $orderCount; $i++) {
-            // Create a cart for this order
-            $cart = Cart::factory()->forUser($user)->create([
+            for ($i = 0; $i < $orderCount; $i++) {
+                // Create a cart for this order
+                $cart = Cart::factory()->forUser($user)->create([
                 'status' => 'completed',
                 'created_at' => now()->subDays(rand(1, 180)), // Random date within last 6 months
             ]);
@@ -101,10 +103,11 @@ class OrderSeeder extends Seeder
                 ]);
             }
 
-            $this->command->info("Created order #{$order->id} with " . count($cartItems) . " items for {$user->name}");
-        }
+                $this->command->info("Created order #{$order->id} with " . count($cartItems) . " items for {$user->name}");
+            }
 
-        $this->command->info("Successfully created {$orderCount} orders for user {$user->name}");
+            $this->command->info("Successfully created {$orderCount} orders for user {$user->name}");
+        }
     }
 
     private function getRandomStatus(): string

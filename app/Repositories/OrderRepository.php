@@ -3,6 +3,9 @@
 namespace App\Repositories;
 
 use App\Models\Order;
+use App\Queries\Orders\SearchOrdersQuery;
+use App\Queries\Orders\AdminSearchOrdersQuery;
+use App\Queries\Orders\SortableOrdersQuery;
 use Illuminate\Pagination\LengthAwarePaginator;
 
 
@@ -41,15 +44,14 @@ class OrderRepository
             ->where('user_id', $userId)
             ->with(['items.product', 'cart']);
 
-        if ($search) {
-            $query->whereHas('items.product', function ($productQuery) use ($search) {
-                $productQuery->where('name', 'like', "%{$search}%");
-            });
-        }
+        $query = SearchOrdersQuery::apply($query, $search);
 
-        if (!empty($options['sort'])) {
-            $direction = $options['direction'] ?? 'desc';
-            $query->orderBy($options['sort'], $direction);
+        if (!empty($options['sort']) && is_string($options['sort'])) {
+            $query = SortableOrdersQuery::apply(
+                $query,
+                $options['sort'],
+                $options['direction'] ?? 'desc'
+            );
         } else {
             $query->orderBy('created_at', 'desc');
         }
@@ -65,4 +67,30 @@ class OrderRepository
             ->with(['items.product', 'cart'])
             ->first();
     }
+
+    public function getAllOrders(int $perPage = 10, ?string $search = null, array $options = []): \Illuminate\Pagination\LengthAwarePaginator
+    {
+        $query = $this->model->with(['items.product', 'cart', 'user']);
+
+        $query = AdminSearchOrdersQuery::apply($query, $search);
+
+        if (!empty($options['sort']) && is_string($options['sort'])) {
+            $query = SortableOrdersQuery::apply(
+                $query,
+                $options['sort'],
+                $options['direction'] ?? 'desc'
+            );
+        } else {
+            $query->orderBy('created_at', 'desc');
+        }
+
+        return $query->paginate($perPage)->withQueryString();
+    }
+
+    public function getOrder(int $orderId): ?Order
+    {
+        return $this->model->with(['items.product', 'cart', 'user'])->find($orderId);
+    }
+
+
 }

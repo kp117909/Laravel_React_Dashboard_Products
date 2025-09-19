@@ -42,8 +42,8 @@ function ProductImageList({ product }: { product: Product }) {
     : URL.createObjectURL(product.image);
 
   return (
-    <div className="flex items-center justify-center p-4">
-      <div className="w-60 h-70 rounded-xl overflow-hidden border-4 border-gray-200 dark:border-gray-700">
+    <div className="flex items-center justify-center ml-4">
+      <div className="w-60 h-70 rounded-xl overflow-hidden border-4 border-gray-200 dark:border-[#1b1b18]">
         <img
           src={imageUrl}
           alt={product.name}

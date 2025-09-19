@@ -116,6 +116,7 @@ export interface Product {
 export interface Permission {
     id: number;
     name: string;
+    created_at: string;
 }
 
 export interface Category {

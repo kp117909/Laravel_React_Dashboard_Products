@@ -13,11 +13,13 @@ class OrderItemFactory extends Factory
 
     public function definition(): array
     {
+        $product = Product::inRandomOrder()->first();
+
         return [
             'order_id' => Order::factory(),
-            'product_id' => Product::factory(),
+            'product_id' => $product?->id ?? Product::factory(),
             'quantity' => $this->faker->numberBetween(1, 5),
-            'price' => $this->faker->randomFloat(2, 5, 100),
+            'price' => $product?->price ?? $this->faker->randomFloat(2, 5, 100),
         ];
     }
 

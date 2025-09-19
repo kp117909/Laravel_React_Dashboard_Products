@@ -25,4 +25,9 @@ export interface Order {
         discount_amount?: number;
         subtotal?: number;
     };
+    user?: {
+        id: number;
+        name: string;
+        email: string;
+    };
 }

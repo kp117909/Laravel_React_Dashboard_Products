@@ -1,4 +1,4 @@
-import { LayoutGrid, Users, ShieldCheck, PackageSearch, Store, Package } from 'lucide-react'
+import { LayoutGrid, Users, ShieldCheck, PackageSearch, Store, Package, Key } from 'lucide-react'
 import { NavItem } from '@/types'
 
 export function getMainNavItems(permissions: string[] = []): NavItem[] {
@@ -14,7 +14,7 @@ export function getMainNavItems(permissions: string[] = []): NavItem[] {
       icon: LayoutGrid,
     },
     {
-        title: 'Orders',
+        title: 'My Orders',
         href: '/orders',
         icon: Package,
     },
@@ -25,6 +25,14 @@ export function getMainNavItems(permissions: string[] = []): NavItem[] {
       title: 'Users',
       href: '/users',
       icon: Users,
+    })
+  }
+
+  if (permissions.includes('orders.management')) {
+    navItems.push({
+      title: 'Manage Orders',
+      href: '/admin-orders',
+      icon: Package,
     })
   }
 
@@ -43,6 +51,15 @@ export function getMainNavItems(permissions: string[] = []): NavItem[] {
       icon: ShieldCheck,
     })
   }
+
+  if (permissions.includes('permissions.view')) {
+    navItems.push({
+      title: 'Permissions',
+      href: '/permissions',
+      icon: Key,
+    })
+  }
+
 
   return navItems
 }

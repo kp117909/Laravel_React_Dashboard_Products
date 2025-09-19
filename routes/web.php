@@ -11,6 +11,7 @@ use App\Http\Controllers\ShopController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ReviewController;
+use App\Http\Controllers\PermissionController;
 
 Route::get('/', [ShopController::class, 'index'])->name('shop');
 
@@ -38,12 +39,16 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('/store', [OrderController::class, 'store'])->name('store');
     });
 
+
+    Route::get('/admin-orders', [OrderController::class, 'indexAdmin'])->name('orders.admin.index')->middleware('can:orders.management');
+    Route::get('/admin-orders/{order}', [OrderController::class, 'showAdmin'])->name('orders.admin.show')->middleware('can:orders.management');
+
     Route::post('/reviews', [ReviewController::class, 'store'])->name('reviews.store');
 
     CrudRouteHelper::routes('users', UserController::class, 'users', 'user');
     CrudRouteHelper::routes('roles', RoleController::class, 'roles', 'role');
     CrudRouteHelper::routes('products', ProductController::class, 'products', 'product');
-
+    CrudRouteHelper::routes('permissions', PermissionController::class, 'permissions', 'permission');
 });
 
 require __DIR__.'/settings.php';

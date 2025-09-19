@@ -29,6 +29,16 @@ class OrderService
         return $this->orderRepository->findByIdAndUserId($orderId, $userId);
     }
 
+    public function getAllOrders(int $perPage = 10, string $search = null, array $options = []): \Illuminate\Pagination\LengthAwarePaginator
+    {
+        return $this->orderRepository->getAllOrders($perPage, $search, $options);
+    }
+
+    public function getOrder(int $orderId): ?Order
+    {
+        return $this->orderRepository->getOrder($orderId);
+    }
+
     public function createFromCart(Cart $cart)
     {
         // Validate cart has items

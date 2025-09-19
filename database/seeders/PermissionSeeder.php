@@ -15,6 +15,10 @@ class PermissionSeeder extends Seeder
     public function run(): void
     {
         $permissions = [
+            "permissions.view",
+            "permissions.edit",
+            "permissions.create",
+            "permissions.delete",
             "users.view",
             "users.edit",
             "users.create",
@@ -27,7 +31,8 @@ class PermissionSeeder extends Seeder
             "roles.edit",
             "roles.create",
             "roles.delete",
-            "sync.permissions"
+            "sync.permissions",
+            "orders.management",
         ];
 
         foreach ($permissions as $value) {
@@ -50,6 +55,7 @@ class PermissionSeeder extends Seeder
             "products.edit",
             "products.create",
             "products.delete",
+            "orders.management",
         ];
 
         if ($moderator->permissions->isEmpty()) {

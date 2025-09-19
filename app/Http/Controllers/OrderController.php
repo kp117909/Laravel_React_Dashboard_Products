@@ -69,15 +69,43 @@ class OrderController extends Controller
         ]);
     }
 
-    public function show(int $orderId)
+    public function indexAdmin(Request $request)
     {
-        $order = $this->orderService->getUserOrder($orderId, Auth::id());
+        $orders = $this->orderService->getAllOrders(
+            perPage: $request->input('per_page', 10),
+            search: $request->input('search'),
+            options: $request->only(['sort', 'direction'])
+        );
+
+        return Inertia::render('orders/index-admin', [
+            'orders' => $orders
+        ]);
+    }
+
+    public function showAdmin(string $orderId)
+    {
+        $orderIdInt = (int) $orderId;
+        $order = $this->orderService->getOrder($orderIdInt);
+
+        if (!$order) {
+            abort(404, 'Order not found.');
+        }
+
+        return Inertia::render('orders/show', [
+            'order' => $order
+        ]);
+    }
+
+    public function show(string $orderId)
+    {
+        $orderIdInt = (int) $orderId;
+        $order = $this->orderService->getUserOrder($orderIdInt, Auth::id());
 
         if (!$order) {
             abort(404);
         }
 
-        $reviewedProducts = $this->reviewService->getReviewedProductsForOrder($orderId, Auth::id());
+        $reviewedProducts = $this->reviewService->getReviewedProductsForOrder($orderIdInt, Auth::id());
         $order->reviewed_products = $reviewedProducts;
 
         return Inertia::render('orders/show', [
