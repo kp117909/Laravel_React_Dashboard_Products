@@ -34,6 +34,21 @@ class DatabaseSeeder extends Seeder
             $admin->assignRole('admin');
         }
 
+
+        $admin_moderator = User::firstOrCreate(
+            ['email' => 'admin@gmail.com'],
+            [
+                'name' => 'admin',
+                'password' => bcrypt('test1234'),
+            ]
+        );
+
+
+        if (!$admin_moderator->hasRole('moderator')) {
+            $admin_moderator->assignRole('moderator');
+        }
+
+
         $this->call(CategorySeeder::class);
         $this->call(ProductSeeder::class);
         $this->call(DiscountCodeSeeder::class);
